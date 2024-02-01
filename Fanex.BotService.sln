@@ -1,0 +1,80 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fanex.BotService", "Fanex.BotService", "{6EF91A5A-3BF4-4CF4-ABF7-13B45E71C599}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.Core", "Fanex.BotService.Core\Fanex.BotService.Core.csproj", "{17079036-B35E-4DF3-839A-44B4CA9DBFC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.EndPoint", "Fanex.BotService.EndPoint\Fanex.BotService.EndPoint.csproj", "{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fanex.BotService.Shared", "Fanex.BotService.Shared", "{2C44DE4B-06FF-40F8-AED1-8687DAEDE8CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.Shared", "Fanex.BotService.Shared\Fanex.BotService.Shared.csproj", "{0A9F7B54-550F-433E-AF79-BAA4419DDF7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{75FA3E39-3317-4FFC-8969-2D3EA2442CEB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DAD7E856-CC4E-480A-AB88-2B12052A773A}"
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.Resources", "Fanex.BotService.Resources\Fanex.BotService.Resources.csproj", "{CFA0C95B-C81F-4F87-B7B5-563618499B70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.Core.Tests", "UnitTests\Fanex.BotService.Core.Tests\Fanex.BotService.Core.Tests.csproj", "{EB81D3EA-6B98-4408-A5E0-7857E1D0589A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.EndPoint.Tests", "UnitTests\Fanex.BotService.EndPoint.Tests\Fanex.BotService.EndPoint.Tests.csproj", "{6B692F66-1352-4368-BFE3-4E985F884097}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.Shared.Tests", "UnitTests\Fanex.BotService.Shared.Tests\Fanex.Shared.Tests.csproj", "{BD03B538-33CF-44BF-8A44-D8F563BF0103}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17079036-B35E-4DF3-839A-44B4CA9DBFC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17079036-B35E-4DF3-839A-44B4CA9DBFC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17079036-B35E-4DF3-839A-44B4CA9DBFC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17079036-B35E-4DF3-839A-44B4CA9DBFC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A9F7B54-550F-433E-AF79-BAA4419DDF7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9F7B54-550F-433E-AF79-BAA4419DDF7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A9F7B54-550F-433E-AF79-BAA4419DDF7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A9F7B54-550F-433E-AF79-BAA4419DDF7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB81D3EA-6B98-4408-A5E0-7857E1D0589A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB81D3EA-6B98-4408-A5E0-7857E1D0589A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB81D3EA-6B98-4408-A5E0-7857E1D0589A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB81D3EA-6B98-4408-A5E0-7857E1D0589A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B692F66-1352-4368-BFE3-4E985F884097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B692F66-1352-4368-BFE3-4E985F884097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B692F66-1352-4368-BFE3-4E985F884097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B692F66-1352-4368-BFE3-4E985F884097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD03B538-33CF-44BF-8A44-D8F563BF0103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD03B538-33CF-44BF-8A44-D8F563BF0103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD03B538-33CF-44BF-8A44-D8F563BF0103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD03B538-33CF-44BF-8A44-D8F563BF0103}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{17079036-B35E-4DF3-839A-44B4CA9DBFC2} = {6EF91A5A-3BF4-4CF4-ABF7-13B45E71C599}
+		{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692} = {6EF91A5A-3BF4-4CF4-ABF7-13B45E71C599}
+		{0A9F7B54-550F-433E-AF79-BAA4419DDF7B} = {2C44DE4B-06FF-40F8-AED1-8687DAEDE8CD}
+		{EB81D3EA-6B98-4408-A5E0-7857E1D0589A} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
+		{6B692F66-1352-4368-BFE3-4E985F884097} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
+		{BD03B538-33CF-44BF-8A44-D8F563BF0103} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}
+	EndGlobalSection
+EndGlobal

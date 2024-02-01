@@ -1,0 +1,229 @@
+﻿namespace Fanex.NCB.BotService.EndPoint
+{
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Text;
+    using System.Threading;
+    using Fanex.BotService.Core;
+    using Fanex.Caching;
+    using Fanex.Caching.Redis;
+    using Fanex.Data.Repository;
+    using Fanex.Data.SqlServer;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.AspNetCore;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.Logging.Sentry;
+    using Fanex.NCB.BotService.Core;
+    using Fanex.NCB.BotService.Core.Models;
+    using Fanex.NCB.BotService.Core.Services;
+    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.NCB.Shared.Middlewares;
+    using Fanex.NCB.Shared.Repositories;
+    using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.NCB.Shared.Services;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.DataProtection;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.HttpOverrides;
+    using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.IdentityModel.Logging;
+    using Microsoft.IdentityModel.Tokens;
+    using Sentry;
+    using StackExchange.Redis;
+    using System.Net.Http;
+    using System.Net.Security;
+    using System.Net;
+    using System.Security.Authentication;
+    using Fanex.Logging;
+
+    [ExcludeFromCodeCoverage]
+    public class Startup
+    {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            Configuration = configuration;
+            Environment = env;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public IWebHostEnvironment Environment { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
+            Logging.LogManager
+            .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
+            .Use(new List<Logging.ILogEngine>
+            {
+                new SentryLogging(new SentryEngineOptions
+                {
+                    Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
+                    FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
+                })
+            });
+
+            ExceptionHandler
+                .UseConfig(new LoggingConfiguration())
+                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            services.AddSingleton(appSettings);
+
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            BotServiceDI.Init(services);
+
+            RegisterService(services, Configuration);
+            RegisterCache(services, Configuration);
+
+            services.AddMvc().AddNewtonsoftJson();
+            IdentityModelEventSource.ShowPII = true;
+            const short WorkerThreads = 300;
+            const short CompletionPortThreads = 300;
+            _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
+        }
+
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
+            }
+            else
+            {
+                app.UseMiddleware<ErrorHandlingMiddleware>();
+                app.UseForwardedHeaders();
+                app.UseHsts();
+            }
+
+            app.UseRouting();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseAuthorization();
+            app.UseAuthentication();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+
+        private static void RegisterService(IServiceCollection services, IConfiguration configuration)
+        {
+            bool isReadSettingFromFile;
+            bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out isReadSettingFromFile);
+
+            ConfigHttpClient(services, configuration);
+            services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
+
+            if (isReadSettingFromFile)
+            {
+                var botConfigsSection = configuration.GetSection("BotConfigs");
+                var botConfigs = botConfigsSection.Get<IList<BotConfigs>>();
+                services.AddSingleton(botConfigs);
+                services.AddSingleton<IConversationService, FakeConversationService>();
+                services.AddSingleton<IApplicationSettingService, FakeApplicationSettingService>();
+            }
+            else
+            {
+                services.AddFanexSql(configuration);
+                services.AddSingleton<IBaseRepository, BaseRepository>();
+                services.AddSingleton<IDynamicRepository, DynamicRepository>();
+                services.AddSingleton<IBaseService, BaseService>();
+                services.AddSingleton<IConversationService, ConversationService>();
+                services.AddSingleton<IApplicationSettingService, ApplicationSettingService>();
+            }
+
+            services.AddSingleton<IMessageValidationService, MessageValidationService>();
+            services.AddTransient<IMessageSenderService, MessageSenderService>();
+            services.AddSingleton<ILogger, Logger>();
+
+            RegisterCheckDuplicateMessageLogSettings(services, configuration);
+        }
+
+        private static void RegisterCache(IServiceCollection services, IConfiguration configuration)
+        {
+            bool isCacheDataInRedis;
+            bool.TryParse(configuration.GetSection("IsCacheDataInRedis")?.Value, out isCacheDataInRedis);
+            services.AddTransient<ICacheService, CacheService>();
+            services.AddSingleton<IMemoryCache, MemoryCache>();
+            if (isCacheDataInRedis)
+            {
+                var multiplexer = ConnectionMultiplexer.Connect(configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
+                services.AddDataProtection()
+                .SetApplicationName(configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value)
+                .PersistKeysToStackExchangeRedis(multiplexer, "Fanex.ChatBotBotService.Endpoint-Keys");
+                services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
+
+                services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+            }
+            else
+            {
+                services.AddMemoryCache();
+            }
+        }
+
+        private static void RegisterCheckDuplicateMessageLogSettings(IServiceCollection services, IConfiguration configuration)
+        {
+            var settingConfiguration = configuration.GetSection("CheckDuplicateMessageLogSettings");
+            services.Configure<CheckDuplicatedMessageLogSetting>(settingConfiguration);
+            var checkDuplicatedMessageSettings = settingConfiguration.Get<CheckDuplicatedMessageLogSetting>();
+            services.AddSingleton(checkDuplicatedMessageSettings);
+        }
+
+        private static void ConfigHttpClient(IServiceCollection services, IConfiguration configuration)
+        {
+            var isUseProxy = bool.Parse(configuration.GetSection("ProxySettings:IsUseProxy").Value);
+            if (isUseProxy)
+            {
+                var proxyAddress = configuration.GetSection("ProxySettings:ProxyAddress").Value;
+                var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
+                services.AddHttpClient(NamedHttpClients.ProxiedClient)
+                    .ConfigurePrimaryHttpMessageHandler(() =>
+                    {
+                        var proxy = new WebProxy(proxyAddress, bypassOnLocal);
+                        return new SocketsHttpHandler
+                        {
+                            UseProxy = isUseProxy,
+                            Proxy = proxy,
+                            SslOptions = new SslClientAuthenticationOptions
+                            {
+                                EnabledSslProtocols = SslProtocols.Tls12
+                            }
+                        };
+                    });
+            }
+            else
+            {
+                services.AddHttpClient();
+            }
+        }
+    }
+}

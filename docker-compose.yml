@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  fanex.ncb.main:
+    image: ${DOCKER_REGISTRY-}fanexncbmain
+    build:
+      context: .
+      dockerfile: Fanex.NCB.Main\Dockerfile
