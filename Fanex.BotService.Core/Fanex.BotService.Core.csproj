@@ -12,9 +12,9 @@
     <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="5.0.6" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.21.2" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.21.2" />
-    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.21.2" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.22.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.22.0" />
+    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.22.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
       <PrivateAssets>all</PrivateAssets>

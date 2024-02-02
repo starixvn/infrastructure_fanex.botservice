@@ -80,7 +80,7 @@
                     ChannelId = conversationMessage.ChannelId
                 };
 
-                await ((BotAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, coversation,
+                await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, coversation,
                     async (context, token) =>
                     {
                         await context.SendActivityAsync(conversationMessage.Message, cancellationToken: token);
