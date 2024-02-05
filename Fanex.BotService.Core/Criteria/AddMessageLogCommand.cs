@@ -5,7 +5,7 @@
 
     public class AddMessageLogCommand : BaseCommand
     {
-        public int MessageId { get; set; }
+        public long MessageId { get; set; }
 
         public string ConversationBotId { get; set; }
 

@@ -1,0 +1,66 @@
+﻿namespace Fanex.BotService.Service.Core.Services
+{
+    using System.Threading.Tasks;
+    using EasyNetQ;
+    using Fanex.BotService.Service.Core.Services.Interfaces;
+    using Fanex.BotService.Shared.Services.Interfaces;
+    using Newtonsoft.Json;
+
+    public class MessageQueueService : IMessageQueueService
+    {
+        private readonly IBus bus;
+        private readonly ICommonLogService logService;
+        private readonly int TimeDelayBeforeRetryInSeccond = 10;
+        private readonly int LimitRetryTime = 5;
+
+        public MessageQueueService(IBus bus, ICommonLogService logService)
+        {
+            this.bus = bus;
+            this.logService = logService;
+        }
+
+        public async Task PublishAsync<T>(T model, int retryCount = 0)
+        {
+            bool isFailed = false;
+            try
+            {
+                await bus.PubSub.PublishAsync(model);
+                logService.LogFileInfo($"Published model {JsonConvert.SerializeObject(model)} successfully!");
+            }
+            catch (Exception ex)
+            {
+                isFailed = true;
+                await logService.SentryErrorAsync($"There is an error while publish object: {JsonConvert.SerializeObject(model)}. Retrying {retryCount + 1} time", ex);
+            }
+
+            if (isFailed && retryCount < LimitRetryTime)
+            {
+                retryCount++;
+                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
+                await PublishAsync(model, retryCount);
+            }
+        }
+
+        public async Task PublishAsync<T>(T model, string topic, int retryCount = 0)
+        {
+            bool isFailed = false;
+            try
+            {
+                await bus.PubSub.PublishAsync(model, topic);
+                logService.LogFileInfo($"Published model {JsonConvert.SerializeObject(model)} with topic {topic} successfully!");
+            }
+            catch (Exception ex)
+            {
+                isFailed = true;
+                await logService.SentryErrorAsync($"There is an error while publish object: {JsonConvert.SerializeObject(model)}. Topic: {topic} Retrying {retryCount + 1} time", ex);
+            }
+
+            if (isFailed && retryCount < LimitRetryTime)
+            {
+                retryCount++;
+                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
+                await PublishAsync(model, topic, retryCount);
+            }
+        }
+    }
+}

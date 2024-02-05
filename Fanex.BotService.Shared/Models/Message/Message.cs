@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Models
+﻿namespace Fanex.BotService.Shared.Models.Message
 {
     public class Message
     {

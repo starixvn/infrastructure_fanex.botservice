@@ -46,10 +46,6 @@
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
-            ////else
-            ////{
-            ////    context.Response.Redirect(context.Request.PathBase + "/Error/InternalServerError");
-            ////}
         }
     }
 }

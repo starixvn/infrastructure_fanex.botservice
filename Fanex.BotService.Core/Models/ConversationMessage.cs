@@ -2,7 +2,7 @@
 {
     public class ConversationMessage
     {
-        public int MessageId { get; set; }
+        public long MessageId { get; set; }
 
         public string MicrosoftAppId { get; set; }
 

@@ -4,7 +4,7 @@
 
     public class SendMessageResult
     {
-        public int MessageId { get; set; }
+        public long MessageId { get; set; }
 
         public string ConversationId { get; set; }
 
@@ -21,7 +21,6 @@
             get
             {
                 return ErrorCode == 0;
-
             }
         }
     }

@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.BotService.Resources;
+    using Fanex.BotService.Shared.Models.Message;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
@@ -43,9 +44,8 @@
         [Route("api/Test")]
         public async Task<ObjectResult> Test()
         {
-
             await logger.ErrorAsync("test sentry");
-        
+
             return Ok("ok");
         }
 
@@ -150,7 +150,6 @@
                     ErrorMessage = Resources.BotNotExist,
                     ConversationId = message.ConversationId,
                     SentTime = DateTimeOffset.UtcNow.DateTime
-
                 };
             }
 
@@ -170,12 +169,12 @@
             return sendMessageResult;
         }
 
-        private bool IsValidBot(Bot bot, int channelId, int appId)
+        private static bool IsValidBot(Bot bot, int channelId, int appId)
         {
             return bot.ChannelId == channelId && bot.AppId == appId;
         }
 
-        private static SendMessageResult DuplicatedResult(int notificationId, string conversationId)
+        private static SendMessageResult DuplicatedResult(long notificationId, string conversationId)
             => new()
             {
                 ConversationId = conversationId,
