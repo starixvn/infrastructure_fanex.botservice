@@ -30,29 +30,14 @@
         <ProjectReference Include="..\Fanex.BotService.Resources\Fanex.BotService.Resources.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <Content Update="appsettings.LOCAL.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Update="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <None Update="App_Data\SpNames.KLDR.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.UAT.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.SIT.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.LOCAL_1.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.PROD_1.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.PROD.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="App_Data\SpNames.LOCAL.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

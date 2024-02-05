@@ -2,6 +2,10 @@
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Security;
+    using System.Security.Authentication;
     using System.Text;
     using System.Threading;
     using Fanex.BotService.Core;
@@ -9,6 +13,7 @@
     using Fanex.Caching.Redis;
     using Fanex.Data.Repository;
     using Fanex.Data.SqlServer;
+    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
     using Fanex.Logging.Extensions.Database;
@@ -19,8 +24,8 @@
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Middlewares;
     using Fanex.NCB.Shared.Repositories;
-    using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Services;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
@@ -34,11 +39,6 @@
     using Microsoft.IdentityModel.Tokens;
     using Sentry;
     using StackExchange.Redis;
-    using System.Net.Http;
-    using System.Net.Security;
-    using System.Net;
-    using System.Security.Authentication;
-    using Fanex.Logging;
 
     [ExcludeFromCodeCoverage]
     public class Startup
@@ -61,9 +61,9 @@
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-            Logging.LogManager
+            LogManager
             .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
-            .Use(new List<Logging.ILogEngine>
+            .Use(new List<ILogEngine>
             {
                 new SentryLogging(new SentryEngineOptions
                 {

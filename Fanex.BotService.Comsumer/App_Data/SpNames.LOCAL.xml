@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+    <Function Name="Message">
+        <Setting Key="Message_Insert" SpName="Message_Insert" DbName="BotService" Plain="0"></Setting>
+        <Setting Key="MessageStatus_Update" SpName="MessageStatus_Update" DbName="BotService" Plain="0"></Setting>
+    </Function>
+</Functions>

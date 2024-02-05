@@ -1,10 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
-    <Function Name="Chat Group Mapping">
-        <Setting Key="NCB_Conversation_AddBotToGroup" SpName="NCB_Conversation_AddBotToGroup" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_Conversation_RemoveBotOutGroup" SpName="NCB_Conversation_RemoveBotOutGroup" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_Conversation_UpdateGroupTopic" SpName="NCB_Conversation_UpdateGroupTopic" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_Conversation_AddMessageLog" SpName="NCB_Conversation_AddMessageLog" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_Conversation_MigratedToSupergroup" SpName="NCB_Conversation_MigratedToSupergroup" DbName="ChatBot" Plain="0" />
+    <Function Name="Chat Group Mapping">    
+        <Setting Key="NCB_Conversation_MigratedToSupergroup" SpName="NCB_Conversation_MigratedToSupergroup" DbName="BotService" Plain="0" />
     </Function>
+  <Function Name="Bot Service">
+    <Setting Key="ApplicationSetting_Get" SpName="ApplicationSetting_Get" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="Bot_GetAll" SpName="Bot_GetAll" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="Conversation_AddContact" SpName="Conversation_AddContact" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="Conversation_RemoveContact" SpName="Conversation_RemoveContact" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="Conversation_AddBotToGroup" SpName="Conversation_AddBotToGroup" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="Conversation_RemoveBotOutGroup" SpName="Conversation_RemoveBotOutGroup" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="Conversation_UpdateGroupTopic" SpName="Conversation_UpdateGroupTopic" DbName="BotService" Plain="0"></Setting>
+    <Setting Key="MessageLog_Add" SpName="MessageLog_Add" DbName="BotService" Plain="0"></Setting>
+  </Function>
 </Functions>
