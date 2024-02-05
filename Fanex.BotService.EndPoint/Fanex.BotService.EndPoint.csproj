@@ -8,7 +8,6 @@
     </PropertyGroup>
     <ItemGroup>
         <None Remove="logs\log.txt" />
-        <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
         <Content Include="logs\log.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

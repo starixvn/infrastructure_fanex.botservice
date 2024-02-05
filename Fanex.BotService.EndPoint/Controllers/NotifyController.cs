@@ -67,7 +67,7 @@
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("api/skype/send")]
+        [Route("api/skype/send-multịpe")]
         public async Task<ObjectResult> SendViaSkype([FromBody] IList<Message> messages)
         {
             var results = new List<SendMessageResult>();
@@ -83,7 +83,7 @@
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("api/telegram/send")]
+        [Route("api/telegram/send-multịpe")]
         public async Task<ObjectResult> SendViaTelegram([FromBody] IList<Message> messages)
         {
             var results = new List<SendMessageResult>();
@@ -95,6 +95,24 @@
             }
 
             return Ok(results);
+        }
+
+        [HttpPost]
+        [Route("api/skype/send")]
+        public async Task<IActionResult> SendSingleViaSkype([FromBody] Message message)
+        {
+            var bots = await conversationService.GetBotAsync();
+            var result = await SendSingleMessage(bots, (byte)ConversationChannel.Skype, message);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("api/telegram/send")]
+        public async Task<IActionResult> SendSingleViaTelegram([FromBody] Message message)
+        {
+            var bots = await conversationService.GetBotAsync();
+            var result = await SendSingleMessage(bots, (byte)ConversationChannel.Telegram, message);
+            return Ok(result);
         }
 
         [HttpPost]
