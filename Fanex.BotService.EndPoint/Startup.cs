@@ -71,7 +71,7 @@
                     FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
                 })
             });
-
+            var s = Fanex.Data.Cryptography.DecryptPassword("d0KQL2j6R1N8hCLjYs44tQ==");
             ExceptionHandler
                 .UseConfig(new LoggingConfiguration())
                 .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);

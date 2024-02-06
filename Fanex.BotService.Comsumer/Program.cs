@@ -5,7 +5,14 @@ using Fanex.NCB.Shared.Middlewares;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseNLog();
+builder.WebHost
+    .UseUrls($"http://*:5000")
+    .ConfigureLogging(logging =>
+    {
+        logging.ClearProviders();
+        logging.SetMinimumLevel(LogLevel.Trace);
+    })
+    .UseNLog();
 IConfiguration configuration = builder.Configuration;
 
 // Register core services
