@@ -21,9 +21,9 @@
             nlog.Error(exception);
         }
 
-        public void LogFileInfo(string message)
+        public void LogFileMessage(string message)
         {
-            nlog.Info(message);
+            nlog.Error(message);
         }
 
         public async Task SentryErrorAsync(string errMsg, Exception exception = null)

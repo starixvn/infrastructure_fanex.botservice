@@ -7,11 +7,6 @@ using NLog.Web;
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost
     .UseUrls($"http://*:5000")
-    .ConfigureLogging(logging =>
-    {
-        logging.ClearProviders();
-        logging.SetMinimumLevel(LogLevel.Trace);
-    })
     .UseNLog();
 IConfiguration configuration = builder.Configuration;
 
@@ -35,11 +30,13 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseDeveloperExceptionPage();
+    app.UseForwardedHeaders();
 }
 else
 {
     app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseForwardedHeaders();
     app.UseHsts();
 }
 

@@ -39,11 +39,11 @@
             Subscribe<Conversation>(QueueSubcriptionId.CLIENT_CONVERSATION_IN_QUEUE,
                 async (message) =>
                 {
-                    logService.LogFileInfo($"Start Consume subcribtionId: {QueueSubcriptionId.CLIENT_CONVERSATION_IN_QUEUE}. Data: {JsonConvert.SerializeObject(message)}");
+                    logService.LogFileMessage($"Start Consume subcribtionId: {QueueSubcriptionId.CLIENT_CONVERSATION_IN_QUEUE}. Data: {JsonConvert.SerializeObject(message)}");
 
                     await messageReceiverService.ConversationConsumerHandlerAsync(message);
 
-                    logService.LogFileInfo($"End comsume {QueueSubcriptionId.CLIENT_CONVERSATION_IN_QUEUE}");
+                    logService.LogFileMessage($"End comsume {QueueSubcriptionId.CLIENT_CONVERSATION_IN_QUEUE}");
                 });
         }
 
@@ -59,7 +59,7 @@
                    subscriptionId,
                    action);
 
-                logService.LogFileInfo($"Subcribed the queue with key {subscriptionId} successfully");
+                logService.LogFileMessage($"Subcribed the queue with key {subscriptionId} successfully");
             }
             catch (Exception ex)
             {

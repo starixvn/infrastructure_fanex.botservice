@@ -25,7 +25,7 @@
             try
             {
                 await bus.PubSub.PublishAsync(model);
-                logService.LogFileInfo($"Published model {JsonConvert.SerializeObject(model)} successfully!");
+                logService.LogFileMessage($"Published model {JsonConvert.SerializeObject(model)} successfully!");
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@
             try
             {
                 await bus.PubSub.PublishAsync(model, topic);
-                logService.LogFileInfo($"Published model {JsonConvert.SerializeObject(model)} with topic {topic} successfully!");
+                logService.LogFileMessage($"Published model {JsonConvert.SerializeObject(model)} with topic {topic} successfully!");
             }
             catch (Exception ex)
             {

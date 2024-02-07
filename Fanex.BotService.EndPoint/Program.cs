@@ -2,7 +2,6 @@
 {
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Logging;
     using NLog.Web;
 
     public static class Program
@@ -16,11 +15,6 @@
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls($"http://*:5000")
                 .UseStartup<Startup>()
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.SetMinimumLevel(LogLevel.Trace);
-                })
                 .UseNLog();
     }
 }

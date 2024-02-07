@@ -9,7 +9,7 @@
 
         Task SentryInfoAsync(string info);
 
-        void LogFileInfo(string message);
+        void LogFileMessage(string message);
 
         void LogFileError(Exception exception);
     }
