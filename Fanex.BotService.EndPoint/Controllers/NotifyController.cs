@@ -18,6 +18,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [AllowAnonymous]
     public class NotifyController : ControllerBase
     {
         private readonly IConversationService conversationService;

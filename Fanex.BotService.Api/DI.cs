@@ -17,7 +17,6 @@
             services.AddHttpClient();
             services.AddSingleton(RabbitHutch.CreateBus(AppSettings.RabbitMQConnectionString));
 
-            //services.AddSingleton<IMessageService, MessageService>();
             services.AddSingleton<IMessageQueueService, MessageQueueService>();
         }
     }

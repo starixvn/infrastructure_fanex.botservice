@@ -2,7 +2,7 @@
 {
     public class BotToken
     {
-        public DateTimeOffset ExpiresIn { get; set; }
+        public DateTime? Expires { get; set; }
         public string AccessToken { get; set; }
     }
 }

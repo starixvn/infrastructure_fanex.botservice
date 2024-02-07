@@ -51,7 +51,7 @@
                 {
                     await cacheService.SetAsync(BOT_TOKEN_API_KEY, authToken.AccessToken, new CacheItemOptions
                     {
-                        AbsoluteExpiration = authToken.ExpiresIn
+                        AbsoluteExpiration = authToken.Expires.Value.AddMinutes(-5)
                     });
                 }
             }

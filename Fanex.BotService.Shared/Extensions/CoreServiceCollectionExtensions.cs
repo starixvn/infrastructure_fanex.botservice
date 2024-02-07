@@ -12,6 +12,9 @@
     using Fanex.Caching.Redis;
     using Fanex.Data.Repository;
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.AspNetCore;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
@@ -44,6 +47,10 @@
                     Dsn = new Dsn(configuration.GetSection("Sentry:Dsn").Value),
                 })
             });
+
+            ExceptionHandler
+                .UseConfig(new LoggingConfiguration())
+                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
         }
 
         public static void RegisterHttpClient(this IServiceCollection services, IConfiguration configuration)

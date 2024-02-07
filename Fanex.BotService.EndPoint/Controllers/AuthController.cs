@@ -24,9 +24,9 @@
         [Route("api/authenticate")]
         public ObjectResult Authenticate(string username, string password)
         {
-            var token = string.Empty;
             if (IsValidCredential(username, password))
             {
+                DateTime? expires = DateTime.UtcNow.AddMinutes(appSettings.JwtLifeTime);
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor
@@ -34,13 +34,12 @@
                     Subject = new ClaimsIdentity(new[] {
                         new Claim(ClaimTypes.Name, username)
                     }),
-                    Expires = DateTime.UtcNow.AddMinutes(20),
+                    Expires = expires,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var sercurityToken = tokenHandler.CreateToken(tokenDescriptor);
-                token = tokenHandler.WriteToken(sercurityToken);
-
-                return Ok(new { AccessToken = token });
+                string token = tokenHandler.WriteToken(sercurityToken);
+                return Ok(new { AccessToken = token, Expires = expires });
             }
             else
             {

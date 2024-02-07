@@ -1,8 +1,8 @@
-﻿using Fanex.BotService.Service.Core.Enum;
-
-namespace Fanex.BotService.Service.Core.Configurations
+﻿namespace Fanex.BotService.Service.Core.Configurations
 {
-    public class AppSettings
+    using Fanex.BotService.Service.Core.Enum;
+
+    public static class AppSettings
     {
         public static string RabbitMQConnectionString { get; set; }
         public static BotEndpointConfiguration BotEndpointConfiguration { get; set; }

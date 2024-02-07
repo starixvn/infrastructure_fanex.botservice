@@ -9,6 +9,7 @@
     using System.Text;
     using System.Threading;
     using Fanex.BotService.Core;
+    using Fanex.BotService.Shared.Extensions;
     using Fanex.Caching;
     using Fanex.Caching.Redis;
     using Fanex.Data.Repository;
@@ -17,7 +18,6 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
@@ -37,7 +37,6 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using Sentry;
     using StackExchange.Redis;
 
     [ExcludeFromCodeCoverage]
@@ -61,20 +60,7 @@
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-            LogManager
-            .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
-            .Use(new List<ILogEngine>
-            {
-                new SentryLogging(new SentryEngineOptions
-                {
-                    Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
-                    FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
-                })
-            });
-            var s = Fanex.Data.Cryptography.DecryptPassword("d0KQL2j6R1N8hCLjYs44tQ==");
-            ExceptionHandler
-                .UseConfig(new LoggingConfiguration())
-                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+            services.RegisterSentry(Configuration);
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             var appSettings = appSettingsSection.Get<AppSettings>();
