@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Functions>
-    <Function Name="Message">
-        <Setting Key="Bot_Message_Ins" SpName="Bot_Message_Ins" DbName="FanexBot" />
-        <Setting Key="Bot_GetById" SpName="Bot_GetById" DbName="FanexBot" />
-        <Setting Key="Bot_MessageStatus_Upd" SpName="Bot_MessageStatus_Upd" DbName="FanexBot" />
-    </Function>
-</Functions>

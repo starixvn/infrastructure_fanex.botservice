@@ -7,7 +7,9 @@
     using Fanex.BotService.Service.Core.Enum;
     using Fanex.BotService.Service.Core.Models;
     using Fanex.BotService.Service.Core.Services.Interfaces;
+    using Fanex.BotService.Shared.Constants;
     using Fanex.BotService.Shared.Models.Message;
+    using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.Caching;
     using Fanex.NCB.Shared.Models;
     using Newtonsoft.Json;
@@ -17,41 +19,63 @@
         private readonly HttpClient httpClient;
         private readonly BotEndpointConfiguration botConfigs;
         private readonly ICacheService cacheService;
+        private readonly ICommonLogService commonLogService;
         private const string BOT_TOKEN_API_KEY = "FanexBot_EndpointAPI_Token";
 
-        public BotClientService(IHttpClientFactory httpClientFactory, ICacheService cacheService)
+        public BotClientService(IHttpClientFactory httpClientFactory, ICacheService cacheService, ICommonLogService commonLogService)
         {
-            httpClient = httpClientFactory.CreateClient();
+            httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
             botConfigs = AppSettings.BotEndpointConfiguration;
             this.cacheService = cacheService;
+            this.commonLogService = commonLogService;
         }
 
         public async Task<SendMessageResult> SendMessageAsync(BotChannel botChannel, Message message)
         {
-            ApiConfig apiConfig = botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
-            string token = await GetTokenAsync();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig.SendMessageUrl}");
-            using (var response = await httpClient.PostAsJsonAsync(url, message))
+            var result = new SendMessageResult
             {
-                response.EnsureSuccessStatusCode();
-                var responseData = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
-                return result;
+                MessageId = message.MessageId,
+                ConversationId = message.ConversationId
+            };
+
+            try
+            {
+                ApiConfig apiConfig = botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
+                string token = await GetTokenAsync();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig.SendMessageUrl}");
+                using (var response = await httpClient.PostAsJsonAsync(url, message))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
+                }
             }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 1;
+                result.SentTime = DateTime.UtcNow;
+                result.ErrorMessage = ex.Message;
+                await commonLogService.SentryErrorAsync(ex.Message, ex);
+            }
+
+            return result;
         }
 
         private async Task<string> GetTokenAsync()
         {
             string token = await cacheService.GetAsync<string>(BOT_TOKEN_API_KEY);
+            commonLogService.LogFileMessage($"Token on cache {token}");
             if (string.IsNullOrWhiteSpace(token))
             {
                 var authToken = await AuthenticateAsync();
+                commonLogService.LogFileMessage($"Token on call API {JsonConvert.SerializeObject(authToken)}");
+
                 if (authToken != null)
                 {
                     await cacheService.SetAsync(BOT_TOKEN_API_KEY, authToken.AccessToken, new CacheItemOptions
                     {
-                        AbsoluteExpiration = authToken.Expires.Value.AddMinutes(-5)
+                        RelativeExpiration = TimeSpan.FromMinutes(100)
                     });
                 }
             }

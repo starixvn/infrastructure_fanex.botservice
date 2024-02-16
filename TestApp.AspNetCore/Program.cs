@@ -14,7 +14,7 @@ builder.Services.AddSingleton<IBotSettings, BotSettings>();
 builder.Services.AddSingleton<IBotService, BotService>();
 
 var app = builder.Build();
-BotClientManager.RegistryBot(app.Services.GetRequiredService<IBotSettings>());
+BotClientManager.RegistryBot(new BotSettings(builder.Configuration));
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -14,7 +14,7 @@ IConfiguration configuration = builder.Configuration;
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 DI.RegistryConfigurations(configuration);
-builder.Services.RegisterCoreService();
+
 builder.Services.RegisterSentry(configuration);
 builder.Services.RegisterRedis(configuration);
 builder.Services.RegisterServices(configuration);
@@ -33,7 +33,6 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

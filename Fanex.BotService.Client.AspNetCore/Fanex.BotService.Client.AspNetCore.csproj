@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Oliver Dang</Authors>
+    <Company>Nexcel Solutions</Company>
+    <Description>Send message to skype/telegram by bot </Description>
   </PropertyGroup>
 
   <ItemGroup>

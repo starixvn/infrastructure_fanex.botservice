@@ -7,38 +7,56 @@
     using Fanex.BotService.Service.Core.Models;
     using Fanex.BotService.Service.Core.Services.Interfaces;
     using Fanex.BotService.Shared.Models.Message;
+    using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Newtonsoft.Json;
 
     public class MessageReceiverService : IMessageReceiverService
     {
         private readonly IBaseService baseService;
         private readonly IBotClientService botClientService;
         private readonly IMessageService messageService;
+        private readonly ICommonLogService commonLogService;
 
-        public MessageReceiverService(IBaseService baseService, IBotClientService botClientService, IMessageService messageService)
+        public MessageReceiverService(IBaseService baseService, IBotClientService botClientService, IMessageService messageService, ICommonLogService commonLogService)
         {
             this.baseService = baseService;
             this.botClientService = botClientService;
             this.messageService = messageService;
+            this.commonLogService = commonLogService;
         }
 
         public async Task ConversationConsumerHandlerAsync(Conversation conversation)
         {
+            commonLogService.LogFileMessage($"Conversation: {JsonConvert.SerializeObject(conversation)}");
             int messageId = await messageService.InsertNewMessageAsync(conversation);
-            Message message = GenerateMessage(messageId, conversation);
-            SendMessageResult result = await botClientService.SendMessageAsync(conversation.Channel, message);
-            await UpdateMessageStatusResult(result);
+            commonLogService.LogFileMessage($"Inserted message with messageID: {messageId}");
+            if (messageId > 0)
+            {
+                Message message = GenerateMessage(messageId, conversation);
+                SendMessageResult result = await botClientService.SendMessageAsync(conversation.Channel, message);
+                commonLogService.LogFileMessage($"Send result: {JsonConvert.SerializeObject(result)}");
+                await UpdateMessageStatusResult(result);
+            }
         }
 
         private async Task UpdateMessageStatusResult(SendMessageResult result)
         {
-            var command = new UpdateMessageStatusCommand
+            try
             {
-                MessageId = result.MessageId,
-                Status = result.IsSucessfull ? MessageStatuses.Success : MessageStatuses.Failed
-            };
-            await baseService.ExecuteNonQueryAsync(command);
+                var command = new UpdateMessageStatusCommand
+                {
+                    MessageId = result.MessageId,
+                    ErrorMessage = result.ErrorMessage,
+                    Status = result.IsSucessfull ? MessageStatuses.Success : MessageStatuses.Failed
+                };
+                await baseService.ExecuteNonQueryAsync(command);
+            }
+            catch (Exception exception)
+            {
+                await commonLogService.SentryErrorAsync(exception.Message, exception);
+            }
         }
 
         private static Message GenerateMessage(int messageId, Conversation conversation)

@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Fanex.BotService.Resources;
     using Fanex.BotService.Shared.Models.Message;
-    using Fanex.Logging;
+    using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core.Criteria;
@@ -14,26 +14,27 @@
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
 
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
     {
         private readonly IConversationService conversationService;
         private readonly IMessageValidationService messageLogService;
-        private readonly ILogger logger;
+        private readonly ICommonLogService commonLogService;
         private readonly IMessageSenderService messageSenderService;
 
         public NotifyController(
-            ILogger logger,
+            ICommonLogService commonLogService,
             IMessageValidationService messageLogService,
             IConversationService conversationService,
             IMessageSenderService messageSenderService
             )
         {
-            this.logger = logger;
+            this.commonLogService = commonLogService;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
             this.messageSenderService = messageSenderService;
@@ -44,7 +45,7 @@
         [Route("api/Test")]
         public async Task<ObjectResult> Test()
         {
-            await logger.ErrorAsync("test sentry");
+            await commonLogService.SentryErrorAsync("test sentry");
 
             return Ok("ok");
         }
@@ -101,6 +102,7 @@
         [Route("api/skype/send")]
         public async Task<IActionResult> SendSingleViaSkype([FromBody] Message message)
         {
+            commonLogService.LogFileMessage($"Skype message: {JsonConvert.SerializeObject(message)}");
             var bots = await conversationService.GetBotAsync();
             var result = await SendSingleMessage(bots, (byte)ConversationChannel.Skype, message);
             return Ok(result);
@@ -110,6 +112,8 @@
         [Route("api/telegram/send")]
         public async Task<IActionResult> SendSingleViaTelegram([FromBody] Message message)
         {
+            commonLogService.LogFileMessage($"Telegram message: {JsonConvert.SerializeObject(message)}");
+
             var bots = await conversationService.GetBotAsync();
             var result = await SendSingleMessage(bots, (byte)ConversationChannel.Telegram, message);
             return Ok(result);
@@ -158,6 +162,19 @@
                     {
                         await messageLogService.RemoveMessageLogOnCache(guiid);
                     }
+
+                    var command = new AddMessageLogCommand
+                    {
+                        MessageId = message.MessageId,
+                        Content = message.Content,
+                        ConversationBotId = bot?.ConversationId,
+                        ConversationId = message.ConversationId,
+                        StartSentTime = startTime,
+                        EndSentTime = DateTimeOffset.UtcNow.DateTime,
+                        ErrorMessage = sendMessageResult.ErrorMessage,
+                        IsSuccessfull = sendMessageResult.IsSucessfull
+                    };
+                    await conversationService.AddMessageLog(command);
                 }
             }
             else
@@ -170,19 +187,6 @@
                     SentTime = DateTimeOffset.UtcNow.DateTime
                 };
             }
-
-            var command = new AddMessageLogCommand
-            {
-                MessageId = message.MessageId,
-                Content = message.Content,
-                ConversationBotId = bot?.ConversationId,
-                ConversationId = message.ConversationId,
-                StartSentTime = startTime,
-                EndSentTime = DateTimeOffset.UtcNow.DateTime,
-                ErrorMessage = sendMessageResult.ErrorMessage,
-                IsSuccessfull = sendMessageResult.IsSucessfull
-            };
-            await conversationService.AddMessageLog(command);
 
             return sendMessageResult;
         }
@@ -210,7 +214,7 @@
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .ToString();
-            await logger.ErrorAsync(logMessage);
+            await commonLogService.SentryErrorAsync(logMessage, exception);
         }
     }
 }

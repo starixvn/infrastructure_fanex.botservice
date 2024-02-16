@@ -9,15 +9,16 @@
     using System.Text;
     using System.Threading;
     using Fanex.BotService.Core;
+    using Fanex.BotService.EndPoint.BackgroundJobs;
+    using Fanex.BotService.EndPoint.Models;
     using Fanex.BotService.Shared.Extensions;
+    using Fanex.BotService.Shared.Services;
+    using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.Caching;
     using Fanex.Caching.Redis;
     using Fanex.Data.Repository;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
@@ -66,6 +67,9 @@
             var appSettings = appSettingsSection.Get<AppSettings>();
             services.AddSingleton(appSettings);
 
+            var jobSettings = Configuration.GetSection("AutoRefeshBotListSettings").Get<JobSettings>();
+            services.AddSingleton(jobSettings);
+
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(x =>
@@ -85,12 +89,17 @@
 
             RegisterService(services, Configuration);
             RegisterCache(services, Configuration);
-
+            RunBackgroundJobs(services);
             services.AddMvc().AddNewtonsoftJson();
             IdentityModelEventSource.ShowPII = true;
             const short WorkerThreads = 300;
             const short CompletionPortThreads = 300;
             _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
+        }
+
+        private static void RunBackgroundJobs(IServiceCollection services)
+        {
+            services.AddHostedService<RefreshListBotOnMemcacheAutoJob>();
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -150,6 +159,7 @@
             services.AddSingleton<IMessageValidationService, MessageValidationService>();
             services.AddTransient<IMessageSenderService, MessageSenderService>();
             services.AddSingleton<ILogger, Logger>();
+            services.AddSingleton<ICommonLogService, CommonLogService>();
 
             RegisterCheckDuplicateMessageLogSettings(services, configuration);
         }

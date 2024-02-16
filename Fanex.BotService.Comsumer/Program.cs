@@ -13,14 +13,13 @@ IConfiguration configuration = builder.Configuration;
 // Register core services
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
-builder.Services.RegisterCoreService();
 builder.Services.RegisterSentry(configuration);
 builder.Services.RegisterRedis(configuration);
 builder.Services.AddFanexSql(configuration);
-builder.Services.RegisterHttpClient(configuration);
 
 //Register services
 DI.RegisterConfiguration(configuration);
+builder.Services.RegisterHttpClient(configuration);
 builder.Services.RegisterServices();
 
 //Start message broker
@@ -40,7 +39,6 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

@@ -14,7 +14,8 @@
 
         public async Task<IActionResult> Index()
         {
-            await messengerService.SendSkypeAsync("29:1TIy3asOA1m-3Qm2paoNam8KtLjA2JO5Fu5T6n-yScwY", "Hi Oliver, this is the message Test 2");
+            await Task.WhenAll(messengerService.SendSkypeAsync("29:1otxSNyz7rewcKJyycITsF1CEphLdZLvT5wabXgoePqQ", "Hi Oliver, this is the message Test Skype"),
+                 messengerService.SendTelegramAsync("1064787034", "Hi Oliver, this is the message Test Telegram"));
             return Ok();
         }
     }

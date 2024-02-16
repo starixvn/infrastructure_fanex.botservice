@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Shared.Models
 {
-    internal class HttpClientSettings
+    public class HttpClientSettings
     {
         public bool IsUseProxy { get; set; }
         public string ProxyAddress { get; set; }

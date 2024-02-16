@@ -4,6 +4,8 @@
     using Fanex.BotService.Service.Core.Configurations;
     using Fanex.BotService.Service.Core.Services;
     using Fanex.BotService.Service.Core.Services.Interfaces;
+    using Fanex.BotService.Shared.Services;
+    using Fanex.BotService.Shared.Services.Interfaces;
 
     public static class DI
     {
@@ -17,6 +19,8 @@
             services.AddHttpClient();
             services.AddSingleton(RabbitHutch.CreateBus(AppSettings.RabbitMQConnectionString));
 
+            services.AddSingleton<Logging.ILogger, Logging.Logger>();
+            services.AddSingleton<ICommonLogService, CommonLogService>();
             services.AddSingleton<IMessageQueueService, MessageQueueService>();
         }
     }

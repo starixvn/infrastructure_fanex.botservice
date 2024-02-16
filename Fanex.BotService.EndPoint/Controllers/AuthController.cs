@@ -4,6 +4,7 @@
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
+    using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.NCB.BotService.Core;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@
     public class AuthController : ControllerBase
     {
         private readonly AppSettings appSettings;
+        private readonly ICommonLogService commonLogService;
         private readonly string invalidUsernameOrPasswordText = "Username or password is incorrect";
 
-        public AuthController(AppSettings appSettings)
+        public AuthController(ICommonLogService commonLogService, AppSettings appSettings)
         {
+            this.commonLogService = commonLogService;
             this.appSettings = appSettings;
         }
 
@@ -24,6 +27,7 @@
         [Route("api/authenticate")]
         public ObjectResult Authenticate(string username, string password)
         {
+            commonLogService.LogFileMessage($"Username: {username}, Password: {password}");
             if (IsValidCredential(username, password))
             {
                 DateTime? expires = DateTime.UtcNow.AddMinutes(appSettings.JwtLifeTime);

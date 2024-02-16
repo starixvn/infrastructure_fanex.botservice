@@ -6,6 +6,7 @@
     {
         public long MessageId { get; set; }
         public string Status { get; set; }
+        public string ErrorMessage { get; set; }
 
         public override string GetSettingKey() => "MessageStatus_Update";
 

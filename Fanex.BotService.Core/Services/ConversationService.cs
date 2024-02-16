@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,21 +13,25 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Connector;
+    using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Configuration;
 
     public class ConversationService : IConversationService
     {
         private readonly string botSettingKeys = "BotSettingKeys";
         private readonly IBaseService baseService;
         private readonly IMemoryCache memoryCache;
+        private readonly int CacheLiveTimeInMinute;
 
         public ConversationService(IBaseService baseService,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IConfiguration configuration)
         {
             this.baseService = baseService;
             this.memoryCache = memoryCache;
+            CacheLiveTimeInMinute = configuration.GetValue<int>("AutoRefeshBotListSettings:CacheLiveTimeInMinute");
         }
 
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
@@ -53,7 +58,10 @@
             {
                 var criteria = new GetAllBotCriteria();
                 bots = await baseService.GetDataAsync<Bot>(criteria);
-                memoryCache.Set(botSettingKeys, bots);
+                memoryCache.Set(botSettingKeys, bots, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheLiveTimeInMinute)
+                });
             }
 
             return bots;
@@ -132,13 +140,9 @@
         }
 
         public async Task<CommandResult> MigratedToSupergroupAsync(MigratedToSupergroupCommand command)
-        {
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
+            => await baseService.ExecuteNonQueryAsync(command);
 
         public async Task<CommandResult> AddMessageLog(AddMessageLogCommand command)
-        {
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
+            => await baseService.ExecuteNonQueryAsync(command);
     }
 }

@@ -1,5 +1,8 @@
 ﻿namespace Fanex.BotService.Comsumer
 {
+    using System.Net;
+    using System.Net.Security;
+    using System.Security.Authentication;
     using EasyNetQ;
     using Fanex.BotService.Comsumer.MessageBrokers;
     using Fanex.BotService.Comsumer.Services;
@@ -7,6 +10,14 @@
     using Fanex.BotService.Service.Core.Configurations;
     using Fanex.BotService.Service.Core.Services;
     using Fanex.BotService.Service.Core.Services.Interfaces;
+    using Fanex.BotService.Shared.Constants;
+    using Fanex.BotService.Shared.Models;
+    using Fanex.BotService.Shared.Services;
+    using Fanex.BotService.Shared.Services.Interfaces;
+    using Fanex.Data.Repository;
+    using Fanex.NCB.Shared.Repositories;
+    using Fanex.NCB.Shared.Services;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public static class DI
     {
@@ -26,11 +37,36 @@
         {
             services.AddSingleton(RabbitHutch.CreateBus(AppSettings.RabbitMQConnectionString));
 
+            services.AddSingleton<IDynamicRepository, DynamicRepository>();
+            services.AddSingleton<IBaseRepository, BaseRepository>();
+
+            services.AddSingleton<IBaseService, BaseService>();
+            services.AddSingleton<Logging.ILogger, Logging.Logger>();
+            services.AddSingleton<ICommonLogService, CommonLogService>();
+
             services.AddSingleton<IBotClientService, BotClientService>();
             services.AddSingleton<IMessageService, MessageService>();
             services.AddSingleton<IMessageReceiverService, MessageReceiverService>();
 
             services.AddSingleton<IMessageBroker, MessageBroker>();
+        }
+
+        public static void RegisterHttpClient(this IServiceCollection services, IConfiguration configuration)
+        {
+            var httpClientSettings = configuration.GetSection("HttpClientSetting").Get<HttpClientSettings>();
+
+            if (httpClientSettings is not null)
+            {
+                services.AddHttpClient(NamedHttpClients.ProxiedClient).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    UseProxy = httpClientSettings.IsUseProxy,
+                    Proxy = new WebProxy(httpClientSettings.ProxyAddress, httpClientSettings.BypassOnLocal),
+                    SslOptions = new SslClientAuthenticationOptions
+                    {
+                        EnabledSslProtocols = SslProtocols.Tls12
+                    }
+                });
+            }
         }
     }
 }
