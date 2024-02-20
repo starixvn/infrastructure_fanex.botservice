@@ -61,7 +61,7 @@
             }
             else
             {
-                sendMessageResult = await SendDirectMessageAsync(conversationMessage);      
+                sendMessageResult = await SendDirectMessageAsync(conversationMessage);
             }
 
             return sendMessageResult;
@@ -72,6 +72,8 @@
             var sendMessageResult = new SendMessageResult();
             try
             {
+                sendMessageResult.MessageId = conversationMessage.MessageId;
+                sendMessageResult.ConversationId = conversationMessage.ConversationId;
                 var coversation = new ConversationReference
                 {
                     Bot = new ChannelAccount { Id = conversationMessage.ConversationBotId, Name = conversationMessage.BotName, Role = "bot" },
@@ -87,8 +89,6 @@
                     },
                     new CancellationToken());
 
-                sendMessageResult.MessageId = conversationMessage.MessageId;
-                sendMessageResult.ConversationId = conversationMessage.ConversationId;
                 sendMessageResult.SentTime = DateTimeOffset.UtcNow.DateTime;
             }
             catch (Exception exception)
@@ -96,6 +96,7 @@
                 await WriteLogAsync(conversationMessage, exception);
                 sendMessageResult = new SendMessageResult
                 {
+                    MessageId = conversationMessage.MessageId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
                     ConversationId = conversationMessage.ConversationId,
@@ -129,6 +130,7 @@
 
                 return new SendMessageResult
                 {
+                    MessageId = conversationMessage.MessageId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
                     ConversationId = conversationMessage.ConversationId,

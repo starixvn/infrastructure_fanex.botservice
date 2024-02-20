@@ -181,6 +181,7 @@
             {
                 sendMessageResult = new SendMessageResult
                 {
+                    MessageId = message.MessageId,
                     ErrorCode = 1,
                     ErrorMessage = Resources.BotNotExist,
                     ConversationId = message.ConversationId,

@@ -53,6 +53,7 @@
             }
             catch (Exception ex)
             {
+                result.MessageId = message.MessageId;
                 result.ErrorCode = 1;
                 result.SentTime = DateTime.UtcNow;
                 result.ErrorMessage = ex.Message;

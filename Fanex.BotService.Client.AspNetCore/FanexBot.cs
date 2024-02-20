@@ -7,7 +7,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
-    public static class FanexBotRegister
+    public static class FanexBot
     {
         public static void RegisterBotClient(this IServiceCollection services, IConfiguration configuration)
         {
