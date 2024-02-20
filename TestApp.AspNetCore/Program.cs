@@ -1,8 +1,4 @@
 using Fanex.BotService.Client.AspNetCore;
-using Fanex.BotService.Client.Core;
-using Fanex.BotService.Client.Core.Configuration;
-using Fanex.BotService.Client.Core.Services;
-using Fanex.BotService.Client.Core.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IBotSettings, BotSettings>();
-builder.Services.AddSingleton<IBotService, BotService>();
+builder.Services.RegisterBotClient(builder.Configuration);
 
 var app = builder.Build();
-BotClientManager.RegistryBot(new BotSettings(builder.Configuration));
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

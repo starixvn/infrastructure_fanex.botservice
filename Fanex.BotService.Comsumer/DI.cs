@@ -18,6 +18,7 @@
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Caching.Memory;
 
     public static class DI
     {
@@ -39,6 +40,7 @@
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseRepository, BaseRepository>();
+            services.AddSingleton<IMemoryCache, MemoryCache>();
 
             services.AddSingleton<IBaseService, BaseService>();
             services.AddSingleton<Logging.ILogger, Logging.Logger>();

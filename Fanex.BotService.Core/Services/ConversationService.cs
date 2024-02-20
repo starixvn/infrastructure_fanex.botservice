@@ -23,15 +23,16 @@
         private readonly string botSettingKeys = "BotSettingKeys";
         private readonly IBaseService baseService;
         private readonly IMemoryCache memoryCache;
-        private readonly int CacheLiveTimeInMinute;
+        private readonly AppSettings appSettings;
 
         public ConversationService(IBaseService baseService,
+            AppSettings appSettings,
             IMemoryCache memoryCache,
             IConfiguration configuration)
         {
             this.baseService = baseService;
             this.memoryCache = memoryCache;
-            CacheLiveTimeInMinute = configuration.GetValue<int>("AutoRefeshBotListSettings:CacheLiveTimeInMinute");
+            this.appSettings = appSettings;
         }
 
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
@@ -60,7 +61,7 @@
                 bots = await baseService.GetDataAsync<Bot>(criteria);
                 memoryCache.Set(botSettingKeys, bots, new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheLiveTimeInMinute)
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(appSettings.BotListCacheLifeTime)
                 });
             }
 

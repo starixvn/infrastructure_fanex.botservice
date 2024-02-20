@@ -46,7 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.Api", "Fan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.BotService.Comsumer", "Fanex.BotService.Comsumer\Fanex.BotService.Comsumer.csproj", "{FDB073E3-B749-45FA-B85C-32C8BC56260A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.AspNetCore", "TestApp.AspNetCore\TestApp.AspNetCore.csproj", "{DA23440E-9B31-4552-AF1D-F84C1366AC78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.AspNetCore", "TestApp.AspNetCore\TestApp.AspNetCore.csproj", "{DA23440E-9B31-4552-AF1D-F84C1366AC78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp.NetFramework", "TestApp.NetFramework\TestApp.NetFramework.csproj", "{CDE67D48-4AB9-4E0D-AAFF-E5387EAFB336}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +112,10 @@ Global
 		{DA23440E-9B31-4552-AF1D-F84C1366AC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA23440E-9B31-4552-AF1D-F84C1366AC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA23440E-9B31-4552-AF1D-F84C1366AC78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDE67D48-4AB9-4E0D-AAFF-E5387EAFB336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDE67D48-4AB9-4E0D-AAFF-E5387EAFB336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDE67D48-4AB9-4E0D-AAFF-E5387EAFB336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDE67D48-4AB9-4E0D-AAFF-E5387EAFB336}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +135,7 @@ Global
 		{D6B2A89F-1C36-49FF-A2F0-1666B25A7F2D} = {DD854EFB-CAB3-4C29-ACA8-7EA6A5236EA9}
 		{FDB073E3-B749-45FA-B85C-32C8BC56260A} = {DD854EFB-CAB3-4C29-ACA8-7EA6A5236EA9}
 		{DA23440E-9B31-4552-AF1D-F84C1366AC78} = {8BC5218C-C940-43C2-8E37-0C4EC883B28D}
+		{CDE67D48-4AB9-4E0D-AAFF-E5387EAFB336} = {8BC5218C-C940-43C2-8E37-0C4EC883B28D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}

@@ -10,23 +10,23 @@
     using Fanex.BotService.Shared.Constants;
     using Fanex.BotService.Shared.Models.Message;
     using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.Caching;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.Extensions.Caching.Memory;
     using Newtonsoft.Json;
 
     public class BotClientService : IBotClientService
     {
         private readonly HttpClient httpClient;
         private readonly BotEndpointConfiguration botConfigs;
-        private readonly ICacheService cacheService;
+        private readonly IMemoryCache memoryCache;
         private readonly ICommonLogService commonLogService;
         private const string BOT_TOKEN_API_KEY = "FanexBot_EndpointAPI_Token";
 
-        public BotClientService(IHttpClientFactory httpClientFactory, ICacheService cacheService, ICommonLogService commonLogService)
+        public BotClientService(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache, ICommonLogService commonLogService)
         {
             httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
             botConfigs = AppSettings.BotEndpointConfiguration;
-            this.cacheService = cacheService;
+            this.memoryCache = memoryCache;
             this.commonLogService = commonLogService;
         }
 
@@ -64,21 +64,33 @@
 
         private async Task<string> GetTokenAsync()
         {
-            string token = await cacheService.GetAsync<string>(BOT_TOKEN_API_KEY);
-            commonLogService.LogFileMessage($"Token on cache {token}");
-            if (string.IsNullOrWhiteSpace(token))
+            var isExistInCache = false;
+            string token = string.Empty;
+            if (memoryCache.TryGetValue(BOT_TOKEN_API_KEY, out _))
+            {
+                token = memoryCache.Get<string>(BOT_TOKEN_API_KEY);
+                commonLogService.LogFileMessage($"Token from cache: {token}");
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    isExistInCache = true;
+                }
+            }
+
+            if (!isExistInCache)
             {
                 var authToken = await AuthenticateAsync();
-                commonLogService.LogFileMessage($"Token on call API {JsonConvert.SerializeObject(authToken)}");
-
                 if (authToken != null)
                 {
-                    await cacheService.SetAsync(BOT_TOKEN_API_KEY, authToken.AccessToken, new CacheItemOptions
+                    token = authToken.AccessToken;
+                    commonLogService.LogFileMessage($"Token from API: {token}");
+
+                    memoryCache.Set(BOT_TOKEN_API_KEY, token, new MemoryCacheEntryOptions
                     {
-                        RelativeExpiration = TimeSpan.FromMinutes(100)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(botConfigs.JwtCacheLifeTime)
                     });
                 }
             }
+
             return token;
         }
 
