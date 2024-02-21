@@ -18,13 +18,19 @@
         private readonly IBotClientService botClientService;
         private readonly IMessageService messageService;
         private readonly ICommonLogService commonLogService;
+        private readonly IMessageQueueService messageQueueService;
 
-        public MessageReceiverService(IBaseService baseService, IBotClientService botClientService, IMessageService messageService, ICommonLogService commonLogService)
+        public MessageReceiverService(IBaseService baseService,
+            IBotClientService botClientService,
+            IMessageService messageService,
+            ICommonLogService commonLogService,
+            IMessageQueueService messageQueueService)
         {
             this.baseService = baseService;
             this.botClientService = botClientService;
             this.messageService = messageService;
             this.commonLogService = commonLogService;
+            this.messageQueueService = messageQueueService;
         }
 
         public async Task ConversationConsumerHandlerAsync(Conversation conversation)
@@ -41,7 +47,7 @@
             }
         }
 
-        private async Task UpdateMessageStatusResult(SendMessageResult result)
+        public async Task UpdateMessageStatusResult(SendMessageResult result)
         {
             try
             {
@@ -55,6 +61,7 @@
             }
             catch (Exception exception)
             {
+                await messageQueueService.PublishAsync(result);
                 await commonLogService.SentryErrorAsync(exception.Message, exception);
             }
         }

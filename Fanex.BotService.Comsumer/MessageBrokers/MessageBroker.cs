@@ -5,6 +5,7 @@
     using Fanex.BotService.Service.Core.Constants;
     using Fanex.BotService.Service.Core.Models;
     using Fanex.BotService.Shared.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Newtonsoft.Json;
 
     public interface IMessageBroker : IDisposable
@@ -32,6 +33,20 @@
         public void Start()
         {
             ConversationConsume();
+            UpdateStatusSentMessage();
+        }
+
+        private void UpdateStatusSentMessage()
+        {
+            Subscribe<SendMessageResult>(QueueSubcriptionId.UPDATE_MESSAGE_STATUS,
+                async (message) =>
+                {
+                    logService.LogFileMessage($"Start Consume subcribtionId: {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}. Data: {JsonConvert.SerializeObject(message)}");
+
+                    await messageReceiverService.UpdateMessageStatusResult(message);
+
+                    logService.LogFileMessage($"End comsume {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}");
+                });
         }
 
         private void ConversationConsume()

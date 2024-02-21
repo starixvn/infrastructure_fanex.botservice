@@ -17,6 +17,7 @@ DI.RegistryConfigurations(configuration);
 
 builder.Services.RegisterSentry(configuration);
 builder.Services.RegisterRedis(configuration);
+
 builder.Services.RegisterServices(configuration);
 
 var app = builder.Build();

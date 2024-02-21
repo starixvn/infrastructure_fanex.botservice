@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+    <Function Name="Message">
+        <Setting Key="ApplicationSetting_GetById" SpName="ApplicationSetting_GetById" DbName="BotService" Plain="0"></Setting>
+    </Function>
+</Functions>
