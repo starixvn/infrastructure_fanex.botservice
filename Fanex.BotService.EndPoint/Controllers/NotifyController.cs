@@ -53,7 +53,7 @@
         [AllowAnonymous]
         [HttpGet]
         [Route("api/bot/send")]
-        public async Task<ObjectResult> SendMessage([FromBody] IList<Message> messages)
+        public async Task<ObjectResult> SendMessage([FromBody] IList<MessageEndpoint> messages)
         {
             var results = new List<SendMessageResult>();
             var bots = await conversationService.GetBotAsync();
@@ -69,7 +69,7 @@
         [AllowAnonymous]
         [HttpGet]
         [Route("api/skype/send-multịpe")]
-        public async Task<ObjectResult> SendViaSkype([FromBody] IList<Message> messages)
+        public async Task<ObjectResult> SendViaSkype([FromBody] IList<MessageEndpoint> messages)
         {
             var results = new List<SendMessageResult>();
             var bots = await conversationService.GetBotAsync();
@@ -85,7 +85,7 @@
         [AllowAnonymous]
         [HttpGet]
         [Route("api/telegram/send-multịpe")]
-        public async Task<ObjectResult> SendViaTelegram([FromBody] IList<Message> messages)
+        public async Task<ObjectResult> SendViaTelegram([FromBody] IList<MessageEndpoint> messages)
         {
             var results = new List<SendMessageResult>();
             var bots = await conversationService.GetBotAsync();
@@ -100,7 +100,7 @@
 
         [HttpPost]
         [Route("api/skype/send")]
-        public async Task<IActionResult> SendSingleViaSkype([FromBody] Message message)
+        public async Task<IActionResult> SendSingleViaSkype([FromBody] MessageEndpoint message)
         {
             commonLogService.LogFileMessage($"Skype message: {JsonConvert.SerializeObject(message)}");
             var bots = await conversationService.GetBotAsync();
@@ -110,7 +110,7 @@
 
         [HttpPost]
         [Route("api/telegram/send")]
-        public async Task<IActionResult> SendSingleViaTelegram([FromBody] Message message)
+        public async Task<IActionResult> SendSingleViaTelegram([FromBody] MessageEndpoint message)
         {
             commonLogService.LogFileMessage($"Telegram message: {JsonConvert.SerializeObject(message)}");
 
@@ -128,7 +128,7 @@
             return Ok(result);
         }
 
-        private async Task<SendMessageResult> SendSingleMessage(IEnumerable<Bot> bots, int chanelId, Message message)
+        private async Task<SendMessageResult> SendSingleMessage(IEnumerable<Bot> bots, int chanelId, MessageEndpoint message)
         {
             SendMessageResult sendMessageResult;
             var startTime = DateTimeOffset.UtcNow.DateTime;

@@ -7,6 +7,6 @@
     {
         Task<int> InsertNewMessageAsync(Conversation message);
 
-        Task<CommandResult> UpdateMessageStatusAsync(long messageId, string status);
+        Task UpdateMessageStatusAsync(SendMessageResult result);
     }
 }

@@ -32,6 +32,7 @@
         {
             AppSettings.RabbitMQConnectionString = configuration.GetValue<string>("RabbitMQConnectionString");
             AppSettings.BotEndpointConfiguration = configuration.GetSection("BotEndpointConfigurations").Get<BotEndpointConfiguration>();
+            AppSettings.ConsumerSettings = configuration.GetSection("ConsumerSettings").Get<List<ConsumerSetting>>();
         }
 
         public static void RegisterServices(this IServiceCollection services)
@@ -49,6 +50,7 @@
             services.AddSingleton<IBotClientService, BotClientService>();
             services.AddSingleton<IMessageService, MessageService>();
             services.AddSingleton<IMessageReceiverService, MessageReceiverService>();
+            services.AddSingleton<IMessageQueueService, MessageQueueService>();
 
             services.AddSingleton<IMessageBroker, MessageBroker>();
         }

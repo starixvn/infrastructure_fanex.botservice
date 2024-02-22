@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Shared.Models.Message
 {
-    public class Message
+    public class MessageEndpoint
     {
         public int MessageId { get; set; }
 

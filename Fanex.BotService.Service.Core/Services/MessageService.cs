@@ -44,14 +44,24 @@
             return command.MessageId;
         }
 
-        public async Task<CommandResult> UpdateMessageStatusAsync(long messageId, string status)
+        public async Task UpdateMessageStatusAsync(SendMessageResult result)
         {
-            var command = new UpdateMessageStatusCommand
+            try
             {
-                MessageId = messageId,
-                Status = status
-            };
-            return await baseService.ExecuteNonQueryAsync(command);
+                var command = new UpdateMessageStatusCommand
+                {
+                    MessageId = result.MessageId,
+                    ErrorMessage = result.ErrorMessage,
+                    Status = result.IsSucessfull ? MessageStatuses.Success : MessageStatuses.Failed
+                };
+                await baseService.ExecuteNonQueryAsync(command);
+            }
+            catch (Exception exception)
+            {
+                await queueMessageService.PublishAsync(result);
+                await commonLogService.SentryErrorAsync(exception.Message, exception);
+                await Task.Delay(60000);
+            }
         }
     }
 }

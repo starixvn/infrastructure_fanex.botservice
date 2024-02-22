@@ -6,6 +6,7 @@
     {
         public static string RabbitMQConnectionString { get; set; }
         public static BotEndpointConfiguration BotEndpointConfiguration { get; set; }
+        public static List<ConsumerSetting> ConsumerSettings { get; set; }
     }
 
     public class BotEndpointConfiguration
@@ -23,5 +24,11 @@
     {
         public BotChannel Channel { get; set; }
         public string SendMessageUrl { get; set; }
+    }
+
+    public class ConsumerSetting
+    {
+        public string QueueName { get; set; }
+        public bool IsConsumed { get; set; }
     }
 }

@@ -6,6 +6,6 @@
 
     public interface IBotClientService
     {
-        Task<SendMessageResult> SendMessageAsync(BotChannel botChannel, Message message);
+        Task<SendMessageResult> SendMessageAsync(BotChannel botChannel, MessageEndpoint message);
     }
 }

@@ -30,7 +30,7 @@
             this.commonLogService = commonLogService;
         }
 
-        public async Task<SendMessageResult> SendMessageAsync(BotChannel botChannel, Message message)
+        public async Task<SendMessageResult> SendMessageAsync(BotChannel botChannel, MessageEndpoint message)
         {
             var result = new SendMessageResult
             {

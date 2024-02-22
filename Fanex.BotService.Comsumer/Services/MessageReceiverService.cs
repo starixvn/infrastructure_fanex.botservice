@@ -40,7 +40,7 @@
             commonLogService.LogFileMessage($"Inserted message with messageID: {messageId}");
             if (messageId > 0)
             {
-                Message message = GenerateMessage(messageId, conversation);
+                MessageEndpoint message = GenerateMessage(messageId, conversation);
                 SendMessageResult result = await botClientService.SendMessageAsync(conversation.Channel, message);
                 commonLogService.LogFileMessage($"Send result: {JsonConvert.SerializeObject(result)}");
                 await UpdateMessageStatusResult(result);
@@ -66,7 +66,7 @@
             }
         }
 
-        private static Message GenerateMessage(int messageId, Conversation conversation)
+        private static MessageEndpoint GenerateMessage(int messageId, Conversation conversation)
            => new()
            {
                MessageId = messageId,
