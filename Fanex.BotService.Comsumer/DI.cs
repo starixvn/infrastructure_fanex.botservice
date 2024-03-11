@@ -5,8 +5,6 @@
     using System.Security.Authentication;
     using EasyNetQ;
     using Fanex.BotService.Comsumer.MessageBrokers;
-    using Fanex.BotService.Comsumer.Services;
-    using Fanex.BotService.Comsumer.Services.Interfaces;
     using Fanex.BotService.Service.Core.Configurations;
     using Fanex.BotService.Service.Core.Services;
     using Fanex.BotService.Service.Core.Services.Interfaces;
@@ -49,7 +47,6 @@
 
             services.AddSingleton<IBotClientService, BotClientService>();
             services.AddSingleton<IMessageService, MessageService>();
-            services.AddSingleton<IMessageReceiverService, MessageReceiverService>();
             services.AddSingleton<IMessageQueueService, MessageQueueService>();
 
             services.AddSingleton<IMessageBroker, MessageBroker>();
