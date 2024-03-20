@@ -1,14 +1,18 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Models;
+    using Fanex.Data;
+    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;
+    using Newtonsoft.Json;
 
     public class ApplicationSettingService : IApplicationSettingService
     {
@@ -62,9 +66,18 @@
                     applicationSettings = await baseService.GetDataAsync<ApplicationSetting>(criteria);
                 }
 
-                memoryCache.Set(applicationSettingKeys, applicationSettings);
+                memoryCache.Set(applicationSettingKeys, applicationSettings, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                }) ;
             }
 
+            foreach (var item in applicationSettings)
+            {
+                var pwd = Cryptography.DecryptPassword(item.MicrosoftAppPassword);
+                item.MicrosoftAppPassword = pwd;
+            }
+            await LogService.ErrorAsync(JsonConvert.SerializeObject(applicationSettings));
             return applicationSettings;
         }
     }
