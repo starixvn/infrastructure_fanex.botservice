@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Fanex.BotService.Client.AspNetMvc</id>
+    <version>1.0.0</version>
+    <title>Bot Service Client</title>
+    <authors>Oliver Dang</authors>
+    <owners>Nexcel Solutions</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://gitlab.nexdev.net/infrastructure/fanex.botservice/-/wikis/User-manual</projectUrl>
+    <description>Lightweight library support send message to user by Bot vía Skype or Telegram</description>
+    <releaseNotes>The first version</releaseNotes>
+    <copyright>Copyright 2024 Nexcel Solutions</copyright>
+    <tags>BotClient BotService BotServiceClient</tags>
+  </metadata>
+</package>

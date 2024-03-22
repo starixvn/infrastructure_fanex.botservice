@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Fanex.BotService.Client.AspNetMvc")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Bot services client for .NET framework")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Nexcel Solutions")]
 [assembly: AssemblyProduct("Fanex.BotService.Client.AspNetMvc")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
