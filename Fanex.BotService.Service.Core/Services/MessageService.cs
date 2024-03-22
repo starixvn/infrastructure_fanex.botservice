@@ -29,7 +29,7 @@
                 ConversationId = conversation.ConversationId,
                 Content = conversation.Content,
                 ChannelId = (byte)conversation.Channel,
-                CreatedDate = DateTime.UtcNow,
+                CreatedDate = DateTimeOffset.UtcNow.DateTime,
                 Status = MessageStatuses.New
             };
             try
@@ -54,12 +54,16 @@
                     ErrorMessage = result.ErrorMessage,
                     Status = result.IsSucessfull ? MessageStatuses.Success : MessageStatuses.Failed
                 };
-                await baseService.ExecuteNonQueryAsync(command);
+                var commandResult = await baseService.ExecuteNonQueryAsync(command);
+                if (!commandResult.IsSuccessful)
+                {
+                    await commonLogService.SentryErrorAsync(commandResult.Message);
+                }
             }
             catch (Exception exception)
             {
                 await queueMessageService.PublishAsync(result);
-                await commonLogService.SentryErrorAsync(exception.Message, exception);
+                await commonLogService.SentryErrorAsync($"Message ID: {result.MessageId}. ErrMsg: {exception.Message}", exception);
                 await Task.Delay(60000);
             }
         }

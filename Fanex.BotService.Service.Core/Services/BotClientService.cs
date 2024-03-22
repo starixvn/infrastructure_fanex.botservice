@@ -55,7 +55,7 @@
             {
                 result.MessageId = message.MessageId;
                 result.ErrorCode = 1;
-                result.SentTime = DateTime.UtcNow;
+                result.SentTime = DateTimeOffset.UtcNow.DateTime;
                 result.ErrorMessage = ex.Message;
                 await commonLogService.SentryErrorAsync(ex.Message, ex);
             }

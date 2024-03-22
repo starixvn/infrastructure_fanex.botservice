@@ -30,7 +30,7 @@
             commonLogService.LogFileMessage($"Username: {username}, Password: {password}");
             if (IsValidCredential(username, password))
             {
-                DateTime? expires = DateTime.UtcNow.AddMinutes(appSettings.JwtLifeTime);
+                DateTime? expires = DateTimeOffset.UtcNow.DateTime.AddMinutes(appSettings.JwtLifeTime);
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor

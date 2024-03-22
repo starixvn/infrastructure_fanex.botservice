@@ -9,6 +9,6 @@
         public string ConversationId { get; set; }
         public string Content { get; set; }
         public BotChannel? Channel { get; set; }
-        public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedDate { get; set; } = DateTimeOffset.UtcNow.DateTime;
     }
 }
