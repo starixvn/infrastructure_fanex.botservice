@@ -6,13 +6,11 @@
     using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Models;
     using Fanex.Data;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;
-    using Newtonsoft.Json;
 
     public class ApplicationSettingService : IApplicationSettingService
     {
@@ -63,6 +61,11 @@
                 {
                     var criteria = new GetApplicationSettingCriteria();
                     applicationSettings = await baseService.GetDataAsync<ApplicationSetting>(criteria);
+                    foreach (var item in applicationSettings)
+                    {
+                        var pwd = Cryptography.DecryptPassword(item.MicrosoftAppPassword);
+                        item.MicrosoftAppPassword = pwd;
+                    }
                 }
 
                 memoryCache.Set(applicationSettingKeys, applicationSettings, new MemoryCacheEntryOptions
@@ -71,12 +74,6 @@
                 });
             }
 
-            foreach (var item in applicationSettings)
-            {
-                var pwd = Cryptography.DecryptPassword(item.MicrosoftAppPassword);
-                item.MicrosoftAppPassword = pwd;
-            }
-            await LogService.ErrorAsync(JsonConvert.SerializeObject(applicationSettings));
             return applicationSettings;
         }
     }
