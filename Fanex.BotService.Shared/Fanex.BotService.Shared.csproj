@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.4" />
     <PackageReference Include="Fanex.Data" Version="4.2.5.3" />

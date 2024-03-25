@@ -59,7 +59,7 @@
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-            services.RegisterSentry(Configuration);
+            CoreServiceCollectionExtensions.RegisterSentry(Configuration);
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             var appSettings = appSettingsSection.Get<AppSettings>();
@@ -121,8 +121,7 @@
 
         private static void RegisterService(IServiceCollection services, IConfiguration configuration)
         {
-            bool isReadSettingFromFile;
-            bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out isReadSettingFromFile);
+            _ = bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out bool isReadSettingFromFile);
 
             ConfigHttpClient(services, configuration);
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
@@ -155,8 +154,7 @@
 
         private static void RegisterCache(IServiceCollection services, IConfiguration configuration)
         {
-            bool isCacheDataInRedis;
-            bool.TryParse(configuration.GetSection("IsCacheDataInRedis")?.Value, out isCacheDataInRedis);
+            _ = bool.TryParse(configuration.GetSection("IsCacheDataInRedis")?.Value, out bool isCacheDataInRedis);
             services.AddTransient<ICacheService, CacheService>();
             services.AddSingleton<IMemoryCache, MemoryCache>();
             if (isCacheDataInRedis)

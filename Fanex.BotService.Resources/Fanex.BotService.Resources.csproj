@@ -1,13 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">

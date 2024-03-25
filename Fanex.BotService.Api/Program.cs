@@ -12,11 +12,8 @@ builder.WebHost
 IConfiguration configuration = builder.Configuration;
 
 builder.Services.AddControllers();
-builder.Services.AddRazorPages();
-DI.RegistryConfigurations(configuration);
 
-builder.Services.RegisterSentry(configuration);
-builder.Services.RegisterRedis(configuration);
+CoreServiceCollectionExtensions.RegisterSentry(configuration);
 
 builder.Services.RegisterServices(configuration);
 
@@ -34,12 +31,7 @@ else
     app.UseHsts();
 }
 
-app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseAuthorization();
-app.UseAuthentication();
 
 app.UseEndpoints(endpoints =>
 {

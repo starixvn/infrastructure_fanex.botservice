@@ -11,10 +11,8 @@ builder.WebHost
 IConfiguration configuration = builder.Configuration;
 
 // Register core services
-builder.Services.AddRazorPages();
 builder.Services.AddControllers();
-builder.Services.RegisterSentry(configuration);
-builder.Services.RegisterRedis(configuration);
+CoreServiceCollectionExtensions.RegisterSentry(configuration);
 builder.Services.AddFanexSql(configuration);
 
 //Register services

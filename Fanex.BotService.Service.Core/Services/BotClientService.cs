@@ -44,12 +44,10 @@
                 string token = await GetTokenAsync();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig.SendMessageUrl}");
-                using (var response = await httpClient.PostAsJsonAsync(url, message))
-                {
-                    response.EnsureSuccessStatusCode();
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
-                }
+                using var response = await httpClient.PostAsJsonAsync(url, message);
+                response.EnsureSuccessStatusCode();
+                var responseData = await response.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
             }
             catch (Exception ex)
             {

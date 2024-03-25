@@ -9,20 +9,16 @@
         public BotSettings()
         {
             AppId = GetValue<int>("Fanex.BotService:AppId");
-            SecretKey = GetValue<string>("Fanex.BotService:SecretKey");
             ServiceUrl = GetValue<string>("Fanex.BotService:ServiceUrl");
         }
 
-        public BotSettings(short botId, string secretKey, string serviceUrl)
+        public BotSettings(int appId, string serviceUrl)
         {
-            AppId = botId;
+            AppId = appId;
             ServiceUrl = serviceUrl;
-            SecretKey = secretKey;
         }
 
         public int AppId { get; set; }
-
-        public string SecretKey { get; set; }
 
         public string ServiceUrl { get; set; }
 

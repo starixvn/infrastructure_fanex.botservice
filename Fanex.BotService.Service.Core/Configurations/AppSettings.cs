@@ -13,7 +13,6 @@
     {
         public string ServiceUrl { get; set; }
         public string AuthenticatePath { get; set; }
-        public string SendMessagePath { get; set; }
         public string AppId { get; set; }
         public string AppPassword { get; set; }
         public int JwtCacheLifeTime { get; set; } = 20;

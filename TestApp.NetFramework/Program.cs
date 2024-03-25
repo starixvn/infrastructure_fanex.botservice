@@ -8,7 +8,7 @@ namespace TestApp.NetFramework
 {
     internal class Program
     {
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
             BotClientManager.RegistryBot(new BotSettings());
             var bot = new BotService();
@@ -18,6 +18,8 @@ namespace TestApp.NetFramework
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+
                 throw;
             }
             Console.WriteLine();

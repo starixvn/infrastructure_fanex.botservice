@@ -25,7 +25,7 @@
         private readonly IMessageQueueService messageQueueService;
         private readonly List<ConsumerSetting> consumerSettings;
         private readonly int TimeDelayBeforeRetryInSeccond = 10;
-        private readonly int LimitRetryTime = 5;
+        private readonly int MaxRetryTime = 5;
 
         public MessageBroker(IBus bus,
              ICommonLogService logService,
@@ -136,7 +136,7 @@
                 isFailed = true;
             }
 
-            if (isFailed && retryCount < LimitRetryTime)
+            if (isFailed && retryCount < MaxRetryTime)
             {
                 Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
                 Subscribe(subscriptionId, action, retryCount);

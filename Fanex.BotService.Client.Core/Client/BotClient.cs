@@ -17,8 +17,8 @@
         public async Task SendSkypeAsync(Conversation conversation)
             => await PostAsync<Conversation, Task>(ApiPath.SkypeChannelApiPath, conversation);
 
-        public async Task SendTelegramAsync(Conversation conversations)
-            => await PostAsync<Conversation, Task>(ApiPath.TelegramChannelApiPath, conversations);
+        public async Task SendTelegramAsync(Conversation conversation)
+            => await PostAsync<Conversation, Task>(ApiPath.TelegramChannelApiPath, conversation);
 
         public async Task SendAsync(Conversation conversation)
         => await PostAsync<Conversation, Task>(ApiPath.BotApiPath, conversation);

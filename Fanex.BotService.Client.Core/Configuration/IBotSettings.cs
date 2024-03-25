@@ -4,6 +4,5 @@
     {
         int AppId { get; }
         string ServiceUrl { get; }
-        string SecretKey { get; }
     }
 }

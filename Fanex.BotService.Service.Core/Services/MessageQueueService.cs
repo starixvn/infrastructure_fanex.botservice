@@ -11,7 +11,7 @@
         private readonly IBus bus;
         private readonly ICommonLogService logService;
         private readonly int TimeDelayBeforeRetryInSeccond = 10;
-        private readonly int LimitRetryTime = 5;
+        private readonly int MaxRetryTime = 5;
 
         public MessageQueueService(IBus bus, ICommonLogService logService)
         {
@@ -33,7 +33,7 @@
                 await logService.SentryErrorAsync($"There is an error while publish object: {JsonConvert.SerializeObject(model)}. Retrying {retryCount + 1} time", ex);
             }
 
-            if (isFailed && retryCount < LimitRetryTime)
+            if (isFailed && retryCount < MaxRetryTime)
             {
                 retryCount++;
                 await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
@@ -55,7 +55,7 @@
                 await logService.SentryErrorAsync($"There is an error while publish object: {JsonConvert.SerializeObject(model)}. Topic: {topic} Retrying {retryCount + 1} time", ex);
             }
 
-            if (isFailed && retryCount < LimitRetryTime)
+            if (isFailed && retryCount < MaxRetryTime)
             {
                 retryCount++;
                 await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));

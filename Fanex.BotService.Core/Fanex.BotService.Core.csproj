@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Fanex.Logging" Version="2.0.1" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.22.0" />

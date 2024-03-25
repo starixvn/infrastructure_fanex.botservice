@@ -32,8 +32,7 @@
 
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
         {
-            bool isSettingFromFile;
-            bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out isSettingFromFile);
+            _ = bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out bool isSettingFromFile);
             var isExistInCache = false;
             IEnumerable<ApplicationSetting> applicationSettings = new List<ApplicationSetting>();
 
@@ -69,7 +68,7 @@
                 memoryCache.Set(applicationSettingKeys, applicationSettings, new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-                }) ;
+                });
             }
 
             foreach (var item in applicationSettings)

@@ -12,13 +12,10 @@
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             AppId = GetValue<int>("Fanex.BotService:AppId");
-            SecretKey = GetValue<string>("Fanex.BotService:SecretKey") ?? throw new ArgumentNullException(SecretKey); ;
-            ServiceUrl = GetValue<string>("Fanex.BotService:ServiceUrl") ?? throw new ArgumentNullException(ServiceUrl); ;
+            ServiceUrl = GetValue<string>("Fanex.BotService:ServiceUrl") ?? throw new ArgumentNullException(ServiceUrl);
         }
 
         public int AppId { get; set; }
-
-        public string SecretKey { get; set; }
 
         public string ServiceUrl { get; set; }
 
