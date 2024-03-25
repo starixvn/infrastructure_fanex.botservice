@@ -13,7 +13,6 @@
         {
             services.AddSingleton<IBotSettings, BotSettings>();
             services.AddSingleton<IBotService, BotService>();
-
             BotClientManager.RegistryBot(new BotSettings(configuration));
         }
     }

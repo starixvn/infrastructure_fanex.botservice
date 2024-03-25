@@ -27,8 +27,7 @@
 
         public ConversationService(IBaseService baseService,
             AppSettings appSettings,
-            IMemoryCache memoryCache,
-            IConfiguration configuration)
+            IMemoryCache memoryCache)
         {
             this.baseService = baseService;
             this.memoryCache = memoryCache;
