@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Fanex.BotService.Client.AspNetMvc</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Bot Service Client</title>
     <authors>Oliver Dang</authors>
     <owners>Nexcel Solutions</owners>

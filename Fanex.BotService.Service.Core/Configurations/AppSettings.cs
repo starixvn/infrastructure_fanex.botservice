@@ -29,5 +29,6 @@
     {
         public string QueueName { get; set; }
         public bool IsConsumed { get; set; }
+        public int? RetryTimeSpan { get; set; }
     }
 }

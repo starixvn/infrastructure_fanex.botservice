@@ -21,7 +21,7 @@
             this.queueMessageService = queueMessageService;
         }
 
-        public async Task<int> InsertNewMessageAsync(Conversation conversation)
+        public async Task<int> InsertNewMessageAsync(Conversation conversation, int retryTimeSpan)
         {
             var command = new InsertNewMessageCommand
             {
@@ -39,12 +39,12 @@
             catch (Exception ex)
             {
                 await commonLogService.SentryErrorAsync(ex.Message, ex);
-                await queueMessageService.PublishAsync(conversation, 5);
+                await queueMessageService.PublishAsync(conversation, retryTimeSpan);
             }
             return command.MessageId;
         }
 
-        public async Task UpdateMessageStatusAsync(SendMessageResult result)
+        public async Task UpdateMessageStatusAsync(SendMessageResult result, int retryTimeSpan)
         {
             try
             {
@@ -62,9 +62,8 @@
             }
             catch (Exception exception)
             {
-                await queueMessageService.PublishAsync(result);
                 await commonLogService.SentryErrorAsync($"Message ID: {result.MessageId}. ErrMsg: {exception.Message}", exception);
-                await Task.Delay(60000);
+                await queueMessageService.PublishAsync(result, retryTimeSpan);
             }
         }
     }

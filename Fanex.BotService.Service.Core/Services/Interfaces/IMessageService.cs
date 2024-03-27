@@ -5,8 +5,8 @@
 
     public interface IMessageService
     {
-        Task<int> InsertNewMessageAsync(Conversation message);
+        Task<int> InsertNewMessageAsync(Conversation message, int retryTimeSpan);
 
-        Task UpdateMessageStatusAsync(SendMessageResult result);
+        Task UpdateMessageStatusAsync(SendMessageResult result, int retryTimeSpan);
     }
 }

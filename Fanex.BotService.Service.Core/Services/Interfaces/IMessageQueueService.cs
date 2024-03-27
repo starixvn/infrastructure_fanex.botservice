@@ -5,5 +5,7 @@
         Task PublishAsync<T>(T model, int retryCount = 0);
 
         Task PublishAsync<T>(T model, string topic, int retryCount = 0);
+
+        Task SchedulerPublishAsync<T>(T model, int interval, int retryCount = 0);
     }
 }

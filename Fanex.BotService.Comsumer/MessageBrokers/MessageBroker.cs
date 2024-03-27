@@ -56,9 +56,9 @@
                 Subscribe<Conversation>(QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE,
                 async (message) =>
                 {
-                    logService.LogFileMessage($"Begin consum: {QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE}. Data: {JsonConvert.SerializeObject(message)}");
+                    logService.LogFileMessage($"Begin consume: {QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE}. Data: {JsonConvert.SerializeObject(message)}");
 
-                    var messageId = await messageService.InsertNewMessageAsync(message);
+                    var messageId = await messageService.InsertNewMessageAsync(message, setting.RetryTimeSpan ?? 1);
                     if (messageId > 0)
                     {
                         MessageEndpoint msgSendToEndpoint = new()
@@ -106,7 +106,7 @@
                 {
                     logService.LogFileMessage($"Begin consume: {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}. Data: {JsonConvert.SerializeObject(message)}");
 
-                    await messageService.UpdateMessageStatusAsync(message);
+                    await messageService.UpdateMessageStatusAsync(message, setting.RetryTimeSpan ?? 1);
 
                     logService.LogFileMessage($"End comsume {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}");
                 });

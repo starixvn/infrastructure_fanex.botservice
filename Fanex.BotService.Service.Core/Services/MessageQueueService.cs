@@ -62,5 +62,27 @@
                 await PublishAsync(model, topic, retryCount);
             }
         }
+
+        public async Task SchedulerPublishAsync<T>(T model, int interval, int retryCount = 0)
+        {
+            bool isFailed = false;
+            try
+            {
+                await bus.Scheduler.FuturePublishAsync<T>(model, TimeSpan.FromMinutes(interval));
+                logService.LogFileMessage($"Future publish after {interval} mins. Data: {JsonConvert.SerializeObject(model)} successfully!");
+            }
+            catch (Exception ex)
+            {
+                isFailed = true;
+                await logService.SentryErrorAsync($"There is an error while scheduler publish object: {JsonConvert.SerializeObject(model)}. Retrying {retryCount + 1} time", ex);
+            }
+
+            if (isFailed && retryCount < MaxRetryTime)
+            {
+                retryCount++;
+                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
+                await SchedulerPublishAsync(model, interval, retryCount);
+            }
+        }
     }
 }
