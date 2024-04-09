@@ -31,6 +31,20 @@
         }
 
         [HttpPost]
+        [Route("api/msteams/send")]
+        public async Task<IActionResult> SendViaTeamsAsync(Conversation conversation)
+        {
+            if (!IsValidConversation(conversation))
+            {
+                return BadRequest();
+            }
+            conversation.Channel = BotChannel.Teams;
+            await queueService.PublishAsync(conversation);
+
+            return Ok();
+        }
+
+        [HttpPost]
         [Route("api/retry")]
         public async Task<IActionResult> RetryMessageAsync([FromBody] MessageEndpoint message)
         {

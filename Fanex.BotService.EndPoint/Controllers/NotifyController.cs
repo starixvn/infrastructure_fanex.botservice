@@ -101,7 +101,7 @@
         [AllowAnonymous]
         [HttpPost]
         [Route("api/msteams/send")]
-        public async Task<IActionResult> SendSingleViaTeams(MessageEndpoint message)
+        public async Task<IActionResult> SendSingleViaTeams([FromBody] MessageEndpoint message)
         {
             commonLogService.LogFileMessage($"Teams message: {JsonConvert.SerializeObject(message)}");
             var bots = await conversationService.GetBotAsync();
