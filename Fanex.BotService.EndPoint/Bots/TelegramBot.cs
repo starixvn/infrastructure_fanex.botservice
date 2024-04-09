@@ -33,7 +33,7 @@
 
             if (turnContext.Activity.Conversation.IsGroup == true)
             {
-                message = BotHelper.GetMessageInGroupByChannel(message, botName);
+                message = BotHelper.GetMessageInGroupByChannel(message, turnContext.Activity.ChannelId, botName);
                 var channelData = turnContext.Activity.GetChannelData<TelegramData>();
                 if (channelData.message.new_chat_member?.is_bot is true)
                 {

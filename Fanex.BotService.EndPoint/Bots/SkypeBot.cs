@@ -50,7 +50,7 @@
             var botName = turnContext.Activity.Recipient.Name;
             if (turnContext.Activity.Conversation.IsGroup == true)
             {
-                message = BotHelper.GetMessageInGroupByChannel(message, botName);
+                message = BotHelper.GetMessageInGroupByChannel(message, turnContext.Activity.ChannelId, botName);
             }
 
             switch (message)
