@@ -21,6 +21,7 @@
             services.AddTransient<ServiceClientCredentialsFactory, MultiServiceClientCredentialsFactory>();
             services.AddTransient<HttpClient, CustomHttpClient>();
 
+            services.AddTransient<ITeamsBot, TeamsBot>();
             services.AddTransient<ISkypeBot, SkypeBot>();
             services.AddTransient<ITelegramBot, TelegramBot>();
             services.AddTransient<ICoreBot, CoreBot>();
@@ -30,6 +31,9 @@
             {
                 switch (channelType)
                 {
+                    case "msteams":
+                        return serviceProvider.GetService<ITeamsBot>();
+
                     case "skype":
                         return serviceProvider.GetService<ISkypeBot>();
 

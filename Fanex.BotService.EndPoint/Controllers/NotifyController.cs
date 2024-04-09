@@ -98,6 +98,17 @@
             return Ok(results);
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("api/msteams/send")]
+        public async Task<IActionResult> SendSingleViaTeams(MessageEndpoint message)
+        {
+            commonLogService.LogFileMessage($"Teams message: {JsonConvert.SerializeObject(message)}");
+            var bots = await conversationService.GetBotAsync();
+            var result = await SendSingleMessage(bots, (byte)ConversationChannel.Teams, message);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("api/skype/send")]
         public async Task<IActionResult> SendSingleViaSkype([FromBody] MessageEndpoint message)

@@ -11,6 +11,8 @@
         public string ChannelName { get; set; }
         public string ServiceUrl { get; set; }
 
+        public bool IsGroup { get; set; }
+
         public string MicrosoftAppId { get; set; }
 
         public override string GetSettingKey() => "Conversation_AddContact";

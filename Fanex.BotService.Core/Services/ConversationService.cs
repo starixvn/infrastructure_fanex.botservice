@@ -79,6 +79,7 @@
                 ChannelName = turnContext.Activity?.ChannelId,
                 DisplayName = turnContext.Activity?.From.Name,
                 ServiceUrl = turnContext.Activity?.ServiceUrl,
+                IsGroup = turnContext.Activity?.Conversation.IsGroup ?? true,
                 MicrosoftAppId = microsoftAppId
             };
 
@@ -108,6 +109,7 @@
                 GroupName = turnContext.Activity?.TopicName,
                 ChannelName = turnContext.Activity?.ChannelId,
                 ServiceUrl = turnContext.Activity?.ServiceUrl,
+                IsGroup = turnContext.Activity?.Conversation.IsGroup ?? false,
                 UpdatedBy = turnContext.Activity?.From.Id,
                 MicrosoftAppId = microsoftAppId
             };
