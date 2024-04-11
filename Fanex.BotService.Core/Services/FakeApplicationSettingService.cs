@@ -1,10 +1,10 @@
-﻿namespace Fanex.NCB.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.BotService.Core;
     using Fanex.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.BotService.Core.Services.Interfaces;
 
     public class FakeApplicationSettingService : IApplicationSettingService
     {

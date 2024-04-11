@@ -1,12 +1,12 @@
-﻿namespace Fanex.NCB.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Models;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.Data;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;

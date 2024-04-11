@@ -1,11 +1,11 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Bots
+﻿namespace Fanex.BotService.EndPoint.Bots
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Fanex.BotService.Core;
     using Fanex.BotService.Core.Models;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.BotService.EndPoint.Bots.Interfaces;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
 
@@ -50,15 +50,18 @@
                 case InteractedCommand.help:
                     await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
                     break;
+
                 case InteractedCommand.getid:
                     await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
                     break;
+
                 case InteractedCommand.getbot:
                     var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
                     await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
                     break;
+
                 default: break;
             }
-        }     
+        }
     }
 }

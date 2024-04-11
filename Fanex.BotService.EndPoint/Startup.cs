@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.EndPoint
+﻿namespace Fanex.BotService.EndPoint
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -9,6 +9,9 @@
     using System.Text;
     using System.Threading;
     using Fanex.BotService.Core;
+    using Fanex.BotService.Core.Models;
+    using Fanex.BotService.Core.Services;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.BotService.Shared.Extensions;
     using Fanex.BotService.Shared.Services;
     using Fanex.BotService.Shared.Services.Interfaces;
@@ -17,10 +20,6 @@
     using Fanex.Data.Repository;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Middlewares;
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;

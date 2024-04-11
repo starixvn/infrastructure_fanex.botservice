@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Controllers
+﻿namespace Fanex.BotService.EndPoint.Controllers
 {
     using Fanex.NCB.Shared;
     using Microsoft.AspNetCore.Authorization;

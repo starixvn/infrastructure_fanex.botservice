@@ -1,11 +1,11 @@
-﻿namespace Fanex.NCB.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Caching;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.BotService.Core.Models;
+    using Fanex.BotService.Core.Services.Interfaces;
     using ILogger = Logging.ILogger;
 
     public class MessageValidationService : IMessageValidationService

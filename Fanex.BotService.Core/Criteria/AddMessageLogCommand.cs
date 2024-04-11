@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Criteria
+﻿namespace Fanex.BotService.Core.Criteria
 {
     using System;
     using Fanex.NCB.Shared.Models;

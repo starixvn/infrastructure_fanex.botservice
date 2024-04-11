@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Controllers
+﻿namespace Fanex.BotService.EndPoint.Controllers
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;

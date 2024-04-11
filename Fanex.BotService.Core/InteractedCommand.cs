@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core
+﻿namespace Fanex.BotService.Core
 {
     public static class InteractedCommand
     {

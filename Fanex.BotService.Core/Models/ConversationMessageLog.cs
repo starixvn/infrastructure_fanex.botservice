@@ -1,7 +1,7 @@
 ﻿using System;
-using Fanex.NCB.BotService.Core.Enum;
+using Fanex.BotService.Core.Enum;
 
-namespace Fanex.NCB.BotService.Core.Models
+namespace Fanex.BotService.Core.Models
 {
     public class ConversationMessageLog
     {

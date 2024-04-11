@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Enum
+﻿namespace Fanex.BotService.Core.Enum
 {
     public enum ConversationChannel
     {

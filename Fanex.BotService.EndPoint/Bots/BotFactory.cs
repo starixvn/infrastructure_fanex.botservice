@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Bots
+﻿namespace Fanex.BotService.EndPoint.Bots
 {
     using System;
     using System.Threading;

@@ -7,7 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Logging;
     using Microsoft.Rest;

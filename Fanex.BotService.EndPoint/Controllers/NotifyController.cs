@@ -1,18 +1,18 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Controllers
+﻿namespace Fanex.BotService.EndPoint.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.BotService.Core.Criteria;
+    using Fanex.BotService.Core.Enum;
+    using Fanex.BotService.Core.Models;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.BotService.Resources;
     using Fanex.BotService.Shared.Models.Message;
     using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;

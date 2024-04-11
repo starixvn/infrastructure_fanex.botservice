@@ -1,11 +1,11 @@
-﻿namespace Fanex.NCB.BotService.EndPoint
+﻿namespace Fanex.BotService.EndPoint
 {
     using System;
     using System.Net;
     using System.Net.Http;
     using Fanex.BotService.EndPoint;
     using Fanex.BotService.EndPoint.Bots.Interfaces;
-    using Fanex.NCB.BotService.EndPoint.Bots;
+    using Fanex.BotService.EndPoint.Bots;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Bot.Connector.Authentication;

@@ -1,19 +1,22 @@
-﻿namespace Fanex.NCB.BotService.Core.Services.Interfaces
+﻿namespace Fanex.BotService.Core.Services.Interfaces
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Bot.Builder;
 
     public interface IConversationService
     {
         Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync();
+
         Task<IEnumerable<Bot>> GetBotAsync();
+
         Task<CommandResult> AddBotContactAsync(ITurnContext turnContext);
+
         Task<CommandResult> RemoveBotContactAsync(ITurnContext turnContext);
+
         Task<CommandResult> AddBotToGroupAsync(ITurnContext turnContext);
 
         Task<CommandResult> RemoveBotOutGroupAsync(ITurnContext turnContext);

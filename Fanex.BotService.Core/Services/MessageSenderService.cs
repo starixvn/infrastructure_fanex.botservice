@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,10 +7,10 @@
     using System.Net.Http.Json;
     using System.Threading;
     using System.Threading.Tasks;
+    using Fanex.BotService.Core.Models;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Bot.Schema;

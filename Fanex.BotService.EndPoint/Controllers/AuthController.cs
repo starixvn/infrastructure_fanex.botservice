@@ -1,11 +1,11 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Controllers
+﻿namespace Fanex.BotService.EndPoint.Controllers
 {
     using System;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
+    using Fanex.BotService.Core;
     using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.NCB.BotService.Core;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;

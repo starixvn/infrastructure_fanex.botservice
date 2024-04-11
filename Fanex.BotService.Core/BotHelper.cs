@@ -1,6 +1,6 @@
-﻿using Fanex.NCB.BotService.Core.Enum;
+﻿using Fanex.BotService.Core.Enum;
 
-namespace Fanex.NCB.BotService.Core
+namespace Fanex.BotService.Core
 {
     public static class BotHelper
     {

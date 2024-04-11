@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Services.Interfaces
+﻿namespace Fanex.BotService.Core.Services.Interfaces
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

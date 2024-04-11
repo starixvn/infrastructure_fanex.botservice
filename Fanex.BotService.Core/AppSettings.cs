@@ -1,4 +1,4 @@
-namespace Fanex.NCB.BotService.Core
+namespace Fanex.BotService.Core
 {
     using System.Collections.Generic;
     using System.Linq;

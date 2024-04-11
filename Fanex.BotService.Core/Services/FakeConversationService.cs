@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,10 +6,9 @@
     using System.Threading.Tasks;
     using System.Web;
     using Fanex.BotService.Core;
+    using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Connector;
@@ -29,15 +28,15 @@
 
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
         {
-            var applicationSettings = botConfigs.Select(t => 
-                new ApplicationSetting 
+            var applicationSettings = botConfigs.Select(t =>
+                new ApplicationSetting
                 {
                     AppId = t.AppId,
                     MicrosoftAppId = t.MicrosoftAppId,
                     MicrosoftAppPassword = t.MicrosoftAppPassword,
-                    MicrosoftAppTenantId = t.MicrosoftAppTenantId 
+                    MicrosoftAppTenantId = t.MicrosoftAppTenantId
                 });
-            
+
             return await Task.FromResult(applicationSettings);
         }
 
@@ -46,7 +45,7 @@
             var bots = new List<Bot>();
             foreach (var botConfig in botConfigs)
             {
-                foreach(var channel in botConfig.Channels)
+                foreach (var channel in botConfig.Channels)
                 {
                     bots.Add(new Bot
                     {

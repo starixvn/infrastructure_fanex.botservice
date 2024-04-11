@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,9 +7,7 @@
     using System.Web;
     using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Builder;

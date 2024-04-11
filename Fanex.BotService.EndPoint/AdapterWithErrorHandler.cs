@@ -20,7 +20,7 @@ namespace Fanex.BotService.EndPoint
                 // NOTE: In production environment, you should consider logging this to
                 // Azure Application Insights. Visit https://aka.ms/bottelemetry to see how
                 // to add telemetry capture to your bot.
-                logService.SentryErrorAsync(exception.Message, exception).RunSynchronously();
+                logService.SentryErrorAsync(exception.Message, exception).Wait();
                 logger.LogError(exception, $"[OnTurnError] unhandled error : {exception.Message}");
 
                 // Send a message to the user

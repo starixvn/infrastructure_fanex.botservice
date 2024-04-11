@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.EndPoint
+﻿namespace Fanex.BotService.EndPoint
 {
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
