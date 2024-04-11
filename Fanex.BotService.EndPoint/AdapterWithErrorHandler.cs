@@ -1,16 +1,17 @@
-﻿using Microsoft.Bot.Builder.Integration.AspNet.Core;
+﻿using System;
+using Fanex.BotService.Shared.Services.Interfaces;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Connector.Authentication;
-using Microsoft.Extensions.Logging;
-using Microsoft.Bot.Schema;
-using System;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
+using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
 
 namespace Fanex.BotService.EndPoint
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {
-        public AdapterWithErrorHandler(BotFrameworkAuthentication auth, ILogger<IBotFrameworkHttpAdapter> logger, ConversationState conversationState = default)
+        public AdapterWithErrorHandler(BotFrameworkAuthentication auth, ILogger<IBotFrameworkHttpAdapter> logger, ICommonLogService logService, ConversationState conversationState = default)
             : base(auth, logger)
         {
             OnTurnError = async (turnContext, exception) =>
@@ -19,15 +20,12 @@ namespace Fanex.BotService.EndPoint
                 // NOTE: In production environment, you should consider logging this to
                 // Azure Application Insights. Visit https://aka.ms/bottelemetry to see how
                 // to add telemetry capture to your bot.
+                logService.SentryErrorAsync(exception.Message, exception).RunSynchronously();
                 logger.LogError(exception, $"[OnTurnError] unhandled error : {exception.Message}");
 
                 // Send a message to the user
-                var errorMessageText = "The bot encountered an error or bug.";
+                var errorMessageText = "The bot encountered an error or bug. To continue to run this bot, please fix the bot source code.";
                 var errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.IgnoringInput);
-                await turnContext.SendActivityAsync(errorMessage);
-
-                errorMessageText = "To continue to run this bot, please fix the bot source code.";
-                errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
                 await turnContext.SendActivityAsync(errorMessage);
 
                 if (conversationState != null)

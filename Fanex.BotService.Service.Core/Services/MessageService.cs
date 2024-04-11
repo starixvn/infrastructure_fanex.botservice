@@ -7,12 +7,14 @@
     using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Newtonsoft.Json;
 
     public class MessageService : IMessageService
     {
         private readonly IBaseService baseService;
         private readonly ICommonLogService commonLogService;
         private readonly IMessageQueueService queueMessageService;
+        private static readonly int reSchedulerTimer = 10;
 
         public MessageService(IBaseService baseService, ICommonLogService commonLogService, IMessageQueueService queueMessageService)
         {
@@ -38,8 +40,8 @@
             }
             catch (Exception ex)
             {
-                await commonLogService.SentryErrorAsync(ex.Message, ex);
-                await queueMessageService.PublishAsync(conversation, retryTimeSpan);
+                await commonLogService.SentryErrorAsync($"Data: {JsonConvert.SerializeObject(conversation)} \r\n. ErrorMsg: {ex.Message}", ex);
+                await queueMessageService.SchedulerPublishAsync(conversation, reSchedulerTimer);
             }
             return command.MessageId;
         }
@@ -63,7 +65,7 @@
             catch (Exception exception)
             {
                 await commonLogService.SentryErrorAsync($"Message ID: {result.MessageId}. ErrMsg: {exception.Message}", exception);
-                await queueMessageService.PublishAsync(result, retryTimeSpan);
+                await queueMessageService.SchedulerPublishAsync(result, reSchedulerTimer);
             }
         }
     }

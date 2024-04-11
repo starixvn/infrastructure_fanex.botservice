@@ -68,7 +68,7 @@
             bool isFailed = false;
             try
             {
-                await bus.Scheduler.FuturePublishAsync<T>(model, TimeSpan.FromMinutes(interval));
+                await bus.Scheduler.FuturePublishAsync(model, TimeSpan.FromMinutes(interval));
                 logService.LogFileMessage($"Future publish after {interval} mins. Data: {JsonConvert.SerializeObject(model)} successfully!");
             }
             catch (Exception ex)
