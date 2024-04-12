@@ -15,7 +15,8 @@
         public async Task<IActionResult> Index()
         {
             //await botService.SendSkypeAsync("29:1otxSNyz7rewcKJyycITsF1CEphLdZLvT5wabXgoePqQ", $"Msg: Hi Oliver, this is the message Test Skype 1");
-            await botService.SendTelegramAsync("1064787034", $"Internal Department Request No.: N/A Event Start Time: 2:00 PM League: \\*\\*SABA Virtual EURO CUP April 2020 Group B \\(In Spain\\) \\- 20 Mins Play Match: Manchester United - vs - Arsenal **Affected Credit sites: 777** **Affected Licensee sites:** Bettype: Live 1H Over/Under Total: 2 Reason: Group Betting Results: HT N/A, FT N/A Decided by: N/A Requested by: N/A Voided by: starix19 Attn:[Soccer] Due to abnormal bets, the match between \"Manchester United -vs- Arsenal\" [**Virtual EURO CUP April 2020 Group B (In Spain) - 20 Mins Play - 11/4], bet ID: \" \" are considered VOID. Sorry for the inconvenience caused! 请注意:[足球] 由于非正常投注, \"曼联 -vs- 阿森纳\" [**虚拟欧洲杯4月2020 B组(在西班牙) - 20分钟赛事 - 11/4], 注单: \" \" 已被作废. 不便之处 敬请见谅!");
+            string content = "REFUND Settled Tickets MatchID: 83525304 Event Date: 2024/04/11 02:15 Sport Name: Virtual Football Cup Total tickets: 72 Affected Credit sites: 789y, NV88 Affected Licensee sites: 9wickets Attn: Due to the wrong calculation, \"VL Lisbon -vs- VL Amsterdam\" bet ID: \"\" has been re-settled. Kindly double check your statement again. Sorry for the inconvenience caused! 请注意:<虚拟运动> 由于技术有误, \"虚拟 里斯本 -vs- 虚拟 阿姆斯特丹\" 注单: \"\" 投注金额已被退还.不便之处 敬请见谅!";
+            await botService.SendTelegramAsync("1064787034", content.Replace("[", "<").Replace("]", ">"));
 
             return Ok("OK");
         }

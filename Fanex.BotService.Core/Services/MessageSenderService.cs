@@ -84,7 +84,12 @@
                 await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, coversation,
                     async (context, token) =>
                     {
-                        await context.SendActivityAsync(conversationMessage.Message, cancellationToken: token);
+                        string message = conversationMessage.Message;
+                        if (conversationMessage.ChannelId.ToLowerInvariant() == "telegram")
+                        {
+                            message = message.Replace("[", "(").Replace("]", ")");
+                        }
+                        await context.SendActivityAsync(message, cancellationToken: token);
                     },
                     new CancellationToken());
 
