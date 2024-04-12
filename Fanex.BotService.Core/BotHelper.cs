@@ -1,6 +1,4 @@
-﻿using Fanex.BotService.Core.Enum;
-
-namespace Fanex.BotService.Core
+﻿namespace Fanex.BotService.Core
 {
     public static class BotHelper
     {
@@ -22,6 +20,7 @@ namespace Fanex.BotService.Core
                         }
                     }
                     break;
+
                 case "telegram":
                     if (sourceMessage.StartsWith('/'))
                     {
@@ -33,6 +32,7 @@ namespace Fanex.BotService.Core
                         }
                     }
                     break;
+
                 case "msteams":
                     if (sourceMessage.StartsWith("<at>"))
                     {
@@ -44,6 +44,7 @@ namespace Fanex.BotService.Core
                         }
                     }
                     break;
+
                 default:
                     returnMessage = sourceMessage;
                     break;
@@ -51,5 +52,8 @@ namespace Fanex.BotService.Core
 
             return returnMessage;
         }
+
+        public static string ReplaceSpecialCharacterOnTelegramMessageContent(string messageContent)
+            => messageContent.Replace("[", "(").Replace("]", ")").Replace("\\", string.Empty);
     }
 }

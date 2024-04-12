@@ -85,10 +85,7 @@
                     async (context, token) =>
                     {
                         string message = conversationMessage.Message;
-                        if (conversationMessage.ChannelId.ToLowerInvariant() == "telegram")
-                        {
-                            message = message.Replace("[", "(").Replace("]", ")");
-                        }
+
                         await context.SendActivityAsync(message, cancellationToken: token);
                     },
                     new CancellationToken());
