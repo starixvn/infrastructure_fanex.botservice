@@ -9,15 +9,9 @@
             switch (channelId)
             {
                 case "skype":
-                    if (sourceMessage.StartsWith('@')
-                        || sourceMessage.StartsWith(botName))
+                    if (sourceMessage.StartsWith(botName))
                     {
-                        var indexOfCommand = sourceMessage.IndexOf(' ');
-
-                        if (indexOfCommand > 0)
-                        {
-                            returnMessage = sourceMessage.Remove(0, indexOfCommand).Trim();
-                        }
+                        returnMessage = sourceMessage.Remove(0, botName.Length).Trim();
                     }
                     break;
 
