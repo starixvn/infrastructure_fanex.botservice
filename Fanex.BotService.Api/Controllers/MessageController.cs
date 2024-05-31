@@ -45,6 +45,19 @@
         }
 
         [HttpPost]
+        [Route("api/bot/send")]
+        public async Task<IActionResult> SendAsync([FromBody] Conversation conversation)
+        {
+            if (!IsValidConversation(conversation))
+            {
+                return BadRequest();
+            }
+            await queueService.PublishAsync(conversation);
+
+            return Ok();
+        }
+
+        [HttpPost]
         [Route("api/retry")]
         public async Task<IActionResult> RetryMessageAsync([FromBody] MessageEndpoint message)
         {

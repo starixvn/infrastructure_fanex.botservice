@@ -12,6 +12,7 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Bot.Schema;
     using Microsoft.Extensions.Logging;
@@ -84,9 +85,9 @@
                 await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, coversation,
                     async (context, token) =>
                     {
-                        string message = conversationMessage.Message;
-
-                        await context.SendActivityAsync(message, cancellationToken: token);
+                        var activity = MessageFactory.Text(string.Format(conversationMessage.Message));
+                        activity.TextFormat = TextFormatTypes.Markdown;
+                        await context.SendActivityAsync(activity, cancellationToken: token);
                     },
                     new CancellationToken());
 
