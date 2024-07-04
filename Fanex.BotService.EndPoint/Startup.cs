@@ -105,7 +105,8 @@
             }
 
             var subPath = Configuration.GetValue<string>("AppSettings:DomainPath");
-
+            var log = app.ApplicationServices.GetService<ICommonLogService>();
+            log.SentryErrorAsync(subPath);
             if (!string.IsNullOrWhiteSpace(subPath))
             {
                 app.UsePathBase(subPath);
