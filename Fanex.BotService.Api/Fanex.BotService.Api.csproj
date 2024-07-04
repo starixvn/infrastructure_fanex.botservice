@@ -15,4 +15,12 @@
     <ProjectReference Include="..\Fanex.BotService.Service.Core\Fanex.BotService.Service.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.SIT.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

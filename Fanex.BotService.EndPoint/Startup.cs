@@ -90,7 +90,7 @@
             _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
         }
 
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -102,6 +102,18 @@
                 app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseForwardedHeaders();
                 app.UseHsts();
+            }
+
+            var subPath = Configuration.GetValue<string>("AppSettings:DomainPath");
+
+            if (!string.IsNullOrWhiteSpace(subPath))
+            {
+                app.UsePathBase(subPath);
+                app.Use(async (ctx, next) =>
+                {
+                    ctx.Request.PathBase = subPath;
+                    await next();
+                });
             }
 
             app.UseRouting();

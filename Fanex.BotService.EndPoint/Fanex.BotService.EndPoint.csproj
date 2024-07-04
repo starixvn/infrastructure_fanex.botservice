@@ -29,6 +29,11 @@
         <ProjectReference Include="..\Fanex.BotService.Resources\Fanex.BotService.Resources.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <Content Update="appsettings.SIT.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
         <Content Update="appsettings.LOCAL.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -37,6 +42,9 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <None Update="App_Data\SpNames.SIT.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="App_Data\SpNames.LOCAL.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
