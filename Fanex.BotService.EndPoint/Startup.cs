@@ -28,6 +28,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;
@@ -83,14 +84,14 @@
 
             RegisterService(services, Configuration);
             RegisterCache(services, Configuration);
-            services.AddMvc().AddNewtonsoftJson();
+            services.AddControllers(x => x.EnableEndpointRouting = false);
             IdentityModelEventSource.ShowPII = true;
             const short WorkerThreads = 300;
             const short CompletionPortThreads = 300;
             _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -103,31 +104,30 @@
                 app.UseForwardedHeaders();
                 app.UseHsts();
             }
-
-            var subPath = Configuration.GetValue<string>("AppSettings:DomainPath");
-            var log = app.ApplicationServices.GetService<ICommonLogService>();
-            log.SentryErrorAsync(subPath);
-            if (!string.IsNullOrWhiteSpace(subPath))
+            var configuration = app.ApplicationServices.GetRequiredService<IConfiguration>();
+            var domainPath = configuration.GetValue<string>("AppSettings:DomainPath");
+            if (!string.IsNullOrWhiteSpace(domainPath))
             {
-                app.UsePathBase(subPath);
+                app.UsePathBase(new PathString(domainPath));
                 app.Use(async (ctx, next) =>
                 {
-                    ctx.Request.PathBase = subPath;
+                    ctx.Request.PathBase = domainPath;
                     await next();
                 });
             }
 
-            app.UseRouting();
+            //app.UseRouting();
             app.UseDefaultFiles();
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
             app.UseAuthorization();
             app.UseAuthentication();
 
-            app.UseEndpoints(endpoints =>
+            app.UseMvc(routes =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    "Default",
+                    "/{controller}/{action}",
+                    new { controller = "Home", action = "Index" });
             });
         }
 

@@ -20,7 +20,7 @@
     using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class NotifyController : ControllerBase
+    public class NotifyController : Controller
     {
         private readonly IConversationService conversationService;
         private readonly IMessageValidationService messageLogService;
@@ -45,7 +45,7 @@
         [Route("api/Test")]
         public async Task<ObjectResult> Test()
         {
-            await commonLogService.SentryErrorAsync("test sentry");
+            //await commonLogService.SentryErrorAsync("test sentry");
 
             return Ok("ok");
         }
