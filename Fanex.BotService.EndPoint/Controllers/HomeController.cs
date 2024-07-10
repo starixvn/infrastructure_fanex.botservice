@@ -6,7 +6,7 @@
     {
         public IActionResult Index()
         {
-            return Content("Your bot is ready!");
+            return Content("Fanex bot is ready!");
         }
     }
 }
