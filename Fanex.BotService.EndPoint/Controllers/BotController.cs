@@ -6,8 +6,7 @@
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
     [Route("api/messages")]
-    [ApiController]
-    public class BotController : ControllerBase
+    public class BotController : Controller
     {
         private readonly IBotFrameworkHttpAdapter adapter;
         private readonly IBot bot;
