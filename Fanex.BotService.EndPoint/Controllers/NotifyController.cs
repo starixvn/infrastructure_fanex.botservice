@@ -45,7 +45,7 @@
         [Route("api/Test")]
         public async Task<ObjectResult> Test()
         {
-            //await commonLogService.SentryErrorAsync("test sentry");
+            await commonLogService.SentryErrorAsync("test sentry");
 
             return Ok("ok");
         }

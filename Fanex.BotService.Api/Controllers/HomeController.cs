@@ -23,7 +23,7 @@
         [Route("test-sentry")]
         public async Task<ObjectResult> Test()
         {
-            await logService.SentryErrorAsync("test sentry");
+            await logService.SentryErrorAsync("Oliver test sentry", new Exception("Bug"));
 
             return Ok("ok");
         }
