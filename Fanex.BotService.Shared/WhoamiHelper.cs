@@ -10,6 +10,7 @@
         {
             var content = new StringBuilder();
             content.Append($"Web name: {context.Request.Host.Host}{Environment.NewLine}"
+                + $"Service name: Fanex.BotService.Endpoint {Environment.NewLine}"
                 + $"Port: {context.Connection.LocalPort}{Environment.NewLine}"
                 + $"Server IP: {context.Connection.LocalIpAddress}{Environment.NewLine}"
                 + $"Server Time: {DateTimeOffset.Now.DateTime}{Environment.NewLine}"
