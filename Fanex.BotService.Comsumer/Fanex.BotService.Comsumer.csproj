@@ -10,11 +10,19 @@
 
   <ItemGroup>
     <None Remove="App_Data\SpNames.LOCAL.xml" />
+    <None Remove="App_Data\SpNames.PROD.xml" />
     <None Remove="App_Data\SpNames.SIT.xml" />
+    <None Remove="App_Data\SpNames.UAT.xml" />
     <None Remove="App_Data\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="App_Data\SpNames.PROD.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\SpNames.UAT.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="App_Data\SpNames.SIT.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

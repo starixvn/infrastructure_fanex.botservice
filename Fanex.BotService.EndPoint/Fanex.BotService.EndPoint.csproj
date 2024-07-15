@@ -29,6 +29,9 @@
         <ProjectReference Include="..\Fanex.BotService.Resources\Fanex.BotService.Resources.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <Content Update="appsettings.PROD_1.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Update="appsettings.UAT.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -50,6 +53,15 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <None Update="App_Data\SpNames.PROD_1.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="App_Data\SpNames.PROD.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="App_Data\SpNames.UAT.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="App_Data\SpNames.SIT.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
