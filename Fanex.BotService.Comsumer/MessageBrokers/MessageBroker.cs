@@ -16,30 +16,15 @@
         void Start();
     }
 
-    public class MessageBroker : IMessageBroker
+    public class MessageBroker(IBus bus,
+         ICommonLogService logService,
+         IMessageService messageService,
+         IBotClientService botClientService,
+         IMessageQueueService messageQueueService) : IMessageBroker
     {
-        private readonly IBus bus;
-        private readonly ICommonLogService logService;
-        private readonly IMessageService messageService;
-        private readonly IBotClientService botClientService;
-        private readonly IMessageQueueService messageQueueService;
-        private readonly List<ConsumerSetting> consumerSettings;
+        private readonly List<ConsumerSetting> consumerSettings = AppSettings.ConsumerSettings;
         private readonly int TimeDelayBeforeRetryInSeccond = 10;
         private readonly int MaxRetryTime = 5;
-
-        public MessageBroker(IBus bus,
-             ICommonLogService logService,
-             IMessageService messageService,
-             IBotClientService botClientService,
-             IMessageQueueService messageQueueService)
-        {
-            this.bus = bus;
-            this.logService = logService;
-            this.messageService = messageService;
-            this.botClientService = botClientService;
-            this.messageQueueService = messageQueueService;
-            consumerSettings = AppSettings.ConsumerSettings;
-        }
 
         public void Start()
         {
@@ -68,6 +53,7 @@
                             ChannelId = (byte)message.Channel,
                             ConversationId = message.ConversationId,
                             Content = message.Content,
+                            Images = message.Images,
                         };
                         await messageQueueService.PublishAsync(msgSendToEndpoint);
                     }

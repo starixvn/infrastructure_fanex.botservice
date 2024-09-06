@@ -165,7 +165,8 @@
                         ChannelId = bot.ChannelName,
                         ConversationBotId = bot.ConversationId,
                         BotName = bot.BotName,
-                        MessageId = message.MessageId
+                        MessageId = message.MessageId,
+                        Images = message.Images
                     };
                     sendMessageResult = await messageSenderService.SendMessageAsync(conversationMessage);
 

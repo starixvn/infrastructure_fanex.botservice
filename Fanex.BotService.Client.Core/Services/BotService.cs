@@ -1,6 +1,7 @@
 ﻿namespace Fanex.BotService.Client.Core.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.BotService.Client.Core.Client;
     using Fanex.BotService.Client.Core.Configuration;
@@ -80,6 +81,22 @@
             {
                 throw new ArgumentNullException(nameof(conversation.Content));
             }
+        }
+
+        public async Task SendMessageWithImagesAsync(BotChannel channel, string conversationId, string message, List<string> imageUrls = null)
+        {
+            Conversation conversation = new Conversation
+            {
+                Channel = channel,
+                AppId = botSettings.AppId,
+                ConversationId = conversationId,
+                Content = message,
+                Images = imageUrls
+            };
+
+            ValidateInputConversation(conversation);
+
+            await botClient.SendAsync(conversation);
         }
     }
 }

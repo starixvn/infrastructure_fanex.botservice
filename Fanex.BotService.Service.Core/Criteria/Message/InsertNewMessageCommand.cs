@@ -11,6 +11,7 @@
         public int MessageId { get; set; }
         public string Status { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string Attachments { get; set; }
 
         public override string GetSettingKey() => "Message_Insert";
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
@@ -85,8 +86,21 @@
                 await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, coversation,
                     async (context, token) =>
                     {
-                        var activity = MessageFactory.Text(string.Format(conversationMessage.Message));
+                        Activity activity = MessageFactory.Text(conversationMessage.Message ?? string.Empty);
                         activity.TextFormat = TextFormatTypes.Markdown;
+
+                        if (conversationMessage.Images is not null && conversationMessage.Images.Count > 0)
+                        {
+                            var attachments = conversationMessage.Images.Select(img =>
+                            {
+                                return new Attachment
+                                {
+                                    ContentType = "image",
+                                    ContentUrl = img
+                                };
+                            }).ToList();
+                            activity.Attachments = attachments;
+                        }
                         await context.SendActivityAsync(activity, cancellationToken: token);
                     },
                     new CancellationToken());
@@ -173,6 +187,11 @@
                 .AddSection("Params", param);
 
             await logger.ErrorAsync(logMessage.ToString());
+        }
+
+        public Task<SendMessageResult> SendAttachmentAsync(ConversationMessage conversationMessage, System.Net.Mail.Attachment attachment)
+        {
+            throw new NotImplementedException();
         }
     }
 }

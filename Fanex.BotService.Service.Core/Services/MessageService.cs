@@ -9,19 +9,9 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
 
-    public class MessageService : IMessageService
+    public class MessageService(IBaseService baseService, ICommonLogService commonLogService, IMessageQueueService queueMessageService) : IMessageService
     {
-        private readonly IBaseService baseService;
-        private readonly ICommonLogService commonLogService;
-        private readonly IMessageQueueService queueMessageService;
         private static readonly int reSchedulerTimer = 10;
-
-        public MessageService(IBaseService baseService, ICommonLogService commonLogService, IMessageQueueService queueMessageService)
-        {
-            this.baseService = baseService;
-            this.commonLogService = commonLogService;
-            this.queueMessageService = queueMessageService;
-        }
 
         public async Task<int> InsertNewMessageAsync(Conversation conversation, int retryTimeSpan)
         {
@@ -30,6 +20,7 @@
                 AppId = conversation.AppId,
                 ConversationId = conversation.ConversationId,
                 Content = conversation.Content,
+                Attachments = conversation.Images is not null && conversation.Images.Count > 0 ? string.Join(",", conversation.Images) : string.Empty,
                 ChannelId = (byte)conversation.Channel,
                 CreatedDate = DateTimeOffset.UtcNow.DateTime,
                 Status = MessageStatuses.New
