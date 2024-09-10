@@ -65,7 +65,7 @@
         }
 
         private static bool IsValidAttchments(List<string> attachments)
-        => attachments != null || attachments.Count > MaxAttachments;
+        => attachments == null || (attachments != null && attachments.Count <= MaxAttachments);
 
         private static bool IsValidConversation(Conversation conversation, out string errMsg)
         {
