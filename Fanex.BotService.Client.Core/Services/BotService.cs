@@ -1,13 +1,13 @@
 ﻿namespace Fanex.BotService.Client.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Fanex.BotService.Client.Core.Client;
     using Fanex.BotService.Client.Core.Configuration;
     using Fanex.BotService.Client.Core.Enum;
     using Fanex.BotService.Client.Core.Models;
     using Fanex.BotService.Client.Core.Services.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public class BotService : IBotService
     {
@@ -95,7 +95,6 @@
             };
 
             ValidateInputConversation(conversation);
-
             await botClient.SendAsync(conversation);
         }
     }

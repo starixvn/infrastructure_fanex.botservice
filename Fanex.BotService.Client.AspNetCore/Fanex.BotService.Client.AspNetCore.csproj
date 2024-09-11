@@ -4,10 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.2</Version>
+    <Version>1.2.0</Version>
     <Authors>Oliver Dang</Authors>
     <Company>Nexcel Solutions</Company>
-    <Description>Send message to skype/telegram by bot for .NET Core</Description>
+    <Description>Send message to skype/telegram by bot for .NET Core. Lastest version support send image, maximum is 3 images per message</Description>
   </PropertyGroup>
 
   <ItemGroup>
