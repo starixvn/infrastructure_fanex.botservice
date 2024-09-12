@@ -20,7 +20,7 @@
                 AppId = conversation.AppId,
                 ConversationId = conversation.ConversationId,
                 Content = conversation.Content,
-                Attachments = conversation.Images is not null && conversation.Images.Count > 0 ? string.Join(",", conversation.Images) : string.Empty,
+                Attachments = conversation.Images is not null && conversation.Images.Count > 0 ? JsonConvert.SerializeObject(conversation.Images) : string.Empty,
                 ChannelId = (byte)conversation.Channel,
                 CreatedDate = DateTimeOffset.UtcNow.DateTime,
                 Status = MessageStatuses.New
