@@ -29,9 +29,7 @@
             }
             catch (Exception ex)
             {
-
             }
-            
 
             return Ok("OK");
         }
