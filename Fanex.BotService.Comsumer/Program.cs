@@ -37,8 +37,6 @@ else
     app.UseHsts();
 }
 
-app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthorization();
