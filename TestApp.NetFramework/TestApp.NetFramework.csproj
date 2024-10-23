@@ -64,5 +64,8 @@
       <Name>Fanex.BotService.Client.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+        <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+    </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
