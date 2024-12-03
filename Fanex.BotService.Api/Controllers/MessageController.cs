@@ -9,7 +9,7 @@
 
     public class MessageController(IMessageQueueService queueService) : Controller
     {
-        private const byte MaxAttachments = 3;
+        private const byte MaxAttachments = 20;
 
         [HttpPost]
         [Route("api/{channel}/send")]

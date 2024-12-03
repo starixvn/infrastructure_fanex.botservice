@@ -100,7 +100,7 @@
         }
 
         private ConsumerSetting? GetConsumerSetting(string queueName)
-            => consumerSettings.FirstOrDefault(s => s.QueueName.Equals(queueName, StringComparison.OrdinalIgnoreCase));
+            => consumerSettings.Find(s => s.QueueName.Equals(queueName, StringComparison.OrdinalIgnoreCase));
 
         #region Subscribe
 

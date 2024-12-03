@@ -20,9 +20,9 @@
             {
                 await botService.SendMessageWithImagesAsync(BotChannel.Skype,
                 conversationId,
-                $"Msg: Hi Oliver, this is the message Test Skype 1",
+                $"Msg: Hi Oliver, this is the message Test Skype 3",
                 [
-                    "https://t3.ftcdn.net/jpg/05/85/86/44/360_F_585864419_kgIYUcDQ0yiLOCo1aRjeu7kRxndcoitz.jpg"
+                    "https://licbot.nexdev.net/crmupload/road-to-the-bluebonnet-house.jpg"
                 ]);
             }
             catch (Exception ex)
