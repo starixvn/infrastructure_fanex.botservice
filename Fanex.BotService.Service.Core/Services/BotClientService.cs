@@ -1,8 +1,5 @@
 ﻿namespace Fanex.BotService.Service.Core.Services
 {
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
     using Fanex.BotService.Service.Core.Configurations;
     using Fanex.BotService.Service.Core.Enum;
     using Fanex.BotService.Service.Core.Models;
@@ -13,6 +10,9 @@
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Caching.Memory;
     using Newtonsoft.Json;
+    using System.Net.Http.Headers;
+    using System.Net.Http.Json;
+    using System.Threading.Tasks;
 
     public class BotClientService : IBotClientService
     {
@@ -41,6 +41,11 @@
             try
             {
                 ApiConfig apiConfig = botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
+                if (apiConfig == null)
+                {
+                    throw new ArgumentNullException(nameof(apiConfig));
+                }
+
                 string token = await GetTokenAsync();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig.SendMessageUrl}");

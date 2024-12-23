@@ -50,6 +50,21 @@
             await botClient.SendTelegramAsync(conversation);
         }
 
+        public async Task SendMsTeamsAsync(string conversationId, string content)
+        {
+            Conversation conversation = new Conversation
+            {
+                AppId = botSettings.AppId,
+                ConversationId = conversationId,
+                Content = content,
+                Channel = BotChannel.Teams
+            };
+
+            ValidateInputConversation(conversation);
+
+            await botClient.SendAsync(conversation);
+        }
+
         public async Task SendAsync(BotChannel channel, string conversationId, string content)
         {
             Conversation conversation = new Conversation

@@ -26,20 +26,6 @@
         }
 
         [HttpPost]
-        [Route("api/msteams/send")]
-        public async Task<IActionResult> SendViaTeamsAsync(Conversation conversation)
-        {
-            if (!IsValidConversation(conversation, out string errMsg))
-            {
-                return BadRequest(errMsg);
-            }
-            conversation.Channel = BotChannel.Teams;
-            await queueService.PublishAsync(conversation);
-
-            return Ok();
-        }
-
-        [HttpPost]
         [Route("api/bot/send")]
         public async Task<IActionResult> SendAsync([FromBody] Conversation conversation)
         {
@@ -70,13 +56,15 @@
         private static bool IsValidConversation(Conversation conversation, out string errMsg)
         {
             errMsg = !IsValidAttchments(conversation.Images) ? $"Exceeds number of attachments, max is {MaxAttachments}" : "Invalid input data";
-
             return conversation is not null &&
-                !string.IsNullOrEmpty(conversation.ConversationId) &&
-                !string.IsNullOrEmpty(conversation.Content) &&
-                conversation.AppId > 0 &&
+                IsValidConversationModel(conversation) &&
                 IsValidAttchments(conversation.Images);
         }
+
+        private static bool IsValidConversationModel(Conversation conversation)
+            => !string.IsNullOrEmpty(conversation.ConversationId) &&
+                !string.IsNullOrEmpty(conversation.Content) &&
+                conversation.AppId > 0;
 
         private static bool IsValidMessageEndpoint(MessageEndpoint message)
             => message is not null &&

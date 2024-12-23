@@ -1,13 +1,15 @@
 ﻿namespace Fanex.BotService.Client.Core.Client
 {
-    using System.Threading.Tasks;
     using Fanex.BotService.Client.Core.Models;
+    using System.Threading.Tasks;
 
     internal interface IBotClient
     {
         Task SendTelegramAsync(Conversation conversation);
 
         Task SendSkypeAsync(Conversation conversation);
+
+        Task SendMsTeamsAsync(Conversation conversation);
 
         Task SendAsync(Conversation conversation);
     }
@@ -21,7 +23,10 @@
             => await PostAsync<Conversation, Task>(ApiPath.TelegramChannelApiPath, conversation);
 
         public async Task SendAsync(Conversation conversation)
-        => await PostAsync<Conversation, Task>(ApiPath.BotApiPath, conversation);
+            => await PostAsync<Conversation, Task>(ApiPath.BotApiPath, conversation);
+
+        public async Task SendMsTeamsAsync(Conversation conversation)
+            => await PostAsync<Conversation, Task>(ApiPath.BotApiPath, conversation);
 
         private static class ApiPath
         {
