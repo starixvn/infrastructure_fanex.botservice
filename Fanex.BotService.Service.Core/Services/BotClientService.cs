@@ -41,14 +41,11 @@
             try
             {
                 ApiConfig apiConfig = botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
-                if (apiConfig == null)
-                {
-                    throw new ArgumentNullException(nameof(apiConfig));
-                }
+                CheckValidApiConfig(apiConfig);
 
                 string token = await GetTokenAsync();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig.SendMessageUrl}");
+                var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig?.SendMessageUrl}");
                 using var response = await httpClient.PostAsJsonAsync(url, message);
                 response.EnsureSuccessStatusCode();
                 var responseData = await response.Content.ReadAsStringAsync();
@@ -64,6 +61,14 @@
             }
 
             return result;
+        }
+
+        private void CheckValidApiConfig(ApiConfig apiConfig)
+        {
+            if (apiConfig == null)
+            {
+                throw new ArgumentNullException(nameof(apiConfig));
+            }
         }
 
         private async Task<string> GetTokenAsync()

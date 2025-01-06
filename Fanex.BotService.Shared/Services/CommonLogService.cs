@@ -1,10 +1,10 @@
 ﻿namespace Fanex.BotService.Shared.Services
 {
-    using System;
-    using System.Threading.Tasks;
     using Fanex.BotService.Shared.Services.Interfaces;
     using NLog;
     using NLog.Web;
+    using System;
+    using System.Threading.Tasks;
 
     public class CommonLogService : ICommonLogService
     {

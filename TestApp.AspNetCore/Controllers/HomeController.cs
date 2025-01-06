@@ -20,7 +20,7 @@
             {
                 await botService.SendAsync(BotChannel.Teams,
                 conversationId,
-                $"Msg: Hi Oliver, this is the message Test Skype 3");
+                $"Msg: Hi Oliver, this is the message Test Skype 5");
             }
             catch (Exception ex)
             {

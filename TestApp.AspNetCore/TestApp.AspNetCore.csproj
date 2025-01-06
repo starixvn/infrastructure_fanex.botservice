@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.BotService.Client.AspNetCore\Fanex.BotService.Client.AspNetCore.csproj" />
+    <PackageReference Include="Fanex.BotService.Client.AspNetCore" Version="1.2.1" />
   </ItemGroup>
 
 </Project>
