@@ -1,10 +1,10 @@
-﻿namespace Fanex.BotService.Comsumer
+﻿namespace Fanex.BotService.Consumer
 {
     using System.Net;
     using System.Net.Security;
     using System.Security.Authentication;
     using EasyNetQ;
-    using Fanex.BotService.Comsumer.MessageBrokers;
+    using Fanex.BotService.Consumer.MessageBrokers;
     using Fanex.BotService.Service.Core.Configurations;
     using Fanex.BotService.Service.Core.Services;
     using Fanex.BotService.Service.Core.Services.Interfaces;

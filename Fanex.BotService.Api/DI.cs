@@ -1,11 +1,10 @@
 ﻿namespace Fanex.BotService.Api
 {
     using EasyNetQ;
-    using Fanex.BotService.Service.Core.Configurations;
-    using Fanex.BotService.Service.Core.Services;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Services;
-    using Fanex.BotService.Shared.Services.Interfaces;
+    using Service.Core.Services;
+    using Service.Core.Services.Interfaces;
+    using Shared.Services;
+    using Shared.Services.Interfaces;
 
     public static class DI
     {

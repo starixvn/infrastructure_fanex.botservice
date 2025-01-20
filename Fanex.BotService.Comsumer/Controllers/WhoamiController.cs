@@ -1,4 +1,4 @@
-﻿namespace Fanex.BotService.Comsumer.Controllers
+﻿namespace Fanex.BotService.Consumer.Controllers
 {
     using Fanex.NCB.Shared;
     using Microsoft.AspNetCore.Authorization;

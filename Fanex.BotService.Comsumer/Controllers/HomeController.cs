@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Fanex.BotService.Comsumer.Controllers
+namespace Fanex.BotService.Consumer.Controllers
 {
     public class HomeController : Controller
     {
@@ -15,7 +15,7 @@ namespace Fanex.BotService.Comsumer.Controllers
 
         public IActionResult Index()
         {
-            return Ok("Comsumer running ...");
+            return Ok("Consumer running ...");
         }
 
         [AllowAnonymous]

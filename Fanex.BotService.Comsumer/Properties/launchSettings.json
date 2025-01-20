@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Fanex.BotService.Comsumer": {
+    "Fanex.BotService.Consumer": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

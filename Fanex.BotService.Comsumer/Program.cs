@@ -1,4 +1,4 @@
-using Fanex.BotService.Comsumer;
+using Fanex.BotService.Consumer;
 using Fanex.BotService.Shared.Extensions;
 using Fanex.Data.SqlServer;
 using Fanex.NCB.Shared.Middlewares;

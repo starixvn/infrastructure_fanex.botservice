@@ -1,15 +1,15 @@
-﻿namespace Fanex.BotService.Comsumer.MessageBrokers
+﻿namespace Fanex.BotService.Consumer.MessageBrokers
 {
     using EasyNetQ;
-    using Fanex.BotService.Service.Core.Configurations;
-    using Fanex.BotService.Service.Core.Constants;
     using Fanex.BotService.Service.Core.Enum;
-    using Fanex.BotService.Service.Core.Models;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Models.Message;
-    using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Newtonsoft.Json;
+    using Service.Core.Configurations;
+    using Service.Core.Constants;
+    using Service.Core.Models;
+    using Service.Core.Services.Interfaces;
+    using Shared.Models.Message;
+    using Shared.Services.Interfaces;
 
     public interface IMessageBroker : IDisposable
     {
@@ -23,8 +23,8 @@
          IMessageQueueService messageQueueService) : IMessageBroker
     {
         private readonly List<ConsumerSetting> consumerSettings = AppSettings.ConsumerSettings;
-        private readonly int TimeDelayBeforeRetryInSeccond = 10;
-        private readonly int MaxRetryTime = 5;
+        private const int TimeDelayBeforeRetry = 10;
+        private const int MaxRetryTime = 5;
 
         public void Start()
         {
@@ -33,7 +33,7 @@
             UpdateMessageStatusConsumer();
         }
 
-        private void InsertMessageToDatabaseConsumer()
+        public void InsertMessageToDatabaseConsumer()
         {
             var setting = GetConsumerSetting(QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE);
             if (setting is not null && setting.IsConsumed)
@@ -58,12 +58,12 @@
                         await messageQueueService.PublishAsync(msgSendToEndpoint);
                     }
 
-                    logService.LogFileMessage($"End comsume {QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE}");
+                    logService.LogFileMessage($"End consume {QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE}");
                 });
             }
         }
 
-        private void SendMessageToEndpointConsumer()
+        public void SendMessageToEndpointConsumer()
         {
             var setting = GetConsumerSetting(QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT);
             if (setting is not null && setting.IsConsumed)
@@ -71,18 +71,18 @@
                 Subscribe<MessageEndpoint>(QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT,
                 async (message) =>
                 {
-                    logService.LogFileMessage($"Begin consum: {QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT}. Data: {JsonConvert.SerializeObject(message)}");
+                    logService.LogFileMessage($"Begin consume: {QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT}. Data: {JsonConvert.SerializeObject(message)}");
 
                     var sentResult = await botClientService.SendMessageAsync((BotChannel)message.ChannelId, message);
 
                     await messageQueueService.PublishAsync(sentResult);
 
-                    logService.LogFileMessage($"End comsume {QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT}");
+                    logService.LogFileMessage($"End consume {QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT}");
                 });
             }
         }
 
-        private void UpdateMessageStatusConsumer()
+        public void UpdateMessageStatusConsumer()
         {
             var setting = GetConsumerSetting(QueueSubcriptionId.UPDATE_MESSAGE_STATUS);
             if (setting is not null && setting.IsConsumed)
@@ -94,7 +94,7 @@
 
                     await messageService.UpdateMessageStatusAsync(message, setting.RetryTimeSpan ?? 1);
 
-                    logService.LogFileMessage($"End comsume {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}");
+                    logService.LogFileMessage($"End consume {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}");
                 });
             }
         }
@@ -114,7 +114,7 @@
                    subscriptionId,
                    action);
 
-                logService.LogFileMessage($"Subcribed the queue with key {subscriptionId} successfully");
+                logService.LogFileMessage($"Subscribe the queue with key {subscriptionId} successfully");
             }
             catch (Exception ex)
             {
@@ -124,7 +124,7 @@
 
             if (isFailed && retryCount < MaxRetryTime)
             {
-                Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
+                Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetry));
                 Subscribe(subscriptionId, action, retryCount);
             }
         }

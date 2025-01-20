@@ -1,8 +1,8 @@
 ﻿namespace Fanex.BotService.Api.Controllers
 {
-    using Fanex.BotService.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Shared.Services.Interfaces;
 
     public class HomeController : Controller
     {

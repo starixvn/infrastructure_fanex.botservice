@@ -1,11 +1,11 @@
 ﻿namespace Fanex.BotService.Api.Controllers
 {
     using Fanex.BotService.Service.Core.Enum;
-    using Fanex.BotService.Service.Core.Models;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Models.Message;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
+    using Service.Core.Models;
+    using Service.Core.Services.Interfaces;
+    using Shared.Models.Message;
 
     public class MessageController(IMessageQueueService queueService) : Controller
     {
@@ -50,23 +50,22 @@
             return Ok();
         }
 
-        private static bool IsValidAttchments(List<string> attachments)
-        => attachments == null || (attachments != null && attachments.Count <= MaxAttachments);
+        public static bool IsValidAttachments(List<string> attachments)
+        => attachments is not { Count: > MaxAttachments };
 
-        private static bool IsValidConversation(Conversation conversation, out string errMsg)
+        public static bool IsValidConversation(Conversation conversation, out string errMsg)
         {
-            errMsg = !IsValidAttchments(conversation.Images) ? $"Exceeds number of attachments, max is {MaxAttachments}" : "Invalid input data";
-            return conversation is not null &&
-                IsValidConversationModel(conversation) &&
-                IsValidAttchments(conversation.Images);
+            errMsg = !IsValidAttachments(conversation.Images) ? $"Exceeds number of attachments, max is {MaxAttachments}" : "Invalid input data";
+            return IsValidConversationModel(conversation) &&
+                IsValidAttachments(conversation.Images);
         }
 
-        private static bool IsValidConversationModel(Conversation conversation)
+        public static bool IsValidConversationModel(Conversation conversation)
             => !string.IsNullOrEmpty(conversation.ConversationId) &&
                 !string.IsNullOrEmpty(conversation.Content) &&
                 conversation.AppId > 0;
 
-        private static bool IsValidMessageEndpoint(MessageEndpoint message)
+        public static bool IsValidMessageEndpoint(MessageEndpoint message)
             => message is not null &&
                 message.MessageId > 0 &&
                 !string.IsNullOrEmpty(message.ConversationId) &&
