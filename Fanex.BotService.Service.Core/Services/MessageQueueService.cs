@@ -38,7 +38,7 @@
             }
         }
 
-        public async Task PublishAsync<T>(T model, string topic, int retryCount = 0)
+        public async Task PublishWithTopicAsync<T>(T model, string topic, int retryCount = 0)
         {
             while (true)
             {

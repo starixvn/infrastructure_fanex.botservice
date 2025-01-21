@@ -1,36 +1,25 @@
 ﻿namespace Fanex.BotService.Core.Services
 {
+    using Criteria;
+    using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
+    using Interfaces;
+    using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Connector;
+    using Microsoft.Bot.Connector.Authentication;
+    using Microsoft.Extensions.Caching.Memory;
+    using Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web;
-    using Fanex.BotService.Core.Criteria;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Connector;
-    using Microsoft.Bot.Connector.Authentication;
-    using Microsoft.Extensions.Caching.Memory;
-    using Microsoft.Extensions.Configuration;
 
-    public class ConversationService : IConversationService
+    public class ConversationService(IBaseService baseService,
+        AppSettings appSettings,
+        IMemoryCache memoryCache) : IConversationService
     {
-        private readonly string botSettingKeys = "BotSettingKeys";
-        private readonly IBaseService baseService;
-        private readonly IMemoryCache memoryCache;
-        private readonly AppSettings appSettings;
-
-        public ConversationService(IBaseService baseService,
-            AppSettings appSettings,
-            IMemoryCache memoryCache)
-        {
-            this.baseService = baseService;
-            this.memoryCache = memoryCache;
-            this.appSettings = appSettings;
-        }
+        private const string BotSettingKeys = "BotSettingKeys";
 
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
         {
@@ -43,24 +32,23 @@
         {
             var isExistInCache = false;
             IEnumerable<Bot> bots = new List<Bot>();
-            if (memoryCache.TryGetValue(botSettingKeys, out _))
+            if (memoryCache.TryGetValue(BotSettingKeys, out _))
             {
-                bots = memoryCache.Get<IEnumerable<Bot>>(botSettingKeys);
+                bots = memoryCache.Get<IEnumerable<Bot>>(BotSettingKeys);
                 if (bots != null)
                 {
                     isExistInCache = true;
                 }
             }
 
-            if (!isExistInCache)
+            if (isExistInCache) return bots;
+
+            var criteria = new GetAllBotCriteria();
+            bots = await baseService.GetDataAsync<Bot>(criteria);
+            memoryCache.Set(BotSettingKeys, bots, new MemoryCacheEntryOptions
             {
-                var criteria = new GetAllBotCriteria();
-                bots = await baseService.GetDataAsync<Bot>(criteria);
-                memoryCache.Set(botSettingKeys, bots, new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(appSettings.BotListCacheLifeTime)
-                });
-            }
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(appSettings.BotListCacheLifeTime)
+            });
 
             return bots;
         }

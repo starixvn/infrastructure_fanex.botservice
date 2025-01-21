@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Core.Criteria
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetApplicationSettingCriteria : CriteriaBase
     {

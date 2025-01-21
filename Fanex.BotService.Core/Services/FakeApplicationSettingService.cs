@@ -1,20 +1,13 @@
 ﻿namespace Fanex.BotService.Core.Services
 {
+    using Core;
+    using Interfaces;
+    using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.BotService.Core;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
 
-    public class FakeApplicationSettingService : IApplicationSettingService
+    public class FakeApplicationSettingService(IList<BotConfigs> botConfigs) : IApplicationSettingService
     {
-        private readonly IList<BotConfigs> botConfigs;
-
-        public FakeApplicationSettingService(IList<BotConfigs> botConfigs)
-        {
-            this.botConfigs = botConfigs;
-        }
-
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
         {
             var applicationSettings = new List<ApplicationSetting>();

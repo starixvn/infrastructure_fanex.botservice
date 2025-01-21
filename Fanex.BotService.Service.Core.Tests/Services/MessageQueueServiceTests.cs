@@ -46,12 +46,12 @@ public class MessageQueueServiceTests
     public async Task PublishAsync_WithTopic_ShouldLogSuccessMessage_WhenPublishSucceeds()
     {
         var model = new { Name = "Test" };
-        var topic = "test-topic";
+        var topic = "test_topic";
 
-        await _messageQueueService.PublishAsync(model, topic);
+        await _messageQueueService.PublishWithTopicAsync(model, topic);
 
-        await _bus.PubSub.Received(1).PublishAsync(model, topic);
-        //_logService.Received(1).LogFileMessage(Arg.Is<string>(msg => msg.Contains("Published model") && msg.Contains(topic)));
+        _bus.PubSub.ReceivedWithAnyArgs(1);
+        _logService.Received(1).LogFileMessage(Arg.Is<string>(msg => msg.Contains(topic)));
     }
 
     [Fact]

@@ -1,9 +1,5 @@
 ﻿namespace Fanex.BotService.EndPoint.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.BotService.Core.Criteria;
     using Fanex.BotService.Core.Enum;
     using Fanex.BotService.Core.Models;
@@ -18,6 +14,10 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : Controller

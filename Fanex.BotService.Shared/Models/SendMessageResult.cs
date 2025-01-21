@@ -16,12 +16,6 @@
 
         public bool IsIgnoreRetry { get; set; }
 
-        public bool IsSucessfull
-        {
-            get
-            {
-                return ErrorCode == 0;
-            }
-        }
+        public bool IsSucessfull => ErrorCode == 0;
     }
 }

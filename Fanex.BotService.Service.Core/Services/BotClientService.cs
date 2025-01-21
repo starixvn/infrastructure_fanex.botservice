@@ -1,14 +1,14 @@
 ﻿namespace Fanex.BotService.Service.Core.Services
 {
-    using Fanex.BotService.Service.Core.Configurations;
-    using Fanex.BotService.Service.Core.Enum;
-    using Fanex.BotService.Service.Core.Models;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
+    using Configurations;
+    using Enum;
     using Fanex.BotService.Shared.Constants;
     using Fanex.BotService.Shared.Models.Message;
     using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Interfaces;
     using Microsoft.Extensions.Caching.Memory;
+    using Models;
     using Newtonsoft.Json;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
@@ -20,9 +20,10 @@
         private readonly BotEndpointConfiguration botConfigs;
         private readonly IMemoryCache memoryCache;
         private readonly ICommonLogService commonLogService;
-        private const string BOT_TOKEN_API_KEY = "FanexBot_EndpointAPI_Token";
+        private const string BotTokenApiKey = "FanexBot_EndpointAPI_Token";
 
-        public BotClientService(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache, ICommonLogService commonLogService)
+        public BotClientService(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache,
+            ICommonLogService commonLogService)
         {
             httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
             botConfigs = AppSettings.BotEndpointConfiguration;
@@ -40,10 +41,10 @@
 
             try
             {
-                ApiConfig apiConfig = botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
+                var apiConfig = botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
                 CheckValidApiConfig(apiConfig);
 
-                string token = await GetTokenAsync();
+                var token = await GetTokenAsync();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var url = new Uri($"{botConfigs.ServiceUrl}{apiConfig?.SendMessageUrl}");
                 using var response = await httpClient.PostAsJsonAsync(url, message);
@@ -63,21 +64,19 @@
             return result;
         }
 
-        private void CheckValidApiConfig(ApiConfig apiConfig)
+        private static void CheckValidApiConfig(ApiConfig apiConfig)
         {
-            if (apiConfig == null)
-            {
-                throw new ArgumentNullException(nameof(apiConfig));
-            }
+            if (apiConfig != null) return;
+            throw new ArgumentNullException(nameof(apiConfig));
         }
 
         private async Task<string> GetTokenAsync()
         {
             var isExistInCache = false;
-            string token = string.Empty;
-            if (memoryCache.TryGetValue(BOT_TOKEN_API_KEY, out _))
+            var token = string.Empty;
+            if (memoryCache.TryGetValue(BotTokenApiKey, out _))
             {
-                token = memoryCache.Get<string>(BOT_TOKEN_API_KEY);
+                token = memoryCache.Get<string>(BotTokenApiKey);
                 commonLogService.LogFileMessage($"Token from cache: {token}");
                 if (!string.IsNullOrWhiteSpace(token))
                 {
@@ -85,20 +84,18 @@
                 }
             }
 
-            if (!isExistInCache)
-            {
-                var authToken = await AuthenticateAsync();
-                if (authToken != null)
-                {
-                    token = authToken.AccessToken;
-                    commonLogService.LogFileMessage($"Token from API: {token}");
+            if (isExistInCache) return token;
 
-                    memoryCache.Set(BOT_TOKEN_API_KEY, token, new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(botConfigs.JwtCacheLifeTime)
-                    });
-                }
-            }
+            var authToken = await AuthenticateAsync();
+            if (authToken == null) return token;
+
+            token = authToken.AccessToken;
+            commonLogService.LogFileMessage($"Token from API: {token}");
+
+            memoryCache.Set(BotTokenApiKey, token, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(botConfigs.JwtCacheLifeTime)
+            });
 
             return token;
         }

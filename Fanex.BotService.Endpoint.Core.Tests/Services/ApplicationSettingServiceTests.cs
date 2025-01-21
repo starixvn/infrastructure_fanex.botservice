@@ -1,0 +1,81 @@
+using Fanex.BotService.Core.Models;
+using Fanex.BotService.Core.Services;
+using Fanex.BotService.Core.Services.Interfaces;
+using Fanex.Data.Repository;
+using Fanex.NCB.Shared.Services.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
+using NSubstitute;
+
+namespace Fanex.BotService.Endpoint.Core.Tests.Services;
+
+public class ApplicationSettingServiceTests
+{
+    private readonly IBaseService baseService;
+    private readonly IMemoryCache memoryCache;
+    private readonly IApplicationSettingService applicationSettingService;
+
+    public ApplicationSettingServiceTests()
+    {
+        baseService = Substitute.For<IBaseService>();
+        memoryCache = Substitute.For<IMemoryCache>();
+        applicationSettingService = new ApplicationSettingService(baseService, memoryCache);
+    }
+
+    [Fact]
+    public async Task GetApplicationSettingAsync_ShouldReturnSettingsFromCache_WhenCacheIsNotEmpty()
+    {
+        // Arrange
+        var cachedSettings = new List<ApplicationSetting>
+        {
+            new ApplicationSetting { AppId = 1, MicrosoftAppPassword = "encryptedPassword" }
+        };
+        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
+        {
+            x[1] = cachedSettings;
+            return true;
+        });
+
+        // Act
+        var result = await applicationSettingService.GetApplicationSettingAsync();
+
+        // Assert
+        Assert.Equal(cachedSettings, result);
+    }
+
+    [Fact]
+    public async Task GetApplicationSettingAsync_ShouldReturnSettingsFromService_WhenCacheIsEmpty()
+    {
+        // Arrange
+        var serviceSettings = new List<ApplicationSetting>
+        {
+            new() { AppId = 1, MicrosoftAppPassword = "VtQK3Joi9l1PFXjctAqNcg==" }
+        };
+        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
+        baseService.GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>()).Returns(serviceSettings);
+
+        // Act
+        var result = await applicationSettingService.GetApplicationSettingAsync();
+
+        // Assert
+        Assert.Equal(serviceSettings, result);
+        await baseService.Received(1).GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>());
+    }
+
+    [Fact]
+    public async Task GetApplicationSettingAsync_ShouldDecryptPasswords_WhenSettingsAreFetchedFromService()
+    {
+        // Arrange
+        var serviceSettings = new List<ApplicationSetting>
+        {
+            new() { AppId = 1, MicrosoftAppPassword = "VtQK3Joi9l1PFXjctAqNcg==" }
+        };
+        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
+        baseService.GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>()).Returns(serviceSettings);
+
+        // Act
+        var result = await applicationSettingService.GetApplicationSettingAsync();
+
+        // Assert
+        Assert.All(result, setting => Assert.NotEqual("VtQK3Joi9l1PFXjctAqNcg==", setting.MicrosoftAppPassword));
+    }
+}

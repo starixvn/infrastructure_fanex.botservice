@@ -1,17 +1,17 @@
 ﻿namespace Fanex.BotService.Service.Core.Services
 {
-    using Fanex.BotService.Service.Core.Constants;
-    using Fanex.BotService.Service.Core.Criteria.Message;
-    using Fanex.BotService.Service.Core.Models;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
+    using Constants;
+    using Criteria.Message;
     using Fanex.BotService.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Interfaces;
+    using Models;
     using Newtonsoft.Json;
 
     public class MessageService(IBaseService baseService, ICommonLogService commonLogService, IMessageQueueService queueMessageService) : IMessageService
     {
-        private static readonly int reSchedulerTimer = 10;
+        private const int ReSchedulerTimer = 10;
 
         public async Task<int> InsertNewMessageAsync(Conversation conversation, int retryTimeSpan)
         {
@@ -32,7 +32,7 @@
             catch (Exception ex)
             {
                 await commonLogService.SentryErrorAsync($"Data: {JsonConvert.SerializeObject(conversation)} \r\n. ErrorMsg: {ex.Message}", ex);
-                await queueMessageService.SchedulerPublishAsync(conversation, reSchedulerTimer);
+                await queueMessageService.SchedulerPublishAsync(conversation, ReSchedulerTimer);
             }
             return command.MessageId;
         }
@@ -56,7 +56,7 @@
             catch (Exception exception)
             {
                 await commonLogService.SentryErrorAsync($"Message ID: {result.MessageId}. ErrMsg: {exception.Message}", exception);
-                await queueMessageService.SchedulerPublishAsync(result, reSchedulerTimer);
+                await queueMessageService.SchedulerPublishAsync(result, ReSchedulerTimer);
             }
         }
     }

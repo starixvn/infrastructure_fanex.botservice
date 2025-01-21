@@ -1,31 +1,22 @@
 ﻿namespace Fanex.BotService.Core.Services
 {
+    using Core;
+    using Criteria;
+    using Fanex.NCB.Shared.Models;
+    using Interfaces;
+    using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Connector;
+    using Microsoft.Bot.Connector.Authentication;
+    using Microsoft.Extensions.Logging;
+    using Models;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.Json;
     using System.Threading.Tasks;
     using System.Web;
-    using Fanex.BotService.Core;
-    using Fanex.BotService.Core.Criteria;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Connector;
-    using Microsoft.Bot.Connector.Authentication;
-    using Microsoft.Extensions.Logging;
 
-    public class FakeConversationService : IConversationService
+    public class FakeConversationService(IList<BotConfigs> botConfigs, ILogger<MessageSenderService> fileLogger) : IConversationService
     {
-        private readonly IList<BotConfigs> botConfigs;
-        private readonly ILogger<MessageSenderService> filelogger;
-
-        public FakeConversationService(IList<BotConfigs> botConfigs, ILogger<MessageSenderService> filelogger)
-        {
-            this.botConfigs = botConfigs;
-            this.filelogger = filelogger;
-        }
-
         public async Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync()
         {
             var applicationSettings = botConfigs.Select(t =>
@@ -79,7 +70,7 @@
             };
 
             var commandJson = JsonSerializer.Serialize(command);
-            filelogger.LogError(commandJson);
+            fileLogger.LogError(commandJson);
             return await Task.FromResult(new CommandResult());
         }
 
@@ -91,7 +82,7 @@
                 ConversationId = turnContext.Activity?.Conversation.Id
             };
             var commandJson = JsonSerializer.Serialize(command);
-            filelogger.LogError(commandJson);
+            fileLogger.LogError(commandJson);
 
             return await Task.FromResult(new CommandResult());
         }
@@ -112,7 +103,7 @@
                 MicrosoftAppId = microsoftAppId
             };
             var commandJson = JsonSerializer.Serialize(command);
-            filelogger.LogError(commandJson);
+            fileLogger.LogError(commandJson);
 
             return await Task.FromResult(new CommandResult());
         }
@@ -126,7 +117,7 @@
                 UpdatedBy = turnContext.Activity?.From.Id
             };
             var commandJson = JsonSerializer.Serialize(command);
-            filelogger.LogError(commandJson);
+            fileLogger.LogError(commandJson);
 
             return await Task.FromResult(new CommandResult());
         }
@@ -140,7 +131,7 @@
                 UpdatedBy = turnContext.Activity?.From.Id
             };
             var commandJson = JsonSerializer.Serialize(command);
-            filelogger.LogError(commandJson);
+            fileLogger.LogError(commandJson);
 
             return await Task.FromResult(new CommandResult());
         }
@@ -153,7 +144,7 @@
         public async Task<CommandResult> AddMessageLog(AddMessageLogCommand command)
         {
             var commandJson = JsonSerializer.Serialize(command);
-            filelogger.LogError(commandJson);
+            fileLogger.LogError(commandJson);
             return await Task.FromResult(new CommandResult());
         }
     }
