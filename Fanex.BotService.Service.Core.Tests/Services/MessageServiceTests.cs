@@ -3,9 +3,8 @@ using Fanex.BotService.Service.Core.Enum;
 using Fanex.BotService.Service.Core.Models;
 using Fanex.BotService.Service.Core.Services;
 using Fanex.BotService.Service.Core.Services.Interfaces;
+using Fanex.BotService.Shared.Models;
 using Fanex.BotService.Shared.Services.Interfaces;
-using Fanex.NCB.Shared.Models;
-using Fanex.NCB.Shared.Services.Interfaces;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 

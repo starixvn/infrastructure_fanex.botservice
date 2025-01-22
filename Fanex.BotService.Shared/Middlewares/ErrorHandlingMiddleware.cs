@@ -1,23 +1,14 @@
-﻿namespace Fanex.NCB.Shared.Middlewares
+﻿namespace Fanex.BotService.Shared.Middlewares
 {
-    using System;
-    using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Logging;
     using Microsoft.AspNetCore.Http;
+    using System;
+    using System.Threading.Tasks;
 
-    public class ErrorHandlingMiddleware
+    public class ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
     {
-        private readonly RequestDelegate next;
-        private readonly ILogger logger;
-
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
-        {
-            this.next = next;
-            this.logger = logger;
-        }
-
         public async Task InvokeAsync(HttpContext context)
         {
             try

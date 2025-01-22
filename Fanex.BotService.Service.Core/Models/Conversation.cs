@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Service.Core.Models
 {
-    using Fanex.BotService.Service.Core.Enum;
+    using Enum;
 
     public class Conversation
     {

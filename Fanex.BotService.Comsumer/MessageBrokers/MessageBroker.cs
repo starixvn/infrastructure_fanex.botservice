@@ -2,12 +2,12 @@
 {
     using EasyNetQ;
     using Fanex.BotService.Service.Core.Enum;
-    using Fanex.NCB.Shared.Models;
     using Newtonsoft.Json;
     using Service.Core.Configurations;
     using Service.Core.Constants;
     using Service.Core.Models;
     using Service.Core.Services.Interfaces;
+    using Shared.Models;
     using Shared.Models.Message;
     using Shared.Services.Interfaces;
 

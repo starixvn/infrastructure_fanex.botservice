@@ -1,14 +1,14 @@
 ﻿namespace Fanex.BotService.EndPoint.Controllers
 {
-    using Fanex.NCB.Shared;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Shared;
 
     public class WhoamiController : Controller
     {
         [Route("Whoami")]
         [AllowAnonymous]
-        public IActionResult Whoami()
+        public IActionResult WhoAmI()
         {
             return Content(WhoamiHelper.GetContent(HttpContext));
         }

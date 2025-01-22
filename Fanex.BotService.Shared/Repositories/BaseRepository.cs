@@ -1,11 +1,11 @@
-﻿namespace Fanex.NCB.Shared.Repositories
+﻿namespace Fanex.BotService.Shared.Repositories
 {
+    using Data;
+    using Data.Repository;
+    using Models;
     using System;
     using System.Collections;
     using System.Threading.Tasks;
-    using Fanex.Data;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models;
 
     public class BaseRepository : IBaseRepository
     {

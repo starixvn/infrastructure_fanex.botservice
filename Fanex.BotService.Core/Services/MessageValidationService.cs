@@ -1,11 +1,11 @@
 ﻿namespace Fanex.BotService.Core.Services
 {
+    using Caching;
+    using Interfaces;
+    using Models;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Caching;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
     using ILogger = Logging.ILogger;
 
     public class MessageValidationService : IMessageValidationService
@@ -34,7 +34,7 @@
             {
                 return false;
             }
-            bool isInvalid = false;
+            var isInvalid = false;
 
             try
             {
@@ -66,7 +66,7 @@
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                await logger.ErrorAsync(ex.Message);
             }
 
             return isInvalid;
@@ -83,7 +83,7 @@
             {
                 var messageKeys = await cacheService.GetAsync<string>(conversationId);
                 messageKeys = messageKeys + "," + guiid;
-                await cacheService.SetAsync(conversationId, messageKeys, 
+                await cacheService.SetAsync(conversationId, messageKeys,
                     new CacheItemOptions
                     {
                         SlidingExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
@@ -99,7 +99,6 @@
                         {
                             RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
                         });
-                
                 }
             }
             catch (Exception ex)
@@ -116,7 +115,7 @@
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                await logger.ErrorAsync(ex.Message);
             }
         }
     }

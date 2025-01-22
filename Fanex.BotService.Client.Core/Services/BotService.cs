@@ -1,10 +1,10 @@
 ﻿namespace Fanex.BotService.Client.Core.Services
 {
-    using Fanex.BotService.Client.Core.Client;
-    using Fanex.BotService.Client.Core.Configuration;
-    using Fanex.BotService.Client.Core.Enum;
-    using Fanex.BotService.Client.Core.Models;
-    using Fanex.BotService.Client.Core.Services.Interfaces;
+    using Client;
+    using Configuration;
+    using Enum;
+    using Interfaces;
+    using Models;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;

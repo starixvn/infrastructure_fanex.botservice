@@ -2,7 +2,7 @@ using Fanex.BotService.Core;
 using Fanex.BotService.Core.Criteria;
 using Fanex.BotService.Core.Models;
 using Fanex.BotService.Core.Services;
-using Fanex.NCB.Shared.Services.Interfaces;
+using Fanex.BotService.Shared.Services.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 

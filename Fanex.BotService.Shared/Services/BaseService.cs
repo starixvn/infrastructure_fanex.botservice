@@ -1,26 +1,15 @@
-﻿namespace Fanex.NCB.Shared.Services
+﻿namespace Fanex.BotService.Shared.Services
 {
+    using Data.Repository;
+    using Interfaces;
+    using Models;
+    using Repositories;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Repositories;
-    using Fanex.NCB.Shared.Services.Interfaces;
 
-    public class BaseService : IBaseService
+    public class BaseService(IDynamicRepository dynamicRepository, IBaseRepository baseRepository) : IBaseService
     {
-        private readonly IDynamicRepository dynamicRepository;
-        private readonly IBaseRepository baseRepository;
-
-        public BaseService(
-            IDynamicRepository dynamicRepository,
-            IBaseRepository baseRepository)
-        {
-            this.dynamicRepository = dynamicRepository;
-            this.baseRepository = baseRepository;
-        }
-
         public async Task<IEnumerable<T>> GetDataAsync<T>(ICriteria criteria)
         {
             if (criteria != null && criteria.IsValid())

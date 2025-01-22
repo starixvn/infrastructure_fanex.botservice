@@ -1,7 +1,7 @@
 ﻿namespace Fanex.BotService.Service.Core.Services.Interfaces
 {
-    using Fanex.BotService.Service.Core.Models;
-    using Fanex.NCB.Shared.Models;
+    using Fanex.BotService.Shared.Models;
+    using Models;
 
     public interface IMessageService
     {

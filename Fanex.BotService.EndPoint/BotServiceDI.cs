@@ -1,16 +1,15 @@
 ﻿namespace Fanex.BotService.EndPoint
 {
-    using System;
-    using System.Net;
-    using System.Net.Http;
-    using Fanex.BotService.EndPoint;
-    using Fanex.BotService.EndPoint.Bots.Interfaces;
-    using Fanex.BotService.EndPoint.Bots;
+    using Bots;
+    using Bots.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using System;
+    using System.Net;
+    using System.Net.Http;
 
     public static class BotServiceDI
     {

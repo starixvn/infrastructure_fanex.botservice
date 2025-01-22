@@ -1,13 +1,13 @@
 ﻿namespace Fanex.BotService.EndPoint.Bots
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Fanex.BotService.Core;
-    using Fanex.BotService.Core.Models;
+    using Core;
+    using Core.Models;
     using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.BotService.EndPoint.Bots.Interfaces;
+    using Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public class TelegramBot : ActivityHandler, ITelegramBot
     {

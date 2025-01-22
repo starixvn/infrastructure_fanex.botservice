@@ -5,7 +5,7 @@
     using Fanex.BotService.Shared.Constants;
     using Fanex.BotService.Shared.Models.Message;
     using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
+    using Fanex.BotService.Shared.Models;
     using Interfaces;
     using Microsoft.Extensions.Caching.Memory;
     using Models;

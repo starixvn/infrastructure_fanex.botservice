@@ -1,7 +1,7 @@
 ﻿namespace Fanex.BotService.Client.Core
 {
+    using Configuration;
     using System;
-    using Fanex.BotService.Client.Core.Configuration;
 
     public class BotClientManager
     {

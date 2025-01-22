@@ -2,7 +2,7 @@
 {
     using Criteria;
     using Data;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.BotService.Shared.Services.Interfaces;
     using Interfaces;
     using Microsoft.Extensions.Caching.Memory;
     using Models;

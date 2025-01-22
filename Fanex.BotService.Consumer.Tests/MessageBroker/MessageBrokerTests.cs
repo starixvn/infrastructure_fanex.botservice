@@ -6,7 +6,7 @@ using Fanex.BotService.Service.Core.Models;
 using Fanex.BotService.Service.Core.Services.Interfaces;
 using Fanex.BotService.Shared.Models.Message;
 using Fanex.BotService.Shared.Services.Interfaces;
-using Fanex.NCB.Shared.Models;
+using Fanex.BotService.Shared.Models;
 using NSubstitute;
 
 namespace Fanex.BotService.Consumer.Tests.MessageBroker;

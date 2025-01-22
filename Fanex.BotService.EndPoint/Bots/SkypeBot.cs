@@ -1,13 +1,13 @@
 ﻿namespace Fanex.BotService.EndPoint.Bots
 {
+    using Core;
+    using Fanex.BotService.Core.Services.Interfaces;
+    using Interfaces;
+    using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Schema;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.BotService.Core;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.BotService.EndPoint.Bots.Interfaces;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Schema;
 
     public class SkypeBot : ActivityHandler, ISkypeBot
     {

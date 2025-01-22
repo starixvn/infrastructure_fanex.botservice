@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Core.Criteria
 {
-    using Fanex.NCB.Shared.Models;
+    using Fanex.BotService.Shared.Models;
 
     public class RemoveBotOutGroupCommand : BaseCommand
     {

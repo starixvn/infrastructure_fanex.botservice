@@ -1,10 +1,10 @@
 ﻿namespace Fanex.BotService.EndPoint.Bots
 {
+    using Interfaces;
+    using Microsoft.Bot.Builder;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.BotService.EndPoint.Bots.Interfaces;
-    using Microsoft.Bot.Builder;
 
     public class BotFactory : IBot
     {

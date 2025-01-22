@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Shared.Models
+﻿namespace Fanex.BotService.Shared.Models
 {
     using System;
 

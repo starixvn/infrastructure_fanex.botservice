@@ -48,6 +48,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.BotService.Core.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.BotService.Endpoint.Core.Tests", "Fanex.BotService.Endpoint.Core.Tests\Fanex.BotService.Endpoint.Core.Tests.csproj", "{077AF307-AC1D-4A5C-9E57-38A2C0855063}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.BotService.Endpoint.Tests", "Fanex.BotService.Endpoint.Tests\Fanex.BotService.Endpoint.Tests.csproj", "{6D0EF1F5-CE1E-4B5F-921C-5B85344798E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.BotService.Shared.Tests", "Fanex.BotService.Shared.Tests\Fanex.BotService.Shared.Tests.csproj", "{6E758800-FF2B-4517-8C5B-26310B422149}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +114,14 @@ Global
 		{077AF307-AC1D-4A5C-9E57-38A2C0855063}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{077AF307-AC1D-4A5C-9E57-38A2C0855063}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{077AF307-AC1D-4A5C-9E57-38A2C0855063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D0EF1F5-CE1E-4B5F-921C-5B85344798E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D0EF1F5-CE1E-4B5F-921C-5B85344798E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D0EF1F5-CE1E-4B5F-921C-5B85344798E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D0EF1F5-CE1E-4B5F-921C-5B85344798E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E758800-FF2B-4517-8C5B-26310B422149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E758800-FF2B-4517-8C5B-26310B422149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E758800-FF2B-4517-8C5B-26310B422149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E758800-FF2B-4517-8C5B-26310B422149}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +141,8 @@ Global
 		{80AEEA1F-2C75-445E-B7A8-2177EB00EE60} = {9EF4C6AE-02FD-4B12-B25E-CB8D6B51B3C3}
 		{3551EA9D-7367-42F2-B9B0-A6F2DE21A863} = {9EF4C6AE-02FD-4B12-B25E-CB8D6B51B3C3}
 		{077AF307-AC1D-4A5C-9E57-38A2C0855063} = {9EF4C6AE-02FD-4B12-B25E-CB8D6B51B3C3}
+		{6D0EF1F5-CE1E-4B5F-921C-5B85344798E4} = {9EF4C6AE-02FD-4B12-B25E-CB8D6B51B3C3}
+		{6E758800-FF2B-4517-8C5B-26310B422149} = {9EF4C6AE-02FD-4B12-B25E-CB8D6B51B3C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}

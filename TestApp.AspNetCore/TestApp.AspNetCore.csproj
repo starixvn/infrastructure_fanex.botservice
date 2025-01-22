@@ -9,5 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Fanex.BotService.Client.AspNetCore" Version="1.2.1" />
   </ItemGroup>
+<ItemGroup>
+	<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+</ItemGroup>
 
 </Project>

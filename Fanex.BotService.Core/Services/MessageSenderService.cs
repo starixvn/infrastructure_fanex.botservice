@@ -1,5 +1,16 @@
 ﻿namespace Fanex.BotService.Core.Services
 {
+    using Fanex.BotService.Shared.Models;
+    using Interfaces;
+    using Logging.Extensions;
+    using Logging.Extensions.Database;
+    using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Builder.Integration.AspNet.Core;
+    using Microsoft.Bot.Schema;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using Models;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -8,23 +19,12 @@
     using System.Net.Http.Json;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
-    using Fanex.NCB.Shared.Models;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
-    using Microsoft.Bot.Schema;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     public class MessageSenderService : IMessageSenderService
     {
         private readonly HttpClient httpClient;
         private readonly AppSettings appSettings;
-        private readonly ILogger<MessageSenderService> filelogger;
+        private readonly ILogger<MessageSenderService> fileLogger;
         private readonly Logging.ILogger logger;
         private readonly IBotFrameworkHttpAdapter adapter;
 
@@ -32,13 +32,13 @@
             IHttpClientFactory httpClientFactory,
             AppSettings appSettings,
             IOptions<ProxySettings> proxySettings,
-            ILogger<MessageSenderService> filelogger,
+            ILogger<MessageSenderService> fileLogger,
             Logging.ILogger logger,
             IBotFrameworkHttpAdapter adapter)
 
         {
             this.appSettings = appSettings;
-            this.filelogger = filelogger;
+            this.fileLogger = fileLogger;
             this.logger = logger;
             this.adapter = adapter;
 
@@ -75,7 +75,7 @@
             {
                 sendMessageResult.MessageId = conversationMessage.MessageId;
                 sendMessageResult.ConversationId = conversationMessage.ConversationId;
-                var coversation = new ConversationReference
+                var conversation = new ConversationReference
                 {
                     Bot = new ChannelAccount { Id = conversationMessage.ConversationBotId, Name = conversationMessage.BotName, Role = "bot" },
                     Conversation = new ConversationAccount { Id = conversationMessage.ConversationId },
@@ -83,7 +83,7 @@
                     ChannelId = conversationMessage.ChannelId
                 };
 
-                await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, coversation,
+                await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, conversation,
                     async (context, token) =>
                     {
                         Activity activity = MessageFactory.Text(conversationMessage.Message ?? string.Empty);
@@ -91,13 +91,10 @@
 
                         if (conversationMessage.Images is not null && conversationMessage.Images.Count > 0)
                         {
-                            var attachments = conversationMessage.Images.Select(img =>
+                            var attachments = conversationMessage.Images.Select(img => new Attachment
                             {
-                                return new Attachment
-                                {
-                                    ContentType = "image",
-                                    ContentUrl = img
-                                };
+                                ContentType = "image",
+                                ContentUrl = img
                             }).ToList();
                             activity.Attachments = attachments;
                         }
@@ -142,7 +139,7 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                filelogger.LogWarning(logMessage.ToString());
+                fileLogger.LogWarning(logMessage.ToString());
 
                 return new SendMessageResult
                 {
@@ -187,11 +184,6 @@
                 .AddSection("Params", param);
 
             await logger.ErrorAsync(logMessage.ToString());
-        }
-
-        public Task<SendMessageResult> SendAttachmentAsync(ConversationMessage conversationMessage, System.Net.Mail.Attachment attachment)
-        {
-            throw new NotImplementedException();
         }
     }
 }

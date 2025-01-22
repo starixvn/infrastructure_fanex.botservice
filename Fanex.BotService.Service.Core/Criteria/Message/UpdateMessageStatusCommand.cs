@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Service.Core.Criteria.Message
 {
-    using Fanex.NCB.Shared.Models;
+    using Fanex.BotService.Shared.Models;
 
     public class UpdateMessageStatusCommand : BaseCommand
     {

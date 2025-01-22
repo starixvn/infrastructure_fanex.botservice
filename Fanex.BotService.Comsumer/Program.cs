@@ -1,7 +1,7 @@
 using Fanex.BotService.Consumer;
 using Fanex.BotService.Shared.Extensions;
 using Fanex.Data.SqlServer;
-using Fanex.NCB.Shared.Middlewares;
+using Fanex.BotService.Shared.Middlewares;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);

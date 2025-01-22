@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Service.Core.Configurations
 {
-    using Fanex.BotService.Service.Core.Enum;
+    using Enum;
 
     public static class AppSettings
     {

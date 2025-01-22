@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Shared.Services
 {
-    using Fanex.BotService.Shared.Services.Interfaces;
+    using Interfaces;
     using NLog;
     using NLog.Web;
     using System;
@@ -9,7 +9,7 @@
     public class CommonLogService : ICommonLogService
     {
         private readonly Logging.ILogger logger;
-        private readonly Logger nlog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+        private static readonly Logger nLog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
         public CommonLogService(Logging.ILogger logger)
         {
@@ -18,12 +18,12 @@
 
         public void LogFileError(Exception exception)
         {
-            nlog.Error(exception);
+            nLog.Error(exception);
         }
 
         public void LogFileMessage(string message)
         {
-            nlog.Error(message);
+            nLog.Error(message);
         }
 
         public async Task SentryErrorAsync(string errMsg, Exception exception = null)

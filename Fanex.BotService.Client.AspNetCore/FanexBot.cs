@@ -1,9 +1,9 @@
 ﻿namespace Fanex.BotService.Client.AspNetCore
 {
-    using Fanex.BotService.Client.Core;
-    using Fanex.BotService.Client.Core.Configuration;
-    using Fanex.BotService.Client.Core.Services;
-    using Fanex.BotService.Client.Core.Services.Interfaces;
+    using Core;
+    using Core.Configuration;
+    using Core.Services;
+    using Core.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

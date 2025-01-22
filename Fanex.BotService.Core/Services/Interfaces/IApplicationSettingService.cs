@@ -1,8 +1,8 @@
 ﻿namespace Fanex.BotService.Core.Services.Interfaces
 {
+    using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.BotService.Core.Models;
 
     public interface IApplicationSettingService
     {

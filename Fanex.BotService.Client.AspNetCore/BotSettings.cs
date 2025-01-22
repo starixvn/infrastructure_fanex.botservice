@@ -1,8 +1,8 @@
 ﻿namespace Fanex.BotService.Client.AspNetCore
 {
-    using System.ComponentModel;
-    using Fanex.BotService.Client.Core.Configuration;
+    using Core.Configuration;
     using Microsoft.Extensions.Configuration;
+    using System.ComponentModel;
 
     public class BotSettings : IBotSettings
     {

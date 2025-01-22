@@ -1,10 +1,10 @@
-﻿namespace Fanex.NCB.Shared.Services.Interfaces
+﻿namespace Fanex.BotService.Shared.Services.Interfaces
 {
+    using Data.Repository;
+    using Models;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models;
 
     public interface IBaseService
     {

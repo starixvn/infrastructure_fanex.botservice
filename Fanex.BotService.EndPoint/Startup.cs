@@ -1,29 +1,14 @@
 ﻿namespace Fanex.BotService.EndPoint
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Security;
-    using System.Security.Authentication;
-    using System.Text;
-    using System.Threading;
-    using Fanex.BotService.Core;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Extensions;
-    using Fanex.BotService.Shared.Services;
-    using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.Caching;
-    using Fanex.Caching.Redis;
-    using Fanex.Data.Repository;
-    using Fanex.Data.SqlServer;
-    using Fanex.Logging;
-    using Fanex.NCB.Shared.Middlewares;
-    using Fanex.NCB.Shared.Repositories;
-    using Fanex.NCB.Shared.Services;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Caching;
+    using Caching.Redis;
+    using Core;
+    using Core.Models;
+    using Core.Services;
+    using Core.Services.Interfaces;
+    using Data.Repository;
+    using Data.SqlServer;
+    using Logging;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
@@ -36,7 +21,20 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
+    using Shared.Extensions;
+    using Shared.Middlewares;
+    using Shared.Repositories;
+    using Shared.Services;
+    using Shared.Services.Interfaces;
     using StackExchange.Redis;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Security;
+    using System.Security.Authentication;
+    using System.Text;
+    using System.Threading;
 
     [ExcludeFromCodeCoverage]
     public class Startup
@@ -86,9 +84,9 @@
             RegisterCache(services, Configuration);
             services.AddControllers(x => x.EnableEndpointRouting = false);
             IdentityModelEventSource.ShowPII = true;
-            const short WorkerThreads = 300;
-            const short CompletionPortThreads = 300;
-            _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
+            const short workerThreads = 300;
+            const short completionPortThreads = 300;
+            _ = ThreadPool.SetMinThreads(workerThreads, completionPortThreads);
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -188,23 +186,26 @@
             var settingConfiguration = configuration.GetSection("CheckDuplicateMessageLogSettings");
             services.Configure<CheckDuplicatedMessageLogSetting>(settingConfiguration);
             var checkDuplicatedMessageSettings = settingConfiguration.Get<CheckDuplicatedMessageLogSetting>();
-            services.AddSingleton(checkDuplicatedMessageSettings);
+            if (checkDuplicatedMessageSettings != null) services.AddSingleton(checkDuplicatedMessageSettings);
         }
 
         private static void ConfigHttpClient(IServiceCollection services, IConfiguration configuration)
         {
-            var isUseProxy = bool.Parse(configuration.GetSection("ProxySettings:IsUseProxy").Value);
+            var useProxyValue = configuration.GetSection("ProxySettings:IsUseProxy").Value;
+            var isUseProxy = useProxyValue != null && bool.Parse(useProxyValue);
             if (isUseProxy)
             {
                 var proxyAddress = configuration.GetSection("ProxySettings:ProxyAddress").Value;
-                var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
+                var value = configuration.GetSection("ProxySettings:BypassOnLocal").Value;
+                var bypassOnLocal = value != null && bool.Parse(value);
+
                 services.AddHttpClient(NamedHttpClients.ProxiedClient)
                     .ConfigurePrimaryHttpMessageHandler(() =>
                     {
                         var proxy = new WebProxy(proxyAddress, bypassOnLocal);
                         return new SocketsHttpHandler
                         {
-                            UseProxy = isUseProxy,
+                            UseProxy = true,
                             Proxy = proxy,
                             SslOptions = new SslClientAuthenticationOptions
                             {

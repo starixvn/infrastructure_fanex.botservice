@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Client.Core.Services.Interfaces
 {
-    using Fanex.BotService.Client.Core.Enum;
+    using Enum;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 

@@ -1,8 +1,8 @@
 ﻿namespace Fanex.BotService.Client.Core.Models
 {
+    using Enum;
     using System;
     using System.Collections.Generic;
-    using Fanex.BotService.Client.Core.Enum;
 
     internal class Conversation
     {

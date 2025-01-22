@@ -2,9 +2,8 @@
 {
     using Constants;
     using Criteria.Message;
+    using Fanex.BotService.Shared.Models;
     using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
     using Interfaces;
     using Models;
     using Newtonsoft.Json;

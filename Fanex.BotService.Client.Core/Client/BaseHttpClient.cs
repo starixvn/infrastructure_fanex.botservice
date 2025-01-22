@@ -1,17 +1,17 @@
 ﻿namespace Fanex.BotService.Client.Core.Client
 {
+    using Configuration;
+    using Newtonsoft.Json;
     using System;
     using System.Net;
     using System.Net.Http;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.BotService.Client.Core.Configuration;
-    using Newtonsoft.Json;
 
     internal class BaseHttpClient
     {
-        private static readonly HttpClient httpClient = new HttpClient();
+        private static readonly HttpClient HttpClient = new HttpClient();
         private readonly IBotSettings botSettings;
 
         public BaseHttpClient()
@@ -24,18 +24,15 @@
             ValidateEndPoint(requestUrl);
             using (var request = CreateRequest(requestUrl, HttpMethod.Get))
             {
-                using (var response = httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None).Result)
+                using (var response = HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None).Result)
                 {
                     ThrowExceptionWhenNotSuccess(response);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseData = response.Content.ReadAsStringAsync().Result;
-                        var result = JsonConvert.DeserializeObject<T>(responseData);
+                    if (!response.IsSuccessStatusCode) return default;
 
-                        return result;
-                    }
+                    var responseData = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<T>(responseData);
 
-                    return default;
+                    return result;
                 }
             }
         }
@@ -45,18 +42,15 @@
             ValidateEndPoint(requestUrl);
             using (var request = CreateRequest(requestUrl, HttpMethod.Get))
             {
-                using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
+                using (var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
                 {
                     ThrowExceptionWhenNotSuccess(response);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseData = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<T>(responseData);
+                    if (!response.IsSuccessStatusCode) return default;
 
-                        return result;
-                    }
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<T>(responseData);
 
-                    return default;
+                    return result;
                 }
             }
         }
@@ -69,19 +63,16 @@
                 var encodedData = JsonConvert.SerializeObject(data);
                 var content = new StringContent(encodedData, Encoding.UTF8, "application/json");
                 request.Content = content;
-                using (var response = httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None).Result)
+                using (var response = HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None).Result)
                 {
                     ThrowExceptionWhenNotSuccess(response);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseData = response.Content.ReadAsStringAsync().Result;
-                        var result = JsonConvert.DeserializeObject<TOutput>(responseData);
+                    if (!response.IsSuccessStatusCode) return default;
 
-                        return result;
-                    }
+                    var responseData = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<TOutput>(responseData);
 
-                    return default;
+                    return result;
                 }
             }
         }
@@ -94,18 +85,15 @@
                 var encodedData = JsonConvert.SerializeObject(data);
                 var content = new StringContent(encodedData, Encoding.UTF8, "application/json");
                 request.Content = content;
-                using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
+                using (var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
                 {
                     ThrowExceptionWhenNotSuccess(response);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseData = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<TOutput>(responseData);
+                    if (!response.IsSuccessStatusCode) return default;
 
-                        return result;
-                    }
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<TOutput>(responseData);
 
-                    return default;
+                    return result;
                 }
             }
         }

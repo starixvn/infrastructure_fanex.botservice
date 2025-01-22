@@ -1,7 +1,7 @@
 ﻿namespace Fanex.BotService.Core.Criteria
 {
     using System;
-    using Fanex.NCB.Shared.Models;
+    using Fanex.BotService.Shared.Models;
 
     public class AddMessageLogCommand : BaseCommand
     {

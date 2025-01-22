@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Shared
+﻿namespace Fanex.BotService.Shared
 {
     using System;
     using System.Text;

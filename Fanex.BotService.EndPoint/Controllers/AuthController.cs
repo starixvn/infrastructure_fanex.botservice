@@ -1,23 +1,17 @@
 ﻿namespace Fanex.BotService.EndPoint.Controllers
 {
+    using Core;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.IdentityModel.Tokens;
     using System;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
-    using Fanex.BotService.Core;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.IdentityModel.Tokens;
 
-    public class AuthController : ControllerBase
+    public class AuthController(AppSettings appSettings) : ControllerBase
     {
-        private readonly AppSettings appSettings;
-        private readonly string invalidUsernameOrPasswordText = "Username or password is incorrect";
-
-        public AuthController(AppSettings appSettings)
-        {
-            this.appSettings = appSettings;
-        }
+        private const string InvalidUsernameOrPasswordText = "Username or password is incorrect";
 
         [AllowAnonymous]
         [HttpPost]
@@ -37,14 +31,12 @@
                     Expires = expires,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
-                var sercurityToken = tokenHandler.CreateToken(tokenDescriptor);
-                string token = tokenHandler.WriteToken(sercurityToken);
+                var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+                var token = tokenHandler.WriteToken(securityToken);
                 return Ok(new { AccessToken = token, Expires = expires });
             }
-            else
-            {
-                return BadRequest(invalidUsernameOrPasswordText);
-            }
+
+            return BadRequest(InvalidUsernameOrPasswordText);
         }
 
         private bool IsValidCredential(string username, string password)

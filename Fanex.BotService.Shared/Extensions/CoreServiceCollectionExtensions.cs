@@ -1,13 +1,13 @@
 ﻿namespace Fanex.BotService.Shared.Extensions
 {
-    using System.Collections.Generic;
-    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
     using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
+    using Logging;
     using Microsoft.Extensions.Configuration;
     using Sentry;
+    using System.Collections.Generic;
 
     public static class CoreServiceCollectionExtensions
     {

@@ -2,7 +2,7 @@
 {
     using Core;
     using Criteria;
-    using Fanex.NCB.Shared.Models;
+    using Fanex.BotService.Shared.Models;
     using Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Connector;

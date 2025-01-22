@@ -1,22 +1,20 @@
 ﻿namespace Fanex.BotService.Consumer
 {
+    using Data.Repository;
+    using EasyNetQ;
+    using MessageBrokers;
+    using Microsoft.Extensions.Caching.Memory;
+    using Service.Core.Configurations;
+    using Service.Core.Services;
+    using Service.Core.Services.Interfaces;
+    using Shared.Constants;
+    using Shared.Models;
+    using Shared.Repositories;
+    using Shared.Services;
+    using Shared.Services.Interfaces;
     using System.Net;
     using System.Net.Security;
     using System.Security.Authentication;
-    using EasyNetQ;
-    using Fanex.BotService.Consumer.MessageBrokers;
-    using Fanex.BotService.Service.Core.Configurations;
-    using Fanex.BotService.Service.Core.Services;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Constants;
-    using Fanex.BotService.Shared.Models;
-    using Fanex.BotService.Shared.Services;
-    using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Repositories;
-    using Fanex.NCB.Shared.Services;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using Microsoft.Extensions.Caching.Memory;
 
     public static class DI
     {

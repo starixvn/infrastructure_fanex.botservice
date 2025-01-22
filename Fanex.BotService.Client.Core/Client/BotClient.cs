@@ -1,6 +1,6 @@
 ﻿namespace Fanex.BotService.Client.Core.Client
 {
-    using Fanex.BotService.Client.Core.Models;
+    using Models;
     using System.Threading.Tasks;
 
     internal interface IBotClient

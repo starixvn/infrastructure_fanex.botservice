@@ -1,10 +1,10 @@
 ﻿namespace Fanex.BotService.EndPoint.Bots
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Fanex.BotService.EndPoint.Bots.Interfaces;
+    using Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public class CoreBot : ActivityHandler, ICoreBot
     {

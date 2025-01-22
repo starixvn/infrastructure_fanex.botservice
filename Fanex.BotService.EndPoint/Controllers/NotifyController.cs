@@ -1,19 +1,19 @@
 ﻿namespace Fanex.BotService.EndPoint.Controllers
 {
-    using Fanex.BotService.Core.Criteria;
-    using Fanex.BotService.Core.Enum;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.BotService.Resources;
-    using Fanex.BotService.Shared.Models.Message;
-    using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
-    using Fanex.NCB.Shared.Models;
+    using Core.Criteria;
+    using Core.Enum;
+    using Core.Models;
+    using Core.Services.Interfaces;
+    using Logging.Extensions;
+    using Logging.Extensions.Database;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
+    using Resources;
+    using Shared.Models;
+    using Shared.Models.Message;
+    using Shared.Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -50,7 +50,6 @@
             return Ok("ok");
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [Route("api/bot/send")]
         public async Task<ObjectResult> SendMessage([FromBody] IList<MessageEndpoint> messages)
@@ -82,7 +81,6 @@
             return Ok(results);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [Route("api/telegram/send-multịpe")]
         public async Task<ObjectResult> SendViaTelegram([FromBody] IList<MessageEndpoint> messages)
@@ -98,7 +96,6 @@
             return Ok(results);
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("api/msteams/send")]
         public async Task<IActionResult> SendSingleViaTeams([FromBody] MessageEndpoint message)

@@ -1,16 +1,16 @@
 ﻿namespace Fanex.BotService.EndPoint
 {
+    using Core.Models;
+    using Core.Services.Interfaces;
+    using Microsoft.Bot.Connector.Authentication;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Rest;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Microsoft.Bot.Connector.Authentication;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Rest;
 
     internal enum MicrosoftAppType
     {

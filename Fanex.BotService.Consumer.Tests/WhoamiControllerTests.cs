@@ -1,5 +1,5 @@
 ﻿using Fanex.BotService.Consumer.Controllers;
-using Fanex.NCB.Shared;
+using Fanex.BotService.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

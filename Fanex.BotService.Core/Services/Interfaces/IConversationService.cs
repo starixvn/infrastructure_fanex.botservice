@@ -1,11 +1,11 @@
 ﻿namespace Fanex.BotService.Core.Services.Interfaces
 {
+    using Criteria;
+    using Fanex.BotService.Shared.Models;
+    using Microsoft.Bot.Builder;
+    using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.BotService.Core.Criteria;
-    using Fanex.BotService.Core.Models;
-    using Fanex.NCB.Shared.Models;
-    using Microsoft.Bot.Builder;
 
     public interface IConversationService
     {
