@@ -19,64 +19,6 @@
             botSettings = BotClientManager.BotSettings;
         }
 
-        protected T Get<T>(string requestUrl)
-        {
-            ValidateEndPoint(requestUrl);
-            using (var request = CreateRequest(requestUrl, HttpMethod.Get))
-            {
-                using (var response = HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None).Result)
-                {
-                    ThrowExceptionWhenNotSuccess(response);
-                    if (!response.IsSuccessStatusCode) return default;
-
-                    var responseData = response.Content.ReadAsStringAsync().Result;
-                    var result = JsonConvert.DeserializeObject<T>(responseData);
-
-                    return result;
-                }
-            }
-        }
-
-        protected async Task<T> GetAsync<T>(string requestUrl)
-        {
-            ValidateEndPoint(requestUrl);
-            using (var request = CreateRequest(requestUrl, HttpMethod.Get))
-            {
-                using (var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
-                {
-                    ThrowExceptionWhenNotSuccess(response);
-                    if (!response.IsSuccessStatusCode) return default;
-
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<T>(responseData);
-
-                    return result;
-                }
-            }
-        }
-
-        protected TOutput Post<TInput, TOutput>(string requestUrl, TInput data)
-        {
-            ValidateEndPoint(requestUrl);
-            using (var request = CreateRequest(requestUrl, HttpMethod.Post))
-            {
-                var encodedData = JsonConvert.SerializeObject(data);
-                var content = new StringContent(encodedData, Encoding.UTF8, "application/json");
-                request.Content = content;
-                using (var response = HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None).Result)
-                {
-                    ThrowExceptionWhenNotSuccess(response);
-
-                    if (!response.IsSuccessStatusCode) return default;
-
-                    var responseData = response.Content.ReadAsStringAsync().Result;
-                    var result = JsonConvert.DeserializeObject<TOutput>(responseData);
-
-                    return result;
-                }
-            }
-        }
-
         protected async Task<TOutput> PostAsync<TInput, TOutput>(string requestUrl, TInput data)
         {
             ValidateEndPoint(requestUrl);
@@ -87,8 +29,10 @@
                 request.Content = content;
                 using (var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, CancellationToken.None))
                 {
-                    ThrowExceptionWhenNotSuccess(response);
-                    if (!response.IsSuccessStatusCode) return default;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        ThrowExceptionWhenNotSuccess(response);
+                    }
 
                     var responseData = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<TOutput>(responseData);
@@ -108,31 +52,23 @@
 
         private HttpRequestMessage CreateRequest(string endPoint, HttpMethod method)
         {
-            Uri url = new Uri($"{botSettings.ServiceUrl}{endPoint}");
+            var url = new Uri($"{botSettings.ServiceUrl}{endPoint}");
             var request = new HttpRequestMessage(method, url);
             request.Headers.Accept.Clear();
 
             return request;
         }
 
-        private void ThrowExceptionWhenNotSuccess(HttpResponseMessage response)
+        private static void ThrowExceptionWhenNotSuccess(HttpResponseMessage response)
         {
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return;
-                }
-
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                var message = response.Content.ReadAsStringAsync().Result;
-                var exception = new Exception(message);
-                throw exception;
+                throw new UnauthorizedAccessException();
             }
+
+            var message = response.Content.ReadAsStringAsync().Result;
+            var exception = new Exception(message);
+            throw exception;
         }
     }
 }

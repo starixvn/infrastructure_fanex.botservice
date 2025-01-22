@@ -20,10 +20,13 @@ namespace Fanex.BotService.EndPoint
                 // Azure Application Insights. Visit https://aka.ms/bottelemetry to see how
                 // to add telemetry capture to your bot.
 
-                // Send a message to the user
                 await logService.SentryErrorAsync(JsonConvert.SerializeObject(turnContext.Activity), exception);
 
-                if (conversationState == null) throw exception;
+                if (conversationState == null)
+                {
+                    throw exception;
+                }
+
                 try
                 {
                     // Delete the conversationState for the current conversation to prevent the
