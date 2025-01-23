@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.BotService.Client.Core\Fanex.BotService.Client.Core.csproj" />
+    <Folder Include="Client\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\" />
+    <ProjectReference Include="..\Fanex.BotService.Client.Core\Fanex.BotService.Client.Core.csproj" />
   </ItemGroup>
 
 </Project>

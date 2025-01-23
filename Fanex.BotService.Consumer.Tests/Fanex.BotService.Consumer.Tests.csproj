@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.BotService.Comsumer\Fanex.BotService.Consumer.csproj" />
+    <ProjectReference Include="..\Fanex.BotService.Consumer\Fanex.BotService.Consumer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

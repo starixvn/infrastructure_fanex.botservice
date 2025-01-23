@@ -3,7 +3,7 @@
     using Models;
     using System.Threading.Tasks;
 
-    internal interface IBotClient
+    public interface IBotClient
     {
         Task SendTelegramAsync(Conversation conversation);
 
@@ -14,7 +14,7 @@
         Task SendAsync(Conversation conversation);
     }
 
-    internal class BotClient : BaseHttpClient, IBotClient
+    public class BotClient : BaseHttpClient, IBotClient
     {
         public async Task SendSkypeAsync(Conversation conversation)
             => await PostAsync<Conversation, Task>(ApiPath.SkypeChannelApiPath, conversation);

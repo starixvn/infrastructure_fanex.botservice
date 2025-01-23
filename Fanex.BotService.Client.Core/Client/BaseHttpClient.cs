@@ -9,7 +9,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal class BaseHttpClient
+    public class BaseHttpClient
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         private readonly IBotSettings botSettings;
@@ -19,7 +19,7 @@
             botSettings = BotClientManager.BotSettings;
         }
 
-        protected async Task<TOutput> PostAsync<TInput, TOutput>(string requestUrl, TInput data)
+        public async Task<TOutput> PostAsync<TInput, TOutput>(string requestUrl, TInput data)
         {
             ValidateEndPoint(requestUrl);
             using (var request = CreateRequest(requestUrl, HttpMethod.Post))
@@ -31,7 +31,7 @@
                 {
                     if (!response.IsSuccessStatusCode)
                     {
-                        ThrowExceptionWhenNotSuccess(response);
+                        await ThrowExceptionWhenNotSuccess(response);
                     }
 
                     var responseData = await response.Content.ReadAsStringAsync();
@@ -59,14 +59,14 @@
             return request;
         }
 
-        private static void ThrowExceptionWhenNotSuccess(HttpResponseMessage response)
+        private static async Task ThrowExceptionWhenNotSuccess(HttpResponseMessage response)
         {
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new UnauthorizedAccessException();
             }
 
-            var message = response.Content.ReadAsStringAsync().Result;
+            var message = await response.Content.ReadAsStringAsync();
             var exception = new Exception(message);
             throw exception;
         }

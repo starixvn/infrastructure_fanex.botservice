@@ -4,7 +4,7 @@
     using System;
     using System.Collections.Generic;
 
-    internal class Conversation
+    public class Conversation
     {
         public int AppId { get; set; }
         public string ConversationId { get; set; }

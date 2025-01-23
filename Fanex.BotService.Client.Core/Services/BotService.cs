@@ -22,7 +22,7 @@
 
         public async Task SendSkypeAsync(string conversationId, string content)
         {
-            Conversation conversation = new Conversation
+            var conversation = new Conversation
             {
                 AppId = botSettings.AppId,
                 ConversationId = conversationId,
@@ -37,7 +37,7 @@
 
         public async Task SendTelegramAsync(string conversationId, string content)
         {
-            Conversation conversation = new Conversation
+            var conversation = new Conversation
             {
                 AppId = botSettings.AppId,
                 ConversationId = conversationId,
@@ -52,7 +52,7 @@
 
         public async Task SendMsTeamsAsync(string conversationId, string content)
         {
-            Conversation conversation = new Conversation
+            var conversation = new Conversation
             {
                 AppId = botSettings.AppId,
                 ConversationId = conversationId,
@@ -67,7 +67,7 @@
 
         public async Task SendAsync(BotChannel channel, string conversationId, string content)
         {
-            Conversation conversation = new Conversation
+            var conversation = new Conversation
             {
                 Channel = channel,
                 AppId = botSettings.AppId,

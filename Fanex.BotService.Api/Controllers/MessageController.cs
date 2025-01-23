@@ -29,7 +29,7 @@
         [Route("api/bot/send")]
         public async Task<IActionResult> SendAsync([FromBody] Conversation conversation)
         {
-            if (!IsValidConversation(conversation, out string errMsg))
+            if (!IsValidConversation(conversation, out var errMsg))
             {
                 return BadRequest(errMsg);
             }
@@ -66,10 +66,13 @@
                 conversation.AppId > 0;
 
         public static bool IsValidMessageEndpoint(MessageEndpoint message)
+            => IsValidMsgIdAndAppId(message) &&
+               !string.IsNullOrEmpty(message.ConversationId) &&
+               !string.IsNullOrEmpty(message.Content);
+
+        private static bool IsValidMsgIdAndAppId(MessageEndpoint message)
             => message is not null &&
-                message.MessageId > 0 &&
-                !string.IsNullOrEmpty(message.ConversationId) &&
-                !string.IsNullOrEmpty(message.Content) &&
-                message.AppId > 0;
+               message.MessageId > 0 &&
+               message.AppId > 0;
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace TestApp.AspNetCore.Controllers
 {
-    using Fanex.BotService.Client.Core.Enum;
     using Fanex.BotService.Client.Core.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
 
@@ -15,9 +14,9 @@
 
         public async Task<IActionResult> Index()
         {
-            var conversationId = "a:1JHfHzZaosY0c2ZFBKV6lADDCgYV9JZnW2_iQy8y6AdEUJnIqn2H-lSK7xz4BYGLI7WVPQb3lE3qM-zGtRlt8tfiyLAzFQyC8bqEBSSFXLdvG2c3pZK0LZvBTIO8W2jy6";
+            var conversationId = "29:1otxSNyz7rewcKJyycITsF1CEphLdZLvT5wabXgoePqQ";
 
-            await botService.SendAsync(BotChannel.Teams,
+            await botService.SendSkypeAsync(
             conversationId,
             $"Msg: Hi Oliver, this is the message Test Skype 5");
 
