@@ -1,20 +1,101 @@
-﻿namespace Fanex.BotService.EndPoint
+﻿using Fanex.BotService.Core;
+using Fanex.BotService.EndPoint;
+using Fanex.BotService.Shared.Extensions;
+using Fanex.BotService.Shared.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
+using NLog.Web;
+using System.Text;
+using System.Threading;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost
+    .UseUrls($"http://*:5000")
+    .UseNLog();
+
+IConfiguration configuration = builder.Configuration;
+
+var services = builder.Services;
+
+services.AddControllers();
+
+services.Configure<ForwardedHeadersOptions>(options =>
 {
-    using Microsoft.AspNetCore;
-    using Microsoft.AspNetCore.Hosting;
-    using NLog.Web;
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
-    public static class Program
+CoreServiceCollectionExtensions.RegisterSentry(configuration);
+
+var appSettingsSection = configuration.GetSection("AppSettings");
+var appSettings = appSettingsSection.Get<AppSettings>();
+services.AddSingleton(appSettings);
+
+var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(x =>
     {
-        public static void Main(string[] args)
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
         {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseUrls($"http://*:5000")
-                .UseStartup<Startup>()
-                .UseNLog();
-    }
+ServiceInjectorExtensions.Init(services);
+
+ServiceInjectorExtensions.RegisterService(services, configuration);
+ServiceInjectorExtensions.RegisterCache(services, configuration);
+services.AddControllers(x => x.EnableEndpointRouting = false);
+IdentityModelEventSource.ShowPII = true;
+const short workerThreads = 300;
+const short completionPortThreads = 300;
+_ = ThreadPool.SetMinThreads(workerThreads, completionPortThreads);
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseForwardedHeaders();
 }
+else
+{
+    app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseForwardedHeaders();
+    app.UseHsts();
+}
+
+var domainPath = configuration.GetValue<string>("AppSettings:DomainPath");
+if (!string.IsNullOrWhiteSpace(domainPath))
+{
+    app.UsePathBase(new PathString(domainPath));
+    app.Use(async (ctx, next) =>
+    {
+        ctx.Request.PathBase = domainPath;
+        await next();
+    });
+}
+
+app.UseDefaultFiles();
+app.UseAuthorization();
+app.UseAuthentication();
+
+app.MapControllerRoute(
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();

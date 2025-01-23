@@ -73,12 +73,6 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="Startup.cs" />
-        <Compile Include="Startup.cs">
-            <SonarQubeExclude>true</SonarQubeExclude>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
         <Compile Remove="Program.cs" />
         <Compile Include="Program.cs">
             <SonarQubeExclude>true</SonarQubeExclude>

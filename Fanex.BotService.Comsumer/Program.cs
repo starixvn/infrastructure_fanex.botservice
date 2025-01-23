@@ -1,7 +1,7 @@
 using Fanex.BotService.Consumer;
 using Fanex.BotService.Shared.Extensions;
-using Fanex.Data.SqlServer;
 using Fanex.BotService.Shared.Middlewares;
+using Fanex.Data.SqlServer;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,10 +41,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+app.MapControllerRoute(
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();
