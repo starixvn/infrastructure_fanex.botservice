@@ -11,9 +11,10 @@
     {
         public static void RegisterBotClient(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IBotSettings, BotSettings>();
-            services.AddSingleton<IBotService, BotService>();
             BotClientManager.RegistryBot(new BotSettings(configuration));
+
+            services.AddSingleton<IBotSettings, BotSettings>();
+            services.AddTransient<IBotService, BotService>();
         }
     }
 }

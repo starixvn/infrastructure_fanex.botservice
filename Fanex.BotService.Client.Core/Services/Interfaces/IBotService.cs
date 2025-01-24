@@ -12,7 +12,7 @@
 
         Task SendMsTeamsAsync(string conversationId, string content);
 
-        Task SendAsync(BotChannel channel, string conversationId, string content);
+        Task SendAsync(BotChannel? channel, string conversationId, string content);
 
         Task SendMessageWithImagesAsync(BotChannel channel, string conversationId, string message, List<string> imageUrls = null);
     }

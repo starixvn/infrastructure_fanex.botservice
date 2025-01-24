@@ -11,62 +11,25 @@
 
     public class BotService : IBotService
     {
-        private readonly IBotClient botClient;
         private readonly IBotSettings botSettings;
 
         public BotService()
         {
-            botClient = new BotClient();
             botSettings = BotClientManager.BotSettings;
         }
 
         public async Task SendSkypeAsync(string conversationId, string content)
-        {
-            var conversation = new Conversation
-            {
-                AppId = botSettings.AppId,
-                ConversationId = conversationId,
-                Content = content,
-                Channel = BotChannel.Skype
-            };
-
-            ValidateInputConversation(conversation);
-
-            await botClient.SendSkypeAsync(conversation);
-        }
+            => await SendAsync(BotChannel.Skype, conversationId, content);
 
         public async Task SendTelegramAsync(string conversationId, string content)
-        {
-            var conversation = new Conversation
-            {
-                AppId = botSettings.AppId,
-                ConversationId = conversationId,
-                Content = content,
-                Channel = BotChannel.Telegram
-            };
-
-            ValidateInputConversation(conversation);
-
-            await botClient.SendTelegramAsync(conversation);
-        }
+            => await SendAsync(BotChannel.Telegram, conversationId, content);
 
         public async Task SendMsTeamsAsync(string conversationId, string content)
+            => await SendAsync(BotChannel.Teams, conversationId, content);
+
+        public async Task SendAsync(BotChannel? channel, string conversationId, string content)
         {
-            var conversation = new Conversation
-            {
-                AppId = botSettings.AppId,
-                ConversationId = conversationId,
-                Content = content,
-                Channel = BotChannel.Teams
-            };
-
-            ValidateInputConversation(conversation);
-
-            await botClient.SendAsync(conversation);
-        }
-
-        public async Task SendAsync(BotChannel channel, string conversationId, string content)
-        {
+            ValidateInputConversation(channel, conversationId, content);
             var conversation = new Conversation
             {
                 Channel = channel,
@@ -75,42 +38,50 @@
                 Content = content
             };
 
-            ValidateInputConversation(conversation);
-
-            await botClient.SendAsync(conversation);
+            await BotClient.SendAsync(conversation);
         }
 
-        private static void ValidateInputConversation(Conversation conversation)
+        public async Task SendMessageWithImagesAsync(BotChannel channel, string conversationId, string content,
+            List<string> imageUrls = null)
         {
-            if (conversation.Channel is null)
-            {
-                throw new ArgumentNullException(nameof(conversation.Channel));
-            }
-
-            if (string.IsNullOrWhiteSpace(conversation.ConversationId))
-            {
-                throw new ArgumentNullException(nameof(conversation.ConversationId));
-            }
-
-            if (string.IsNullOrWhiteSpace(conversation.Content))
-            {
-                throw new ArgumentNullException(nameof(conversation.Content));
-            }
-        }
-
-        public async Task SendMessageWithImagesAsync(BotChannel channel, string conversationId, string message, List<string> imageUrls = null)
-        {
-            Conversation conversation = new Conversation
+            ValidateImageConversation(imageUrls);
+            ValidateInputConversation(channel, conversationId, content);
+            var conversation = new Conversation
             {
                 Channel = channel,
                 AppId = botSettings.AppId,
                 ConversationId = conversationId,
-                Content = message,
+                Content = content,
                 Images = imageUrls
             };
 
-            ValidateInputConversation(conversation);
-            await botClient.SendAsync(conversation);
+            await BotClient.SendAsync(conversation);
+        }
+
+        private static void ValidateInputConversation(BotChannel? channel, string conversationId, string content)
+        {
+            if (channel is null)
+            {
+                throw new ArgumentException("BotChannel cannot be null", nameof(channel));
+            }
+
+            if (string.IsNullOrWhiteSpace(conversationId))
+            {
+                throw new ArgumentException("ConversationId cannot be null or empty", nameof(conversationId));
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                throw new ArgumentException("Content cannot be null or empty", nameof(content));
+            }
+        }
+
+        private static void ValidateImageConversation(List<string> imageUrls)
+        {
+            if (imageUrls is null || imageUrls.Count == 0)
+            {
+                throw new ArgumentException("ImageUrls cannot be null", nameof(imageUrls));
+            }
         }
     }
 }

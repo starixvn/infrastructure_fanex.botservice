@@ -15,7 +15,7 @@
         [Route("api/{channel}/send")]
         public async Task<IActionResult> SendMessageAsync(BotChannel channel, [FromBody] Conversation conversation)
         {
-            if (!IsValidConversation(conversation, out string errMsg))
+            if (!IsValidConversation(conversation, out var errMsg))
             {
                 return BadRequest(errMsg);
             }

@@ -1,38 +1,56 @@
 ﻿namespace Fanex.BotService.Client.Core.Client
 {
+    using Extensions;
     using Models;
+    using Newtonsoft.Json;
+    using System;
+    using System.Net;
+    using System.Net.Http;
+    using System.Text;
     using System.Threading.Tasks;
 
-    public interface IBotClient
+    public static class BotClient
     {
-        Task SendTelegramAsync(Conversation conversation);
+        public static async Task SendAsync(Conversation conversation)
+            => await PostAsync<Conversation, Task>("/api/bot/send", conversation);
 
-        Task SendSkypeAsync(Conversation conversation);
-
-        Task SendMsTeamsAsync(Conversation conversation);
-
-        Task SendAsync(Conversation conversation);
-    }
-
-    public class BotClient : BaseHttpClient, IBotClient
-    {
-        public async Task SendSkypeAsync(Conversation conversation)
-            => await PostAsync<Conversation, Task>(ApiPath.SkypeChannelApiPath, conversation);
-
-        public async Task SendTelegramAsync(Conversation conversation)
-            => await PostAsync<Conversation, Task>(ApiPath.TelegramChannelApiPath, conversation);
-
-        public async Task SendAsync(Conversation conversation)
-            => await PostAsync<Conversation, Task>(ApiPath.BotApiPath, conversation);
-
-        public async Task SendMsTeamsAsync(Conversation conversation)
-            => await PostAsync<Conversation, Task>(ApiPath.BotApiPath, conversation);
-
-        private static class ApiPath
+        private static async Task<TOutput> PostAsync<TInput, TOutput>(string requestUrl, TInput data)
         {
-            public const string SkypeChannelApiPath = "api/skype/send";
-            public const string TelegramChannelApiPath = "api/telegram/send";
-            public const string BotApiPath = "api/bot/send";
+            ValidateEndPoint(requestUrl);
+
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            using (var response = await HttpClientFactory.Client.PostAsync(requestUrl, content))
+            {
+                if (!response.IsSuccessStatusCode)
+                {
+                    await ThrowExceptionWhenNotSuccess(response);
+                }
+
+                var responseData = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<TOutput>(responseData);
+
+                return result;
+            }
+        }
+
+        private static void ValidateEndPoint(string endPoint)
+        {
+            if (string.IsNullOrWhiteSpace(endPoint))
+            {
+                throw new ArgumentNullException(nameof(endPoint));
+            }
+        }
+
+        private static async Task ThrowExceptionWhenNotSuccess(HttpResponseMessage response)
+        {
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var message = await response.Content.ReadAsStringAsync();
+            var exception = new Exception(message);
+            throw exception;
         }
     }
 }
