@@ -14,23 +14,23 @@ namespace Fanex.BotService.Endpoint.Core.Tests.Services;
 
 public class MessageSenderServiceTests
 {
-    private readonly MessageSenderService messageSenderService;
-    private readonly IHttpClientFactory httpClientFactory;
-    private readonly AppSettings appSettings;
-    private readonly IOptions<ProxySettings> proxySettings;
-    private readonly ILogger<MessageSenderService> fileLogger;
-    private readonly Logging.ILogger logger;
-    private readonly IBotFrameworkHttpAdapter adapter;
+    private readonly MessageSenderService _messageSenderService;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly AppSettings _appSettings;
+    private readonly IOptions<ProxySettings> _proxySettings;
+    private readonly ILogger<MessageSenderService> _fileLogger;
+    private readonly Logging.ILogger _logger;
+    private readonly IBotFrameworkHttpAdapter _adapter;
 
     public MessageSenderServiceTests()
     {
-        httpClientFactory = Substitute.For<IHttpClientFactory>();
-        appSettings = new AppSettings { IsOnlySendIndirect = false };
-        proxySettings = Substitute.For<IOptions<ProxySettings>>();
-        fileLogger = Substitute.For<ILogger<MessageSenderService>>();
-        logger = Substitute.For<Logging.ILogger>();
-        adapter = Substitute.For<IBotFrameworkHttpAdapter>();
-        proxySettings.Value.Returns(new ProxySettings { IsUseProxy = false, TimeOut = 30 });
+        _httpClientFactory = Substitute.For<IHttpClientFactory>();
+        _appSettings = new AppSettings { IsOnlySendIndirect = false };
+        _proxySettings = Substitute.For<IOptions<ProxySettings>>();
+        _fileLogger = Substitute.For<ILogger<MessageSenderService>>();
+        _logger = Substitute.For<Logging.ILogger>();
+        _adapter = Substitute.For<IBotFrameworkHttpAdapter>();
+        _proxySettings.Value.Returns(new ProxySettings { IsUseProxy = false, TimeOut = 30 });
         var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
         {
             StatusCode = HttpStatusCode.OK,
@@ -41,14 +41,14 @@ public class MessageSenderServiceTests
             }))
         });
         var httpClient = new HttpClient(httpMessageHandler);
-        httpClientFactory.CreateClient().Returns(httpClient);
-        messageSenderService = new MessageSenderService(
-            httpClientFactory,
-            appSettings,
-            proxySettings,
-            fileLogger,
-            logger,
-            adapter);
+        _httpClientFactory.CreateClient().Returns(httpClient);
+        _messageSenderService = new MessageSenderService(
+            _httpClientFactory,
+            _appSettings,
+            _proxySettings,
+            _fileLogger,
+            _logger,
+            _adapter);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class MessageSenderServiceTests
             MessageId = 1,
             ConversationId = "conversationId",
             MicrosoftAppId = "appId",
-            ServiceURL = "serviceUrl",
+            ServiceUrl = "serviceUrl",
             ChannelId = "channelId",
             ConversationBotId = "botId",
             BotName = "botName",
@@ -68,7 +68,7 @@ public class MessageSenderServiceTests
         };
 
         // Act
-        var result = await messageSenderService.SendMessageAsync(conversationMessage);
+        var result = await _messageSenderService.SendMessageAsync(conversationMessage);
 
         // Assert
         Assert.NotNull(result);
@@ -80,13 +80,13 @@ public class MessageSenderServiceTests
     public async Task SendMessageAsync_ShouldSendIndirectMessage_WhenIsOnlySendIndirectIsTrue()
     {
         // Arrange
-        appSettings.IsOnlySendIndirect = true;
+        _appSettings.IsOnlySendIndirect = true;
         var conversationMessage = new ConversationMessage
         {
             MessageId = 1,
             ConversationId = "conversationId",
             MicrosoftAppId = "appId",
-            ServiceURL = "serviceUrl",
+            ServiceUrl = "serviceUrl",
             ChannelId = "channelId",
             ConversationBotId = "botId",
             BotName = "botName",
@@ -94,7 +94,7 @@ public class MessageSenderServiceTests
         };
 
         // Act
-        var result = await messageSenderService.SendMessageAsync(conversationMessage);
+        var result = await _messageSenderService.SendMessageAsync(conversationMessage);
 
         // Assert
         Assert.NotNull(result);

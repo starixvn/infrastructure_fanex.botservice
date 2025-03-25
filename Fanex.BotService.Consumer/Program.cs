@@ -16,7 +16,7 @@ CoreServiceCollectionExtensions.RegisterSentry(configuration);
 builder.Services.AddFanexSql(configuration);
 
 //Register services
-DI.RegisterConfiguration(configuration);
+Di.RegisterConfiguration(configuration);
 builder.Services.RegisterHttpClient(configuration);
 builder.Services.RegisterServices();
 

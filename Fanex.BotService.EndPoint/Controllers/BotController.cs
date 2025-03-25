@@ -6,17 +6,8 @@
     using System.Threading.Tasks;
 
     [Route("api/messages")]
-    public class BotController : Controller
+    public class BotController(IBotFrameworkHttpAdapter adapter, IBot bot) : Controller
     {
-        private readonly IBotFrameworkHttpAdapter adapter;
-        private readonly IBot bot;
-
-        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
-        {
-            this.adapter = adapter;
-            this.bot = bot;
-        }
-
         [HttpPost]
         public async Task PostAsync()
         {

@@ -2,10 +2,10 @@
 {
     public static class InteractedCommand
     {
-        public const string help = "help";
+        public const string Help = "help";
 
-        public const string getid = "getid";
+        public const string GetId = "getid";
 
-        public const string getbot = "getbot";
+        public const string GetBot = "getbot";
     }
 }

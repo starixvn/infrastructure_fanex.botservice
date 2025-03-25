@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NSubstitute;
 
+namespace Fanex.BotService.Api.Tests.Controllers;
+
 public class MessageControllerTests
 {
-    private readonly IMessageQueueService queueService;
-    private readonly MessageController messageController;
+    private readonly IMessageQueueService _queueService;
+    private readonly MessageController _messageController;
 
     public MessageControllerTests()
     {
-        queueService = Substitute.For<IMessageQueueService>();
-        messageController = new MessageController(queueService);
+        _queueService = Substitute.For<IMessageQueueService>();
+        _messageController = new MessageController(_queueService);
     }
 
     [Fact]
@@ -27,15 +29,15 @@ public class MessageControllerTests
             AppId = 1,
             ConversationId = "123",
             Content = "Hello",
-            Images = new List<string> { "image1.png" }
+            Images = ["image1.png"]
         };
 
         // Act
-        var result = await messageController.SendMessageAsync(BotChannel.Skype, conversation);
+        var result = await _messageController.SendMessageAsync(BotChannel.Skype, conversation);
 
         // Assert
         var okResult = Assert.IsType<OkResult>(result);
-        await queueService.Received(1).PublishAsync(conversation);
+        await _queueService.Received(1).PublishAsync(conversation);
     }
 
     [Fact]
@@ -47,11 +49,11 @@ public class MessageControllerTests
             AppId = 0,
             ConversationId = "",
             Content = "",
-            Images = new List<string> { "image1.png" }
+            Images = ["image1.png"]
         };
 
         // Act
-        var result = await messageController.SendMessageAsync(BotChannel.Skype, conversation);
+        var result = await _messageController.SendMessageAsync(BotChannel.Skype, conversation);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -67,15 +69,15 @@ public class MessageControllerTests
             AppId = 1,
             ConversationId = "123",
             Content = "Hello",
-            Images = new List<string> { "image1.png" }
+            Images = ["image1.png"]
         };
 
         // Act
-        var result = await messageController.SendAsync(conversation);
+        var result = await _messageController.SendAsync(conversation);
 
         // Assert
         var okResult = Assert.IsType<OkResult>(result);
-        await queueService.Received(1).PublishAsync(conversation);
+        await _queueService.Received(1).PublishAsync(conversation);
     }
 
     [Fact]
@@ -87,11 +89,11 @@ public class MessageControllerTests
             AppId = 0,
             ConversationId = "",
             Content = "",
-            Images = new List<string> { "image1.png" }
+            Images = ["image1.png"]
         };
 
         // Act
-        var result = await messageController.SendAsync(conversation);
+        var result = await _messageController.SendAsync(conversation);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -111,11 +113,11 @@ public class MessageControllerTests
         };
 
         // Act
-        var result = await messageController.RetryMessageAsync(message);
+        var result = await _messageController.RetryMessageAsync(message);
 
         // Assert
         var okResult = Assert.IsType<OkResult>(result);
-        await queueService.Received(1).PublishAsync(message);
+        await _queueService.Received(1).PublishAsync(message);
     }
 
     [Fact]
@@ -131,7 +133,7 @@ public class MessageControllerTests
         };
 
         // Act
-        var result = await messageController.RetryMessageAsync(message);
+        var result = await _messageController.RetryMessageAsync(message);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -156,7 +158,7 @@ public class MessageControllerTests
     {
         // Arrange
         var attachments = new List<string>();
-        for (int i = 0; i < 21; i++)
+        for (var i = 0; i < 21; i++)
         {
             attachments.Add($"image{i}.png");
         }
@@ -177,11 +179,11 @@ public class MessageControllerTests
             AppId = 1,
             ConversationId = "123",
             Content = "Hello",
-            Images = new List<string> { "image1.png" }
+            Images = ["image1.png"]
         };
 
         // Act
-        var result = MessageController.IsValidConversation(conversation, out string errMsg);
+        var result = MessageController.IsValidConversation(conversation, out var errMsg);
 
         // Assert
         Assert.True(result);
@@ -197,11 +199,11 @@ public class MessageControllerTests
             AppId = 0,
             ConversationId = "",
             Content = "",
-            Images = new List<string> { "image1.png" }
+            Images = ["image1.png"]
         };
 
         // Act
-        var result = MessageController.IsValidConversation(conversation, out string errMsg);
+        var result = MessageController.IsValidConversation(conversation, out var errMsg);
 
         // Assert
         Assert.False(result);

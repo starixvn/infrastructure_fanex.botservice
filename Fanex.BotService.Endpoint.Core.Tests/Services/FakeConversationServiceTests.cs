@@ -11,8 +11,8 @@ namespace Fanex.BotService.Endpoint.Core.Tests.Services;
 
 public class FakeConversationServiceTests
 {
-    private readonly ILogger<MessageSenderService> fileLogger;
-    private readonly FakeConversationService service;
+    private readonly ILogger<MessageSenderService> _fileLogger;
+    private readonly FakeConversationService _service;
 
     public FakeConversationServiceTests()
     {
@@ -37,17 +37,18 @@ public class FakeConversationServiceTests
                 }
             }
         };
-        fileLogger = Substitute.For<ILogger<MessageSenderService>>();
-        service = new FakeConversationService(botConfigs, fileLogger);
+        _fileLogger = Substitute.For<ILogger<MessageSenderService>>();
+        _service = new FakeConversationService(botConfigs, _fileLogger);
     }
 
     [Fact]
     public async Task GetApplicationSettingAsync_ShouldReturnApplicationSettings()
     {
-        var result = await service.GetApplicationSettingAsync();
+        var result = await _service.GetApplicationSettingAsync();
 
-        Assert.Single(result);
-        var setting = result.First();
+        var applicationSettings = result as Fanex.BotService.Core.Models.ApplicationSetting[] ?? result.ToArray();
+        Assert.Single(applicationSettings);
+        var setting = applicationSettings.First();
         Assert.Equal(1, setting.AppId);
         Assert.Equal("appId1", setting.MicrosoftAppId);
         Assert.Equal("password1", setting.MicrosoftAppPassword);
@@ -57,10 +58,11 @@ public class FakeConversationServiceTests
     [Fact]
     public async Task GetBotAsync_ShouldReturnBots()
     {
-        var result = await service.GetBotAsync();
+        var result = await _service.GetBotAsync();
 
-        Assert.Single(result);
-        var bot = result.First();
+        var collection = result as Fanex.BotService.Core.Models.Bot[] ?? result.ToArray();
+        Assert.Single(collection);
+        var bot = collection.First();
         Assert.Equal(1, bot.AppId);
         Assert.Equal("appId1", bot.MicrosoftAppId);
         Assert.Equal(1, bot.ChannelId);
@@ -88,9 +90,9 @@ public class FakeConversationServiceTests
             { "key1", new ConnectorClient(new MicrosoftAppCredentials("appId1", "password1")) },
         });
 
-        var result = await service.AddBotContactAsync(turnContext);
+        var result = await _service.AddBotContactAsync(turnContext);
 
-        fileLogger.ReceivedWithAnyArgs(1);
+        _fileLogger.ReceivedWithAnyArgs(1);
         Assert.NotNull(result);
     }
 

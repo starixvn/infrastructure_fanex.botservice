@@ -12,7 +12,7 @@ namespace Fanex.BotService.Shared.Tests.Repositories
 
     public class BaseRepositoryTests
     {
-        private readonly IObjectDb objectDb;
+        private readonly IObjectDb _objectDb;
 
         public BaseRepositoryTests()
         {
@@ -20,8 +20,8 @@ namespace Fanex.BotService.Shared.Tests.Repositories
             .StartTestingSession()
             .Run();
 
-            objectDb = Substitute.For<IObjectDb>();
-            ObjectDbFactory.Mock((key, time) => objectDb);
+            _objectDb = Substitute.For<IObjectDb>();
+            ObjectDbFactory.Mock((key, time) => _objectDb);
         }
 
         #region ExecuteNonQueryAsync
@@ -37,7 +37,7 @@ namespace Fanex.BotService.Shared.Tests.Repositories
             await repository.ExecuteNonQueryAsync(criteria);
 
             // Assert
-            await objectDb.Received().ExecuteNonQueryAsync(criteria);
+            await _objectDb.Received().ExecuteNonQueryAsync(criteria);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Fanex.BotService.Shared.Tests.Repositories
             var criteria = FakeCriteria();
             var outputParams = FakeOutputParamsSuccess();
             var expected = GetSuccessResult();
-            objectDb.GetOutputParams().Returns(outputParams);
+            _objectDb.GetOutputParams().Returns(outputParams);
 
             // Action
             var result = await repository.ExecuteNonQueryAsync(criteria);

@@ -15,11 +15,11 @@ namespace Fanex.BotService.Core
         public bool IsOnlySendIndirect { get; set; }
         public bool IsCacheDataInRedis { get; set; }
         public string AuthenticateUrl { get; set; }
-        public string FowardUrl { get; set; }
+        public string ForwardUrl { get; set; }
         public int JwtLifeTime { get; set; } = 120;
         public int BotListCacheLifeTime { get; set; } = 5;
 
         public IEnumerable<byte> EnableChannels => !string.IsNullOrWhiteSpace(EnableChannelIds)
-            ? EnableChannelIds.Split(',').Select(x => byte.Parse(x)) : new List<byte>();
+            ? EnableChannelIds.Split(',').Select(byte.Parse) : new List<byte>();
     }
 }

@@ -9,15 +9,15 @@ namespace Fanex.BotService.Shared.Tests.Services;
 
 public class BaseServiceTests
 {
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly IBaseRepository baseRepository;
-    private readonly BaseService baseService;
+    private readonly IDynamicRepository _dynamicRepository;
+    private readonly IBaseRepository _baseRepository;
+    private readonly BaseService _baseService;
 
     public BaseServiceTests()
     {
-        dynamicRepository = Substitute.For<IDynamicRepository>();
-        baseRepository = Substitute.For<IBaseRepository>();
-        baseService = new BaseService(dynamicRepository, baseRepository);
+        _dynamicRepository = Substitute.For<IDynamicRepository>();
+        _baseRepository = Substitute.For<IBaseRepository>();
+        _baseService = new BaseService(_dynamicRepository, _baseRepository);
     }
 
     [Fact]
@@ -27,10 +27,10 @@ public class BaseServiceTests
         var criteria = Substitute.For<ICriteria>();
         criteria.IsValid().Returns(true);
         var expectedData = new List<string> { "data1", "data2" };
-        dynamicRepository.FetchAsync<string>(criteria).Returns(expectedData);
+        _dynamicRepository.FetchAsync<string>(criteria).Returns(expectedData);
 
         // Act
-        var result = await baseService.GetDataAsync<string>(criteria);
+        var result = await _baseService.GetDataAsync<string>(criteria);
 
         // Assert
         Assert.Equal(expectedData, result);
@@ -44,7 +44,7 @@ public class BaseServiceTests
         criteria.IsValid().Returns(false);
 
         // Act
-        var result = await baseService.GetDataAsync<string>(criteria);
+        var result = await _baseService.GetDataAsync<string>(criteria);
 
         // Assert
         Assert.Empty(result);
@@ -57,10 +57,10 @@ public class BaseServiceTests
         var command = Substitute.For<INonQueryCommand>();
         command.IsValid().Returns(true);
         var expectedResult = new CommandResult { Code = 0, Message = "Success" };
-        baseRepository.ExecuteNonQueryAsync(command).Returns(expectedResult);
+        _baseRepository.ExecuteNonQueryAsync(command).Returns(expectedResult);
 
         // Act
-        var result = await baseService.ExecuteNonQueryAsync(command);
+        var result = await _baseService.ExecuteNonQueryAsync(command);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -74,7 +74,7 @@ public class BaseServiceTests
         command.IsValid().Returns(false);
 
         // Act
-        var result = await baseService.ExecuteNonQueryAsync(command);
+        var result = await _baseService.ExecuteNonQueryAsync(command);
 
         // Assert
         Assert.NotNull(result);

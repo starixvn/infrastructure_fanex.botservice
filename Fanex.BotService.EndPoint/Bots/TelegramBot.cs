@@ -9,16 +9,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class TelegramBot : ActivityHandler, ITelegramBot
+    public class TelegramBot(IConversationService conversationService) : ActivityHandler, ITelegramBot
     {
-        private const string greetingMessage = "Hello, I am {0}";
-
-        private readonly IConversationService conversationService;
-
-        public TelegramBot(IConversationService conversationService)
-        {
-            this.conversationService = conversationService;
-        }
+        private const string GreetingMessage = "Hello, I am {0}";
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -28,18 +21,18 @@
             if (message.StartsWith("/start"))
             {
                 await conversationService.AddBotContactAsync(turnContext);
-                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
+                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(GreetingMessage, botName)), cancellationToken);
             }
 
             if (turnContext.Activity.Conversation.IsGroup == true)
             {
                 message = BotHelper.GetMessageInGroupByChannel(message, turnContext.Activity.ChannelId, botName);
                 var channelData = turnContext.Activity.GetChannelData<TelegramData>();
-                if (channelData.message.new_chat_member?.is_bot is true)
+                if (channelData.Message.NewChatMember?.IsBot is true)
                 {
                     await conversationService.AddBotToGroupAsync(turnContext);
                 }
-                else if (channelData.message.left_chat_member?.is_bot is true)
+                else if (channelData.Message.LeftChatMember?.IsBot is true)
                 {
                     await conversationService.RemoveBotOutGroupAsync(turnContext);
                 }
@@ -47,15 +40,15 @@
 
             switch (message)
             {
-                case InteractedCommand.help:
-                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
+                case InteractedCommand.Help:
+                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(GreetingMessage, botName)), cancellationToken);
                     break;
 
-                case InteractedCommand.getid:
+                case InteractedCommand.GetId:
                     await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
                     break;
 
-                case InteractedCommand.getbot:
+                case InteractedCommand.GetBot:
                     var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
                     await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
                     break;

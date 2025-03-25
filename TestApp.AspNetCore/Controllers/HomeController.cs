@@ -3,15 +3,8 @@
     using Fanex.BotService.Client.Core.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
 
-    public class HomeController : Controller
+    public class HomeController(IBotService botService) : Controller
     {
-        private readonly IBotService botService;
-
-        public HomeController(IBotService botService)
-        {
-            this.botService = botService;
-        }
-
         public async Task<IActionResult> Index()
         {
             var conversationId = "29:1otxSNyz7rewcKJyycITsF1CEphLdZLvT5wabXgoePqQ";

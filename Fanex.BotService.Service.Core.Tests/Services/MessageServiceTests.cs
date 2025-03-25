@@ -12,17 +12,17 @@ namespace Fanex.BotService.Core.Tests.Services;
 
 public class MessageServiceTests
 {
-    private readonly IBaseService baseService;
-    private readonly ICommonLogService commonLogService;
-    private readonly IMessageQueueService queueMessageService;
-    private readonly MessageService messageService;
+    private readonly IBaseService _baseService;
+    private readonly ICommonLogService _commonLogService;
+    private readonly IMessageQueueService _queueMessageService;
+    private readonly MessageService _messageService;
 
     public MessageServiceTests()
     {
-        baseService = Substitute.For<IBaseService>();
-        commonLogService = Substitute.For<ICommonLogService>();
-        queueMessageService = Substitute.For<IMessageQueueService>();
-        messageService = new MessageService(baseService, commonLogService, queueMessageService);
+        _baseService = Substitute.For<IBaseService>();
+        _commonLogService = Substitute.For<ICommonLogService>();
+        _queueMessageService = Substitute.For<IMessageQueueService>();
+        _messageService = new MessageService(_baseService, _commonLogService, _queueMessageService);
     }
 
     [Fact]
@@ -34,17 +34,17 @@ public class MessageServiceTests
             AppId = 1,
             ConversationId = "123",
             Content = "Hello",
-            Images = new List<string> { "image1.png" },
+            Images = ["image1.png"],
             Channel = BotChannel.Skype
         };
         var commandResult = new CommandResult { Code = 0 };
-        baseService.ExecuteNonQueryAsync(Arg.Any<InsertNewMessageCommand>()).Returns(commandResult);
+        _baseService.ExecuteNonQueryAsync(Arg.Any<InsertNewMessageCommand>()).Returns(commandResult);
 
         // Act
-        var result = await messageService.InsertNewMessageAsync(conversation, 0);
+        var result = await _messageService.InsertNewMessageAsync(conversation, 0);
 
         // Assert
-        await baseService.Received(1).ExecuteNonQueryAsync(Arg.Any<InsertNewMessageCommand>());
+        await _baseService.Received(1).ExecuteNonQueryAsync(Arg.Any<InsertNewMessageCommand>());
         Assert.Equal(0, result);
     }
 
@@ -57,17 +57,17 @@ public class MessageServiceTests
             AppId = 1,
             ConversationId = "123",
             Content = "Hello",
-            Images = new List<string> { "image1.png" },
+            Images = ["image1.png"],
             Channel = BotChannel.Skype
         };
-        baseService.ExecuteNonQueryAsync(Arg.Any<InsertNewMessageCommand>()).Throws(new Exception("Database error"));
+        _baseService.ExecuteNonQueryAsync(Arg.Any<InsertNewMessageCommand>()).Throws(new Exception("Database error"));
 
         // Act
-        var result = await messageService.InsertNewMessageAsync(conversation, 0);
+        var result = await _messageService.InsertNewMessageAsync(conversation, 0);
 
         // Assert
-        await commonLogService.Received(1).SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
-        await queueMessageService.Received(1).SchedulerPublishAsync(conversation, 10);
+        await _commonLogService.Received(1).SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
+        await _queueMessageService.Received(1).SchedulerPublishAsync(conversation, 10);
         Assert.Equal(0, result);
     }
 
@@ -81,13 +81,13 @@ public class MessageServiceTests
             ErrorCode = 0
         };
         var commandResult = new CommandResult { Code = 0 };
-        baseService.ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>()).Returns(commandResult);
+        _baseService.ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>()).Returns(commandResult);
 
         // Act
-        await messageService.UpdateMessageStatusAsync(result, 0);
+        await _messageService.UpdateMessageStatusAsync(result, 0);
 
         // Assert
-        await baseService.Received(1).ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>());
+        await _baseService.Received(1).ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>());
     }
 
     [Fact]
@@ -99,13 +99,13 @@ public class MessageServiceTests
             MessageId = 1,
             ErrorCode = 1
         };
-        baseService.ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>()).Throws(new Exception("Database error"));
+        _baseService.ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>()).Throws(new Exception("Database error"));
 
         // Act
-        await messageService.UpdateMessageStatusAsync(result, 0);
+        await _messageService.UpdateMessageStatusAsync(result, 0);
 
         // Assert
-        await commonLogService.Received(1).SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
-        await queueMessageService.Received(1).SchedulerPublishAsync(result, 10);
+        await _commonLogService.Received(1).SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
+        await _queueMessageService.Received(1).SchedulerPublishAsync(result, 10);
     }
 }

@@ -23,7 +23,7 @@
 
     public class MultiServiceClientCredentialsFactory : ServiceClientCredentialsFactory
     {
-        private readonly List<ServiceClientCredentialsFactory> _inners = new List<ServiceClientCredentialsFactory>();
+        private readonly List<ServiceClientCredentialsFactory> _inners = [];
 
         public MultiServiceClientCredentialsFactory(IApplicationSettingService applicationSettingService, HttpClient httpClient = null, ILogger logger = null)
         {
@@ -102,13 +102,13 @@
         public override Task<ServiceClientCredentials> CreateCredentialsAsync(
             string appId, string audience, string loginEndpoint, bool validateAuthority, CancellationToken cancellationToken)
         {
-            var _inner = _inners.SingleOrDefault(t => t.IsValidAppIdAsync(appId, cancellationToken).Result);
-            if (_inner == null)
+            var inner = _inners.SingleOrDefault(t => t.IsValidAppIdAsync(appId, cancellationToken).Result);
+            if (inner == null)
             {
                 throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is invalid in configuration.");
             }
 
-            return _inner.CreateCredentialsAsync(
+            return inner.CreateCredentialsAsync(
                 appId, audience, loginEndpoint, validateAuthority, cancellationToken);
         }
     }

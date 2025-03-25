@@ -30,7 +30,7 @@
                 case "msteams":
                     if (sourceMessage.StartsWith("<at>"))
                     {
-                        var indexOfCommand = sourceMessage.IndexOf("</at>");
+                        var indexOfCommand = sourceMessage.IndexOf("</at>", System.StringComparison.Ordinal);
 
                         if (indexOfCommand > 0)
                         {

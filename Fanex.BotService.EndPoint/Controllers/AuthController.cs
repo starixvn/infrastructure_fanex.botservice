@@ -25,9 +25,9 @@
                 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new[] {
+                    Subject = new ClaimsIdentity([
                         new Claim(ClaimTypes.Name, username)
-                    }),
+                    ]),
                     Expires = expires,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };

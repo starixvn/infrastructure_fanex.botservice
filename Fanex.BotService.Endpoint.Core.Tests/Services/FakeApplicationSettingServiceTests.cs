@@ -1,4 +1,5 @@
 using Fanex.BotService.Core;
+using Fanex.BotService.Core.Models;
 using Fanex.BotService.Core.Services;
 using Fanex.BotService.Core.Services.Interfaces;
 
@@ -42,8 +43,9 @@ public class FakeApplicationSettingServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(2, result.Count());
-        Assert.Equal("AppId1", result.First().MicrosoftAppId);
-        Assert.Equal("AppId2", result.Last().MicrosoftAppId);
+        var applicationSettings = result as ApplicationSetting[] ?? result.ToArray();
+        Assert.Equal(2, applicationSettings.Length);
+        Assert.Equal("AppId1", applicationSettings.First().MicrosoftAppId);
+        Assert.Equal("AppId2", applicationSettings.Last().MicrosoftAppId);
     }
 }

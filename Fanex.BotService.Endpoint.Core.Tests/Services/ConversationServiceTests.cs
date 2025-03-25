@@ -10,17 +10,17 @@ namespace Fanex.BotService.Endpoint.Core.Tests.Services;
 
 public class ConversationServiceTests
 {
-    private readonly IBaseService baseService;
-    private readonly AppSettings appSettings;
-    private readonly IMemoryCache memoryCache;
-    private readonly ConversationService conversationService;
+    private readonly IBaseService _baseService;
+    private readonly AppSettings _appSettings;
+    private readonly IMemoryCache _memoryCache;
+    private readonly ConversationService _conversationService;
 
     public ConversationServiceTests()
     {
-        baseService = Substitute.For<IBaseService>();
-        appSettings = new AppSettings { BotListCacheLifeTime = 10 };
-        memoryCache = Substitute.For<IMemoryCache>();
-        conversationService = new ConversationService(baseService, appSettings, memoryCache);
+        _baseService = Substitute.For<IBaseService>();
+        _appSettings = new AppSettings { BotListCacheLifeTime = 10 };
+        _memoryCache = Substitute.For<IMemoryCache>();
+        _conversationService = new ConversationService(_baseService, _appSettings, _memoryCache);
     }
 
     [Fact]
@@ -28,11 +28,11 @@ public class ConversationServiceTests
     {
         // Arrange
         var expectedSettings = new List<ApplicationSetting> { new ApplicationSetting() };
-        baseService.GetDataAsync<ApplicationSetting>(Arg.Any<GetApplicationSettingCriteria>())
+        _baseService.GetDataAsync<ApplicationSetting>(Arg.Any<GetApplicationSettingCriteria>())
             .Returns(Task.FromResult((IEnumerable<ApplicationSetting>)expectedSettings));
 
         // Act
-        var result = await conversationService.GetApplicationSettingAsync();
+        var result = await _conversationService.GetApplicationSettingAsync();
 
         // Assert
         Assert.Equal(expectedSettings, result);
@@ -43,14 +43,14 @@ public class ConversationServiceTests
     {
         // Arrange
         var expectedBots = new List<Bot> { new Bot() };
-        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
+        _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
         {
             x[1] = expectedBots;
             return true;
         });
 
         // Act
-        var result = await conversationService.GetBotAsync();
+        var result = await _conversationService.GetBotAsync();
 
         // Assert
         Assert.Equal(expectedBots, result);
@@ -61,15 +61,15 @@ public class ConversationServiceTests
     {
         // Arrange
         var expectedBots = new List<Bot> { new Bot { AppId = 1, BotName = "abc" } };
-        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
-        baseService.GetDataAsync<Bot>(Arg.Any<GetAllBotCriteria>())
+        _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
+        _baseService.GetDataAsync<Bot>(Arg.Any<GetAllBotCriteria>())
             .Returns(expectedBots);
 
         // Act
-        var result = await conversationService.GetBotAsync();
+        var result = await _conversationService.GetBotAsync();
 
         // Assert
-        memoryCache.ReceivedWithAnyArgs(1);
+        _memoryCache.ReceivedWithAnyArgs(1);
 
         Assert.Equal(expectedBots, result);
     }

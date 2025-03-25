@@ -10,15 +10,15 @@ namespace Fanex.BotService.Endpoint.Core.Tests.Services;
 
 public class ApplicationSettingServiceTests
 {
-    private readonly IBaseService baseService;
-    private readonly IMemoryCache memoryCache;
-    private readonly IApplicationSettingService applicationSettingService;
+    private readonly IBaseService _baseService;
+    private readonly IMemoryCache _memoryCache;
+    private readonly IApplicationSettingService _applicationSettingService;
 
     public ApplicationSettingServiceTests()
     {
-        baseService = Substitute.For<IBaseService>();
-        memoryCache = Substitute.For<IMemoryCache>();
-        applicationSettingService = new ApplicationSettingService(baseService, memoryCache);
+        _baseService = Substitute.For<IBaseService>();
+        _memoryCache = Substitute.For<IMemoryCache>();
+        _applicationSettingService = new ApplicationSettingService(_baseService, _memoryCache);
     }
 
     [Fact]
@@ -29,14 +29,14 @@ public class ApplicationSettingServiceTests
         {
             new ApplicationSetting { AppId = 1, MicrosoftAppPassword = "encryptedPassword" }
         };
-        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
+        _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
         {
             x[1] = cachedSettings;
             return true;
         });
 
         // Act
-        var result = await applicationSettingService.GetApplicationSettingAsync();
+        var result = await _applicationSettingService.GetApplicationSettingAsync();
 
         // Assert
         Assert.Equal(cachedSettings, result);
@@ -50,15 +50,15 @@ public class ApplicationSettingServiceTests
         {
             new() { AppId = 1, MicrosoftAppPassword = "VtQK3Joi9l1PFXjctAqNcg==" }
         };
-        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
-        baseService.GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>()).Returns(serviceSettings);
+        _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
+        _baseService.GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>()).Returns(serviceSettings);
 
         // Act
-        var result = await applicationSettingService.GetApplicationSettingAsync();
+        var result = await _applicationSettingService.GetApplicationSettingAsync();
 
         // Assert
         Assert.Equal(serviceSettings, result);
-        await baseService.Received(1).GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>());
+        await _baseService.Received(1).GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>());
     }
 
     [Fact]
@@ -69,11 +69,11 @@ public class ApplicationSettingServiceTests
         {
             new() { AppId = 1, MicrosoftAppPassword = "VtQK3Joi9l1PFXjctAqNcg==" }
         };
-        memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
-        baseService.GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>()).Returns(serviceSettings);
+        _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
+        _baseService.GetDataAsync<ApplicationSetting>(Arg.Any<ICriteria>()).Returns(serviceSettings);
 
         // Act
-        var result = await applicationSettingService.GetApplicationSettingAsync();
+        var result = await _applicationSettingService.GetApplicationSettingAsync();
 
         // Assert
         Assert.All(result, setting => Assert.NotEqual("VtQK3Joi9l1PFXjctAqNcg==", setting.MicrosoftAppPassword));

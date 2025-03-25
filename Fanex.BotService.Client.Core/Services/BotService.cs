@@ -11,12 +11,7 @@
 
     public class BotService : IBotService
     {
-        private readonly IBotSettings botSettings;
-
-        public BotService()
-        {
-            botSettings = BotClientManager.BotSettings;
-        }
+        private readonly IBotSettings _botSettings = BotClientManager.BotSettings;
 
         public async Task SendSkypeAsync(string conversationId, string content)
             => await SendAsync(BotChannel.Skype, conversationId, content);
@@ -33,7 +28,7 @@
             var conversation = new Conversation
             {
                 Channel = channel,
-                AppId = botSettings.AppId,
+                AppId = _botSettings.AppId,
                 ConversationId = conversationId,
                 Content = content
             };
@@ -49,7 +44,7 @@
             var conversation = new Conversation
             {
                 Channel = channel,
-                AppId = botSettings.AppId,
+                AppId = _botSettings.AppId,
                 ConversationId = conversationId,
                 Content = content,
                 Images = imageUrls

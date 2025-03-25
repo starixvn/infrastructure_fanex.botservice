@@ -11,31 +11,31 @@ namespace Fanex.BotService.Endpoint.Tests.Controllers;
 
 public class NotifyControllerTests
 {
-    private readonly NotifyController notifyController;
-    private readonly IConversationService conversationService;
-    private readonly IMessageValidationService messageLogService;
-    private readonly ICommonLogService commonLogService;
-    private readonly IMessageSenderService messageSenderService;
+    private readonly NotifyController _notifyController;
+    private readonly IConversationService _conversationService;
+    private readonly IMessageValidationService _messageLogService;
+    private readonly ICommonLogService _commonLogService;
+    private readonly IMessageSenderService _messageSenderService;
 
     public NotifyControllerTests()
     {
-        conversationService = Substitute.For<IConversationService>();
-        messageLogService = Substitute.For<IMessageValidationService>();
-        commonLogService = Substitute.For<ICommonLogService>();
-        messageSenderService = Substitute.For<IMessageSenderService>();
+        _conversationService = Substitute.For<IConversationService>();
+        _messageLogService = Substitute.For<IMessageValidationService>();
+        _commonLogService = Substitute.For<ICommonLogService>();
+        _messageSenderService = Substitute.For<IMessageSenderService>();
 
-        notifyController = new NotifyController(
-            commonLogService,
-            messageLogService,
-            conversationService,
-            messageSenderService);
+        _notifyController = new NotifyController(
+            _commonLogService,
+            _messageLogService,
+            _conversationService,
+            _messageSenderService);
     }
 
     [Fact]
     public async Task Test_ShouldReturnOk()
     {
         // Act
-        var result = await notifyController.Test();
+        var result = await _notifyController.Test();
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
@@ -52,12 +52,12 @@ public class NotifyControllerTests
             new() { MessageId = 1, AppId = 1, ConversationId = "conv1", Content = "Hello", ChannelId = 1 }
         };
         var bots = new List<Bot> { new() { ChannelId = 1, AppId = 1 } };
-        conversationService.GetBotAsync().Returns(bots);
-        messageLogService.IsInvalidSendMessageToBotService(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
-        messageSenderService.SendMessageAsync(Arg.Any<ConversationMessage>()).Returns(new SendMessageResult { ErrorCode = 0 });
+        _conversationService.GetBotAsync().Returns(bots);
+        _messageLogService.IsInvalidSendMessageToBotService(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
+        _messageSenderService.SendMessageAsync(Arg.Any<ConversationMessage>()).Returns(new SendMessageResult { ErrorCode = 0 });
 
         // Act
-        var result = await notifyController.SendMessage(messages);
+        var result = await _notifyController.SendMessage(messages);
 
         // Assert
         Assert.IsType<OkObjectResult>(result);

@@ -8,21 +8,12 @@
     using System.Threading.Tasks;
     using ILogger = Logging.ILogger;
 
-    public class MessageValidationService : IMessageValidationService
+    public class MessageValidationService(
+        CheckDuplicatedMessageLogSetting settings,
+        ICacheService cacheService,
+        ILogger logger)
+        : IMessageValidationService
     {
-        private readonly CheckDuplicatedMessageLogSetting settings;
-        private readonly ICacheService cacheService;
-        private readonly ILogger logger;
-
-        public MessageValidationService(CheckDuplicatedMessageLogSetting settings,
-            ICacheService cacheService,
-            ILogger logger)
-        {
-            this.settings = settings;
-            this.cacheService = cacheService;
-            this.logger = logger;
-        }
-
         public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
         {
             if (!settings.IsEnabled)

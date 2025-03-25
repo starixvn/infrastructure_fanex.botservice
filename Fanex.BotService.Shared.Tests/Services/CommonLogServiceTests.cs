@@ -5,13 +5,13 @@ namespace Fanex.BotService.Shared.Tests.Services;
 
 public class CommonLogServiceTests
 {
-    private readonly CommonLogService commonLogService;
-    private readonly Logging.ILogger mockLogger;
+    private readonly CommonLogService _commonLogService;
+    private readonly Logging.ILogger _mockLogger;
 
     public CommonLogServiceTests()
     {
-        mockLogger = Substitute.For<Logging.ILogger>();
-        commonLogService = new CommonLogService(mockLogger);
+        _mockLogger = Substitute.For<Logging.ILogger>();
+        _commonLogService = new CommonLogService(_mockLogger);
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class CommonLogServiceTests
         var exception = new Exception("Test exception");
 
         // Act
-        commonLogService.LogFileError(exception);
+        _commonLogService.LogFileError(exception);
 
         // Assert
         // Verify that the NLog logger was called with the correct parameters
@@ -36,7 +36,7 @@ public class CommonLogServiceTests
         var message = "Test message";
 
         // Act
-        commonLogService.LogFileMessage(message);
+        _commonLogService.LogFileMessage(message);
 
         // Assert
         // Verify that the NLog logger was called with the correct parameters
@@ -52,10 +52,10 @@ public class CommonLogServiceTests
         var exception = new Exception("Test exception");
 
         // Act
-        await commonLogService.SentryErrorAsync(errMsg, exception);
+        await _commonLogService.SentryErrorAsync(errMsg, exception);
 
         // Assert
-        await mockLogger.Received(1).ErrorAsync(errMsg, exception);
+        await _mockLogger.Received(1).ErrorAsync(errMsg, exception);
     }
 
     [Fact]
@@ -65,9 +65,9 @@ public class CommonLogServiceTests
         var info = "Test info message";
 
         // Act
-        await commonLogService.SentryInfoAsync(info);
+        await _commonLogService.SentryInfoAsync(info);
 
         // Assert
-        await mockLogger.Received(1).InfoAsync(info);
+        await _mockLogger.Received(1).InfoAsync(info);
     }
 }

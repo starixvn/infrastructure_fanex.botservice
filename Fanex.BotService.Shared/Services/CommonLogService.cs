@@ -6,24 +6,18 @@
     using System;
     using System.Threading.Tasks;
 
-    public class CommonLogService : ICommonLogService
+    public class CommonLogService(Logging.ILogger logger) : ICommonLogService
     {
-        private readonly Logging.ILogger logger;
-        private static readonly Logger nLog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-
-        public CommonLogService(Logging.ILogger logger)
-        {
-            this.logger = logger;
-        }
+        private static readonly Logger NLog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
         public void LogFileError(Exception exception)
         {
-            nLog.Error(exception);
+            NLog.Error(exception);
         }
 
         public void LogFileMessage(string message)
         {
-            nLog.Error(message);
+            NLog.Error(message);
         }
 
         public async Task SentryErrorAsync(string errMsg, Exception exception = null)

@@ -9,16 +9,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class SkypeBot : ActivityHandler, ISkypeBot
+    public class SkypeBot(IConversationService conversationService) : ActivityHandler, ISkypeBot
     {
-        private const string greetingMessage = "Hello, I am {0}";
-
-        private readonly IConversationService conversationService;
-
-        public SkypeBot(IConversationService conversationService)
-        {
-            this.conversationService = conversationService;
-        }
+        private const string GreetingMessage = "Hello, I am {0}";
 
         protected override async Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -55,15 +48,15 @@
 
             switch (message)
             {
-                case InteractedCommand.help:
-                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
+                case InteractedCommand.Help:
+                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(GreetingMessage, botName)), cancellationToken);
                     break;
 
-                case InteractedCommand.getid:
+                case InteractedCommand.GetId:
                     await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
                     break;
 
-                case InteractedCommand.getbot:
+                case InteractedCommand.GetBot:
                     var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
                     await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
                     break;
@@ -80,7 +73,7 @@
                 if (turnContext.Activity.Action == "add")
                 {
                     await conversationService.AddBotContactAsync(turnContext);
-                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
+                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(GreetingMessage, botName)), cancellationToken);
                 }
                 else if (turnContext.Activity.Action == "remove")
                 {

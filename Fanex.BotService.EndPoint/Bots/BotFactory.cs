@@ -6,16 +6,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class BotFactory : IBot
+    public class BotFactory(Func<string, IChannelBot> botFactory) : IBot
     {
-        private readonly Func<string, IChannelBot> botFactory;
-
-        public BotFactory(Func<string, IChannelBot> botFactory)
-        {
-            this.botFactory = botFactory;
-        }
-
-        public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
             await botFactory(turnContext.Activity.ChannelId).OnTurnAsync(turnContext, cancellationToken);
         }

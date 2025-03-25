@@ -8,32 +8,32 @@ namespace Fanex.BotService.Endpoint.Core.Tests.Services;
 
 public class MessageValidationServiceTests
 {
-    private readonly MessageValidationService service;
-    private readonly CheckDuplicatedMessageLogSetting settings;
-    private readonly ICacheService cacheService;
-    private readonly ILogger logger;
+    private readonly MessageValidationService _service;
+    private readonly CheckDuplicatedMessageLogSetting _settings;
+    private readonly ICacheService _cacheService;
+    private readonly ILogger _logger;
 
     public MessageValidationServiceTests()
     {
-        settings = new CheckDuplicatedMessageLogSetting
+        _settings = new CheckDuplicatedMessageLogSetting
         {
             IsEnabled = true,
             TimeSpanInMinutes = 10,
-            ExceptionConversatiionIDs = new string[] { "exceptionId" }
+            ExceptionConversatiionIDs = ["exceptionId"]
         };
-        cacheService = Substitute.For<ICacheService>();
-        logger = Substitute.For<ILogger>();
-        service = new MessageValidationService(settings, cacheService, logger);
+        _cacheService = Substitute.For<ICacheService>();
+        _logger = Substitute.For<ILogger>();
+        _service = new MessageValidationService(_settings, _cacheService, _logger);
     }
 
     [Fact]
     public async Task IsInvalidSendMessageToBotService_ShouldReturnFalse_WhenSettingsIsDisabled()
     {
         // Arrange
-        settings.IsEnabled = false;
+        _settings.IsEnabled = false;
 
         // Act
-        var result = await service.IsInvalidSendMessageToBotService("conversationId", "message");
+        var result = await _service.IsInvalidSendMessageToBotService("conversationId", "message");
 
         // Assert
         Assert.False(result);
@@ -43,7 +43,7 @@ public class MessageValidationServiceTests
     public async Task IsInvalidSendMessageToBotService_ShouldReturnFalse_WhenConversationIdIsException()
     {
         // Act
-        var result = await service.IsInvalidSendMessageToBotService("exceptionId", "message");
+        var result = await _service.IsInvalidSendMessageToBotService("exceptionId", "message");
 
         // Assert
         Assert.False(result);
@@ -53,11 +53,11 @@ public class MessageValidationServiceTests
     public async Task IsInvalidSendMessageToBotService_ShouldReturnTrue_WhenMessageIsDuplicated()
     {
         // Arrange
-        cacheService.GetAsync<string>("conversationId").Returns("key1,key2");
-        cacheService.GetAsync<string>("key1").Returns("message");
+        _cacheService.GetAsync<string>("conversationId").Returns("key1,key2");
+        _cacheService.GetAsync<string>("key1").Returns("message");
 
         // Act
-        var result = await service.IsInvalidSendMessageToBotService("conversationId", "message");
+        var result = await _service.IsInvalidSendMessageToBotService("conversationId", "message");
 
         // Assert
         Assert.True(result);
@@ -67,23 +67,23 @@ public class MessageValidationServiceTests
     public async Task InsertMessageLogIntoCache_ShouldInsertMessageLog()
     {
         // Arrange
-        cacheService.GetAsync<string>("conversationId").Returns("key1");
+        _cacheService.GetAsync<string>("conversationId").Returns("key1");
 
         // Act
-        await service.InsertMessageLogIntoCache("conversationId", "messageContent", "guiid");
+        await _service.InsertMessageLogIntoCache("conversationId", "messageContent", "guiid");
 
         // Assert
-        await cacheService.Received().SetAsync("conversationId", "key1,guiid", Arg.Any<CacheItemOptions>());
-        await cacheService.Received().SetAsync("guiid", "messageContent", Arg.Any<CacheItemOptions>());
+        await _cacheService.Received().SetAsync("conversationId", "key1,guiid", Arg.Any<CacheItemOptions>());
+        await _cacheService.Received().SetAsync("guiid", "messageContent", Arg.Any<CacheItemOptions>());
     }
 
     [Fact]
     public async Task RemoveMessageLogOnCache_ShouldRemoveMessageLog()
     {
         // Act
-        await service.RemoveMessageLogOnCache("guid");
+        await _service.RemoveMessageLogOnCache("guid");
 
         // Assert
-        await cacheService.Received().RemoveAsync("guid");
+        await _cacheService.Received().RemoveAsync("guid");
     }
 }

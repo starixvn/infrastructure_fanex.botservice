@@ -4,15 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fanex.BotService.Consumer.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ICommonLogService logService) : Controller
     {
-        private readonly ICommonLogService logService;
-
-        public HomeController(ICommonLogService logService)
-        {
-            this.logService = logService;
-        }
-
         public IActionResult Index()
         {
             return Ok("Consumer running ...");

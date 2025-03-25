@@ -7,20 +7,20 @@ namespace Fanex.BotService.Consumer.Tests
 {
     public class HomeControllerTests
     {
-        private readonly HomeController homeController;
-        private readonly ICommonLogService logService;
+        private readonly HomeController _homeController;
+        private readonly ICommonLogService _logService;
 
         public HomeControllerTests()
         {
-            logService = Substitute.For<ICommonLogService>();
-            homeController = new HomeController(logService);
+            _logService = Substitute.For<ICommonLogService>();
+            _homeController = new HomeController(_logService);
         }
 
         [Fact]
         public void Index_ReturnsOkResult()
         {
             // Act
-            var result = homeController.Index();
+            var result = _homeController.Index();
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -32,13 +32,13 @@ namespace Fanex.BotService.Consumer.Tests
         public async Task Test_ReturnsOkResult()
         {
             // Act
-            var result = await homeController.Test();
+            var result = await _homeController.Test();
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.Equal("ok", okResult?.Value);
-            await logService.Received(1).SentryErrorAsync("test sentry");
+            await _logService.Received(1).SentryErrorAsync("test sentry");
         }
     }
 }

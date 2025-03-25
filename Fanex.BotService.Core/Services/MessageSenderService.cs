@@ -22,11 +22,11 @@
 
     public class MessageSenderService : IMessageSenderService
     {
-        private readonly HttpClient httpClient;
-        private readonly AppSettings appSettings;
-        private readonly ILogger<MessageSenderService> fileLogger;
-        private readonly Logging.ILogger logger;
-        private readonly IBotFrameworkHttpAdapter adapter;
+        private readonly HttpClient _httpClient;
+        private readonly AppSettings _appSettings;
+        private readonly ILogger<MessageSenderService> _fileLogger;
+        private readonly Logging.ILogger _logger;
+        private readonly IBotFrameworkHttpAdapter _adapter;
 
         public MessageSenderService(
             IHttpClientFactory httpClientFactory,
@@ -37,26 +37,26 @@
             IBotFrameworkHttpAdapter adapter)
 
         {
-            this.appSettings = appSettings;
-            this.fileLogger = fileLogger;
-            this.logger = logger;
-            this.adapter = adapter;
+            this._appSettings = appSettings;
+            this._fileLogger = fileLogger;
+            this._logger = logger;
+            this._adapter = adapter;
 
             if (proxySettings.Value.IsUseProxy)
             {
-                httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
-                httpClient.Timeout = TimeSpan.FromSeconds(proxySettings.Value.TimeOut);
+                _httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
+                _httpClient.Timeout = TimeSpan.FromSeconds(proxySettings.Value.TimeOut);
             }
             else
             {
-                httpClient = httpClientFactory.CreateClient();
+                _httpClient = httpClientFactory.CreateClient();
             }
         }
 
         public async Task<SendMessageResult> SendMessageAsync(ConversationMessage conversationMessage)
         {
             SendMessageResult sendMessageResult;
-            if (appSettings.IsOnlySendIndirect)
+            if (_appSettings.IsOnlySendIndirect)
             {
                 sendMessageResult = await SendIndirectMessageAsync(conversationMessage);
             }
@@ -79,14 +79,14 @@
                 {
                     Bot = new ChannelAccount { Id = conversationMessage.ConversationBotId, Name = conversationMessage.BotName, Role = "bot" },
                     Conversation = new ConversationAccount { Id = conversationMessage.ConversationId },
-                    ServiceUrl = conversationMessage.ServiceURL,
+                    ServiceUrl = conversationMessage.ServiceUrl,
                     ChannelId = conversationMessage.ChannelId
                 };
 
-                await ((CloudAdapter)adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, conversation,
+                await ((CloudAdapter)_adapter).ContinueConversationAsync(conversationMessage.MicrosoftAppId, conversation,
                     async (context, token) =>
                     {
-                        Activity activity = MessageFactory.Text(conversationMessage.Message ?? string.Empty);
+                        var activity = MessageFactory.Text(conversationMessage.Message ?? string.Empty);
                         activity.TextFormat = TextFormatTypes.Markdown;
 
                         if (conversationMessage.Images is not null && conversationMessage.Images.Count > 0)
@@ -100,7 +100,7 @@
                         }
                         await context.SendActivityAsync(activity, cancellationToken: token);
                     },
-                    new CancellationToken());
+                    CancellationToken.None);
 
                 sendMessageResult.SentTime = DateTimeOffset.UtcNow.DateTime;
             }
@@ -125,9 +125,9 @@
             try
             {
                 var token = await GetTokenAsync();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                var url = new Uri($"{appSettings.FowardUrl}");
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync(url, conversationMessage);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                var url = new Uri($"{_appSettings.ForwardUrl}");
+                var response = await _httpClient.PostAsJsonAsync(url, conversationMessage);
                 response.EnsureSuccessStatusCode();
                 var responseData = await response.Content.ReadAsStringAsync();
                 var sendMessageResult = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
@@ -139,7 +139,7 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                fileLogger.LogWarning(logMessage.ToString());
+                _fileLogger.LogWarning(logMessage.ToString());
 
                 return new SendMessageResult
                 {
@@ -154,14 +154,14 @@
 
         private async Task<ChatbotToken> GetTokenAsync()
         {
-            var url = new Uri($"{appSettings.AuthenticateUrl}");
+            var url = new Uri($"{_appSettings.AuthenticateUrl}");
             var authData = new Dictionary<string, string>
             {
-                { "username", appSettings.AppCredentialId },
-                { "password", appSettings.AppCredentialPassword }
+                { "username", _appSettings.AppCredentialId },
+                { "password", _appSettings.AppCredentialPassword }
             };
             using var authDataContent = new FormUrlEncodedContent(authData);
-            HttpResponseMessage response = await httpClient.PostAsync(url, authDataContent);
+            var response = await _httpClient.PostAsync(url, authDataContent);
             response.EnsureSuccessStatusCode();
             var responseData = await response.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);
@@ -183,7 +183,7 @@
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .AddSection("Params", param);
 
-            await logger.ErrorAsync(logMessage.ToString());
+            await _logger.ErrorAsync(logMessage.ToString());
         }
     }
 }

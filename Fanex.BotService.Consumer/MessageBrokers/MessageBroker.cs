@@ -22,7 +22,7 @@
          IBotClientService botClientService,
          IMessageQueueService messageQueueService) : IMessageBroker
     {
-        private readonly List<ConsumerSetting> consumerSettings = AppSettings.ConsumerSettings;
+        private readonly List<ConsumerSetting> _consumerSettings = AppSettings.ConsumerSettings;
         private const int TimeDelayBeforeRetry = 10;
         private const int MaxRetryTime = 5;
 
@@ -35,13 +35,13 @@
 
         public void InsertMessageToDatabaseConsumer()
         {
-            var setting = GetConsumerSetting(QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE);
+            var setting = GetConsumerSetting(QueueSubscriptionId.InsertFromQueueToDatabase);
             if (setting is not null && setting.IsConsumed)
             {
-                Subscribe<Conversation>(QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE,
+                Subscribe<Conversation>(QueueSubscriptionId.InsertFromQueueToDatabase,
                 async (message) =>
                 {
-                    logService.LogFileMessage($"Begin consume: {QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE}. Data: {JsonConvert.SerializeObject(message)}");
+                    logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.InsertFromQueueToDatabase}. Data: {JsonConvert.SerializeObject(message)}");
 
                     var messageId = await messageService.InsertNewMessageAsync(message, setting.RetryTimeSpan ?? 1);
                     if (messageId > 0)
@@ -58,55 +58,55 @@
                         await messageQueueService.PublishAsync(msgSendToEndpoint);
                     }
 
-                    logService.LogFileMessage($"End consume {QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE}");
+                    logService.LogFileMessage($"End consume {QueueSubscriptionId.InsertFromQueueToDatabase}");
                 });
             }
         }
 
         public void SendMessageToEndpointConsumer()
         {
-            var setting = GetConsumerSetting(QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT);
+            var setting = GetConsumerSetting(QueueSubscriptionId.SendMessageToBotServiceEndpoint);
             if (setting is not null && setting.IsConsumed)
             {
-                Subscribe<MessageEndpoint>(QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT,
+                Subscribe<MessageEndpoint>(QueueSubscriptionId.SendMessageToBotServiceEndpoint,
                 async (message) =>
                 {
-                    logService.LogFileMessage($"Begin consume: {QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT}. Data: {JsonConvert.SerializeObject(message)}");
+                    logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.SendMessageToBotServiceEndpoint}. Data: {JsonConvert.SerializeObject(message)}");
 
                     var sentResult = await botClientService.SendMessageAsync((BotChannel)message.ChannelId, message);
 
                     await messageQueueService.PublishAsync(sentResult);
 
-                    logService.LogFileMessage($"End consume {QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT}");
+                    logService.LogFileMessage($"End consume {QueueSubscriptionId.SendMessageToBotServiceEndpoint}");
                 });
             }
         }
 
         public void UpdateMessageStatusConsumer()
         {
-            var setting = GetConsumerSetting(QueueSubcriptionId.UPDATE_MESSAGE_STATUS);
+            var setting = GetConsumerSetting(QueueSubscriptionId.UpdateMessageStatus);
             if (setting is not null && setting.IsConsumed)
             {
-                Subscribe<SendMessageResult>(QueueSubcriptionId.UPDATE_MESSAGE_STATUS,
+                Subscribe<SendMessageResult>(QueueSubscriptionId.UpdateMessageStatus,
                 async (message) =>
                 {
-                    logService.LogFileMessage($"Begin consume: {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}. Data: {JsonConvert.SerializeObject(message)}");
+                    logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.UpdateMessageStatus}. Data: {JsonConvert.SerializeObject(message)}");
 
                     await messageService.UpdateMessageStatusAsync(message, setting.RetryTimeSpan ?? 1);
 
-                    logService.LogFileMessage($"End consume {QueueSubcriptionId.UPDATE_MESSAGE_STATUS}");
+                    logService.LogFileMessage($"End consume {QueueSubscriptionId.UpdateMessageStatus}");
                 });
             }
         }
 
         private ConsumerSetting? GetConsumerSetting(string queueName)
-            => consumerSettings.Find(s => s.QueueName.Equals(queueName, StringComparison.OrdinalIgnoreCase));
+            => _consumerSettings.Find(s => s.QueueName.Equals(queueName, StringComparison.OrdinalIgnoreCase));
 
         #region Subscribe
 
         private void Subscribe<T>(string subscriptionId, Action<T> action, int retryCount = 0)
         {
-            bool isFailed = false;
+            var isFailed = false;
 
             try
             {
@@ -133,11 +133,11 @@
 
         #region IDisposable Support
 
-        private bool disposedValue;
+        private bool _disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -146,7 +146,7 @@
 
                 bus?.Dispose();
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

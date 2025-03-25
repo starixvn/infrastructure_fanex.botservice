@@ -6,13 +6,13 @@
     using Shared.Services;
     using Shared.Services.Interfaces;
 
-    public static class DI
+    public static class Di
     {
         public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            string rabbitMQConnectionString = configuration.GetValue<string>("RabbitMQConnectionString");
+            var rabbitMqConnectionString = configuration.GetValue<string>("RabbitMQConnectionString");
             services.AddHttpClient();
-            services.AddSingleton(RabbitHutch.CreateBus(rabbitMQConnectionString));
+            services.AddSingleton(RabbitHutch.CreateBus(rabbitMqConnectionString));
 
             services.AddSingleton<Logging.ILogger, Logging.Logger>();
             services.AddSingleton<ICommonLogService, CommonLogService>();

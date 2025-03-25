@@ -14,7 +14,7 @@
         public static async Task SendAsync(Conversation conversation)
             => await PostAsync<Conversation, Task>("/api/bot/send", conversation);
 
-        private static async Task<TOutput> PostAsync<TInput, TOutput>(string requestUrl, TInput data)
+        private static async Task PostAsync<TInput, TOutput>(string requestUrl, TInput data)
         {
             ValidateEndPoint(requestUrl);
 
@@ -29,7 +29,7 @@
                 var responseData = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<TOutput>(responseData);
 
-                return result;
+                return;
             }
         }
 

@@ -5,19 +5,19 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using NSubstitute;
 
-namespace Fanex.BotService.EndPoint.Tests.Controllers
+namespace Fanex.BotService.Endpoint.Tests.Controllers
 {
     public class BotControllerTests
     {
-        private readonly IBotFrameworkHttpAdapter adapter;
-        private readonly IBot bot;
-        private readonly BotController controller;
+        private readonly IBotFrameworkHttpAdapter _adapter;
+        private readonly IBot _bot;
+        private readonly BotController _controller;
 
         public BotControllerTests()
         {
-            adapter = Substitute.For<IBotFrameworkHttpAdapter>();
-            bot = Substitute.For<IBot>();
-            controller = new BotController(adapter, bot);
+            _adapter = Substitute.For<IBotFrameworkHttpAdapter>();
+            _bot = Substitute.For<IBot>();
+            _controller = new BotController(_adapter, _bot);
         }
 
         [Fact]
@@ -25,16 +25,16 @@ namespace Fanex.BotService.EndPoint.Tests.Controllers
         {
             // Arrange
             var httpContext = new DefaultHttpContext();
-            controller.ControllerContext = new ControllerContext
+            _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
             // Act
-            await controller.PostAsync();
+            await _controller.PostAsync();
 
             // Assert
-            await adapter.Received(1).ProcessAsync(httpContext.Request, httpContext.Response, bot);
+            await _adapter.Received(1).ProcessAsync(httpContext.Request, httpContext.Response, _bot);
         }
     }
 }

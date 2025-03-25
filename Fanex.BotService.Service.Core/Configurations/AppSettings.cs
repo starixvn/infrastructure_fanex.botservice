@@ -4,7 +4,7 @@
 
     public static class AppSettings
     {
-        public static string RabbitMQConnectionString { get; set; }
+        public static string RabbitMqConnectionString { get; set; }
         public static BotEndpointConfiguration BotEndpointConfiguration { get; set; }
         public static List<ConsumerSetting> ConsumerSettings { get; set; }
     }

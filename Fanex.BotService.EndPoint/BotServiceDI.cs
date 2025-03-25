@@ -65,7 +65,7 @@
 
         public static void RegisterService(IServiceCollection services, IConfiguration configuration)
         {
-            _ = bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out bool isReadSettingFromFile);
+            _ = bool.TryParse(configuration.GetSection("IsReadSettingFromFile")?.Value, out var isReadSettingFromFile);
 
             ConfigHttpClient(services, configuration);
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
@@ -98,14 +98,14 @@
 
         public static void RegisterCache(IServiceCollection services, IConfiguration configuration)
         {
-            _ = bool.TryParse(configuration.GetSection("IsCacheDataInRedis")?.Value, out bool isCacheDataInRedis);
+            _ = bool.TryParse(configuration.GetSection("IsCacheDataInRedis")?.Value, out var isCacheDataInRedis);
             services.AddTransient<ICacheService, CacheService>();
             services.AddSingleton<IMemoryCache, MemoryCache>();
             if (isCacheDataInRedis)
             {
-                var multiplexer = ConnectionMultiplexer.Connect(configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
+                var multiplexer = ConnectionMultiplexer.Connect(configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value ?? string.Empty);
                 services.AddDataProtection()
-                .SetApplicationName(configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value)
+                .SetApplicationName(configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value ?? string.Empty)
                 .PersistKeysToStackExchangeRedis(multiplexer, "Fanex.ChatBotBotService.Endpoint-Keys");
                 services.AddRedisCache(configuration.GetSection("Fanex.Caching.Redis"));
 
@@ -161,9 +161,9 @@
     {
         public CustomHttpClient(IConfiguration configuration)
         {
-            var isUseProxy = bool.Parse(configuration.GetSection("ProxySettings:IsUseProxy").Value);
+            var isUseProxy = bool.Parse(configuration.GetSection("ProxySettings:IsUseProxy").Value ?? string.Empty);
             var proxyAddress = configuration.GetSection("ProxySettings:ProxyAddress").Value;
-            var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
+            var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value ?? string.Empty);
 
             if (isUseProxy)
             {

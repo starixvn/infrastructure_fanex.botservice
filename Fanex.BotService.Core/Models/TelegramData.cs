@@ -2,48 +2,48 @@
 {
     public class TelegramData
     {
-        public int update_id { get; set; }
-        public Message message { get; set; }
+        public int UpdateId { get; set; }
+        public Message Message { get; set; }
     }
 
     public class Message
     {
-        public int message_id { get; set; }
-        public From from { get; set; }
-        public Chat chat { get; set; }
+        public int MessageId { get; set; }
+        public From From { get; set; }
+        public Chat Chat { get; set; }
 
-        public Member new_chat_member { get; set; }
+        public Member NewChatMember { get; set; }
 
-        public Member left_chat_member { get; set; }
+        public Member LeftChatMember { get; set; }
 
-        public int date { get; set; }
-        public string text { get; set; }
+        public int Date { get; set; }
+        public string Text { get; set; }
     }
 
     public class From
     {
-        public int id { get; set; }
-        public bool is_bot { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string username { get; set; }
-        public string language_code { get; set; }
+        public int Id { get; set; }
+        public bool IsBot { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
+        public string LanguageCode { get; set; }
     }
 
     public class Chat
     {
-        public int id { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string username { get; set; }
-        public string type { get; set; }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
+        public string Type { get; set; }
     }
 
     public class Member
     {
-        public long id { get; set; }
-        public bool is_bot { get; set; }
-        public string first_name { get; set; }
-        public string username { get; set; }
+        public long Id { get; set; }
+        public bool IsBot { get; set; }
+        public string FirstName { get; set; }
+        public string Username { get; set; }
     }
 }

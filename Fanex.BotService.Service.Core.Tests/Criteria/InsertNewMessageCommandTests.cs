@@ -1,6 +1,6 @@
 ﻿using Fanex.BotService.Service.Core.Criteria.Message;
 
-namespace Fanex.BotService.Service.Core.Tests.Criteria
+namespace Fanex.BotService.Core.Tests.Criteria
 {
     public class InsertNewMessageCommandTests
     {

@@ -4,46 +4,49 @@ using Fanex.BotService.Service.Core.Constants;
 using Fanex.BotService.Service.Core.Enum;
 using Fanex.BotService.Service.Core.Models;
 using Fanex.BotService.Service.Core.Services.Interfaces;
+using Fanex.BotService.Shared.Models;
 using Fanex.BotService.Shared.Models.Message;
 using Fanex.BotService.Shared.Services.Interfaces;
-using Fanex.BotService.Shared.Models;
 using NSubstitute;
 
 namespace Fanex.BotService.Consumer.Tests.MessageBroker;
 
 public class MessageBrokerTests
 {
-    private readonly IBus bus;
-    private readonly ICommonLogService logService;
-    private readonly IMessageService messageService;
-    private readonly IBotClientService botClientService;
-    private readonly IMessageQueueService messageQueueService;
-    private readonly MessageBrokers.MessageBroker messageBroker;
+    private readonly IBus _bus;
+    private readonly ICommonLogService _logService;
+    private readonly IMessageService _messageService;
+    private readonly IBotClientService _botClientService;
+    private readonly IMessageQueueService _messageQueueService;
+    private readonly MessageBrokers.MessageBroker _messageBroker;
 
     public MessageBrokerTests()
     {
-        bus = Substitute.For<IBus>();
-        logService = Substitute.For<ICommonLogService>();
-        messageService = Substitute.For<IMessageService>();
-        botClientService = Substitute.For<IBotClientService>();
-        messageQueueService = Substitute.For<IMessageQueueService>();
-        AppSettings.ConsumerSettings = new List<ConsumerSetting>
-        {
-            new() { QueueName = QueueSubcriptionId.INSERT_FROM_QUEUE_TO_DATABASE, IsConsumed = true, RetryTimeSpan = 1 },
-            new() { QueueName = QueueSubcriptionId.SEND_MESSAGE_TO_BOT_SERVICE_ENDPOINT, IsConsumed = true, RetryTimeSpan = 1 },
-            new() { QueueName = QueueSubcriptionId.UPDATE_MESSAGE_STATUS, IsConsumed = true, RetryTimeSpan = 1 }
-        };
-        messageBroker = new MessageBrokers.MessageBroker(bus, logService, messageService, botClientService, messageQueueService);
+        _bus = Substitute.For<IBus>();
+        _logService = Substitute.For<ICommonLogService>();
+        _messageService = Substitute.For<IMessageService>();
+        _botClientService = Substitute.For<IBotClientService>();
+        _messageQueueService = Substitute.For<IMessageQueueService>();
+        AppSettings.ConsumerSettings =
+        [
+            new() { QueueName = QueueSubscriptionId.InsertFromQueueToDatabase, IsConsumed = true, RetryTimeSpan = 1 },
+            new()
+            {
+                QueueName = QueueSubscriptionId.SendMessageToBotServiceEndpoint, IsConsumed = true, RetryTimeSpan = 1
+            },
+            new() { QueueName = QueueSubscriptionId.UpdateMessageStatus, IsConsumed = true, RetryTimeSpan = 1 }
+        ];
+        _messageBroker = new MessageBrokers.MessageBroker(_bus, _logService, _messageService, _botClientService, _messageQueueService);
     }
 
     [Fact]
     public void Start_ShouldCallConsumers()
     {
         // Act
-        messageBroker.Start();
+        _messageBroker.Start();
 
         // Assert
-        Assert.Equal(3, bus.PubSub.ReceivedCalls().Count());
+        Assert.Equal(3, _bus.PubSub.ReceivedCalls().Count());
     }
 
     [Fact]
@@ -56,31 +59,40 @@ public class MessageBrokerTests
             ConversationId = "123",
             Content = "Test",
             Channel = BotChannel.Skype,
-            Images = new List<string>()
+            Images = []
         };
         var messageId = 1;
-        messageService.InsertNewMessageAsync(conversation, Arg.Any<int>()).Returns(messageId);
+        _messageService.InsertNewMessageAsync(conversation, Arg.Any<int>()).Returns(messageId);
 
         // Act
-        messageBroker.InsertMessageToDatabaseConsumer();
+        _messageBroker.InsertMessageToDatabaseConsumer();
 
         // Assert
-        Assert.Single(bus.PubSub.ReceivedCalls());
+        Assert.Single(_bus.PubSub.ReceivedCalls());
     }
 
     [Fact]
     public void SendMessageToEndpointConsumer_ShouldSendMessageAndPublishResult()
     {
         // Arrange
-        var messageEndpoint = new MessageEndpoint { MessageId = 1, AppId = 1, ConversationId = "123", Content = "Test", ChannelId = (byte)BotChannel.Skype, Images = new List<string>() };
+        var messageEndpoint = new MessageEndpoint
+        {
+            MessageId = 1,
+            AppId = 1,
+            ConversationId = "123",
+            Content = "Test",
+            ChannelId = (byte)BotChannel.Skype,
+            Images =
+            []
+        };
         var sendMessageResult = new SendMessageResult { MessageId = 1, ConversationId = "123", SentTime = DateTime.Now, ErrorCode = 0, ErrorMessage = "", IsIgnoreRetry = false };
-        botClientService.SendMessageAsync(BotChannel.Skype, messageEndpoint).Returns(sendMessageResult);
+        _botClientService.SendMessageAsync(BotChannel.Skype, messageEndpoint).Returns(sendMessageResult);
 
         // Act
-        messageBroker.SendMessageToEndpointConsumer();
+        _messageBroker.SendMessageToEndpointConsumer();
 
         // Assert
-        Assert.Single(bus.PubSub.ReceivedCalls());
+        Assert.Single(_bus.PubSub.ReceivedCalls());
     }
 
     [Fact]
@@ -89,9 +101,9 @@ public class MessageBrokerTests
         // Arrange
 
         // Act
-        messageBroker.UpdateMessageStatusConsumer();
+        _messageBroker.UpdateMessageStatusConsumer();
 
         // Assert
-        Assert.Single(bus.PubSub.ReceivedCalls());
+        Assert.Single(_bus.PubSub.ReceivedCalls());
     }
 }

@@ -20,26 +20,13 @@
     using System.Threading.Tasks;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class NotifyController : Controller
+    public class NotifyController(
+        ICommonLogService commonLogService,
+        IMessageValidationService messageLogService,
+        IConversationService conversationService,
+        IMessageSenderService messageSenderService)
+        : Controller
     {
-        private readonly IConversationService conversationService;
-        private readonly IMessageValidationService messageLogService;
-        private readonly ICommonLogService commonLogService;
-        private readonly IMessageSenderService messageSenderService;
-
-        public NotifyController(
-            ICommonLogService commonLogService,
-            IMessageValidationService messageLogService,
-            IConversationService conversationService,
-            IMessageSenderService messageSenderService
-            )
-        {
-            this.commonLogService = commonLogService;
-            this.conversationService = conversationService;
-            this.messageLogService = messageLogService;
-            this.messageSenderService = messageSenderService;
-        }
-
         [AllowAnonymous]
         [HttpGet]
         [Route("api/Test")]
@@ -143,14 +130,14 @@
             var bot = bots.FirstOrDefault(t => IsValidBot(t, chanelId, message.AppId));
             if (bot != null)
             {
-                bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(message.ConversationId, message.Content);
+                var isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(message.ConversationId, message.Content);
                 if (isDuplicated)
                 {
                     sendMessageResult = DuplicatedResult(message.MessageId, message.ConversationId);
                 }
                 else
                 {
-                    string guiid = Guid.NewGuid().ToString();
+                    var guiid = Guid.NewGuid().ToString();
                     await messageLogService.InsertMessageLogIntoCache(message.ConversationId, message.Content, guiid);
 
                     var conversationMessage = new ConversationMessage
@@ -158,7 +145,7 @@
                         MicrosoftAppId = bot.MicrosoftAppId,
                         ConversationId = message.ConversationId,
                         Message = message.Content,
-                        ServiceURL = bot.ServiceUrl,
+                        ServiceUrl = bot.ServiceUrl,
                         ChannelId = bot.ChannelName,
                         ConversationBotId = bot.ConversationId,
                         BotName = bot.BotName,

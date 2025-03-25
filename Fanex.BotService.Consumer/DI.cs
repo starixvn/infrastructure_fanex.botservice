@@ -16,7 +16,7 @@
     using System.Net.Security;
     using System.Security.Authentication;
 
-    public static class DI
+    public static class Di
     {
         public static void StartMessageBroker(this IServiceCollection services)
         {
@@ -26,14 +26,14 @@
 
         public static void RegisterConfiguration(IConfiguration configuration)
         {
-            AppSettings.RabbitMQConnectionString = configuration.GetValue<string>("RabbitMQConnectionString");
+            AppSettings.RabbitMqConnectionString = configuration.GetValue<string>("RabbitMQConnectionString");
             AppSettings.BotEndpointConfiguration = configuration.GetSection("BotEndpointConfigurations").Get<BotEndpointConfiguration>();
             AppSettings.ConsumerSettings = configuration.GetSection("ConsumerSettings").Get<List<ConsumerSetting>>();
         }
 
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddSingleton(RabbitHutch.CreateBus(AppSettings.RabbitMQConnectionString));
+            services.AddSingleton(RabbitHutch.CreateBus(AppSettings.RabbitMqConnectionString));
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseRepository, BaseRepository>();
