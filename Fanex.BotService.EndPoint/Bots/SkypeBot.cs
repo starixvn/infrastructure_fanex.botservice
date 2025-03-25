@@ -5,11 +5,12 @@
     using Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
+    using Shared.Services.Interfaces;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class SkypeBot(IConversationService conversationService) : ActivityHandler, ISkypeBot
+    public class SkypeBot(IConversationService conversationService, ICommonLogService logService) : ActivityHandler, ISkypeBot
     {
         private const string GreetingMessage = "Hello, I am {0}";
 
@@ -41,6 +42,9 @@
         {
             var message = turnContext.Activity.Text.Trim();
             var botName = turnContext.Activity.Recipient.Name;
+            logService.LogFileMessage($"OnMessageActivityAsync Telegram - message = {message} from {turnContext.Activity.From.Name}" +
+                                      $" Id = {turnContext.Activity.From.Id}");
+
             if (turnContext.Activity.Conversation.IsGroup == true)
             {
                 message = BotHelper.GetMessageInGroupByChannel(message, turnContext.Activity.ChannelId, botName);

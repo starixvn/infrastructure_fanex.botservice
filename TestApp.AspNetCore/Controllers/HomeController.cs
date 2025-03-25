@@ -7,11 +7,11 @@
     {
         public async Task<IActionResult> Index()
         {
-            var conversationId = "29:1otxSNyz7rewcKJyycITsF1CEphLdZLvT5wabXgoePqQ";
+            var conversationId = "1064787034";
 
-            await botService.SendSkypeAsync(
+            await botService.SendTelegramAsync(
             conversationId,
-            $"Msg: Hi Oliver, this is the message Test Skype 5");
+            "Msg: Hi Oliver, this is the message Test SIT");
 
             return Ok("OK");
         }

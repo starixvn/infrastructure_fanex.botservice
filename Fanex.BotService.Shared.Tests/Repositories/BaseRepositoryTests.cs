@@ -1,7 +1,7 @@
-﻿using Fanex.Data;
-using Fanex.Data.Repository;
-using Fanex.BotService.Shared.Models;
+﻿using Fanex.BotService.Shared.Models;
 using Fanex.BotService.Shared.Repositories;
+using Fanex.Data;
+using Fanex.Data.Repository;
 
 namespace Fanex.BotService.Shared.Tests.Repositories
 {
@@ -21,7 +21,7 @@ namespace Fanex.BotService.Shared.Tests.Repositories
             .Run();
 
             _objectDb = Substitute.For<IObjectDb>();
-            ObjectDbFactory.Mock((key, time) => _objectDb);
+            ObjectDbFactory.Mock((_, _, _) => _objectDb);
         }
 
         #region ExecuteNonQueryAsync

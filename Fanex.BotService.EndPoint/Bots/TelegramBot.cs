@@ -6,10 +6,11 @@
     using Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
+    using Shared.Services.Interfaces;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class TelegramBot(IConversationService conversationService) : ActivityHandler, ITelegramBot
+    public class TelegramBot(IConversationService conversationService, ICommonLogService logService) : ActivityHandler, ITelegramBot
     {
         private const string GreetingMessage = "Hello, I am {0}";
 
@@ -17,6 +18,8 @@
         {
             var botName = turnContext.Activity.Recipient.Name;
             var message = turnContext.Activity.Text?.Trim() ?? string.Empty;
+            logService.LogFileMessage($"OnMessageActivityAsync Telegram - message = {message} from {turnContext.Activity.From.Name}" +
+                                      $" Id = {turnContext.Activity.From.Id}");
 
             if (message.StartsWith("/start"))
             {
@@ -52,8 +55,6 @@
                     var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
                     await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
                     break;
-
-                default: break;
             }
         }
     }
