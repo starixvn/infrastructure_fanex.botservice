@@ -6,7 +6,6 @@ using NLog.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost
-    .UseUrls($"http://*:5000")
     .UseNLog();
 
 IConfiguration configuration = builder.Configuration;
@@ -31,10 +30,13 @@ else
     app.UseHsts();
 }
 
-app.UseRouting();
+app.MapGet("/", () => "Fanex Bot API ready!");
+app.MapGet("/sentry", async () =>
+{
+    var logService = app.Services.GetRequiredService<Fanex.Logging.ILogger>();
+    await logService.ErrorAsync("Test Sentry");
 
-app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+    return "Test sentry!";
+});
 
-app.Run();
+await app.RunAsync();

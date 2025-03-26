@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <UserSecretsId>09022fac-ef2e-4453-8d16-926f18bff5b5</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -53,21 +53,6 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <None Update="App_Data\SpNames.PROD_1.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.PROD.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.UAT.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.SIT.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.LOCAL.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="App_Data\SpNames.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

@@ -87,7 +87,6 @@ if (!string.IsNullOrWhiteSpace(domainPath))
     });
 }
 
-app.UseDefaultFiles();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapGet("/", () => "Fanex Bot Endpoint ready!");

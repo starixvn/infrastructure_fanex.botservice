@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>7a7d8262-573d-4174-916d-9050ac6bc006</UserSecretsId>
@@ -9,26 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="App_Data\SpNames.LOCAL.xml" />
-    <None Remove="App_Data\SpNames.PROD.xml" />
-    <None Remove="App_Data\SpNames.SIT.xml" />
-    <None Remove="App_Data\SpNames.UAT.xml" />
     <None Remove="App_Data\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="App_Data\SpNames.PROD.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpNames.UAT.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpNames.SIT.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpNames.LOCAL.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="App_Data\SpNames.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
