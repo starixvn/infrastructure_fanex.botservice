@@ -18,8 +18,7 @@
         {
             var botName = turnContext.Activity.Recipient.Name;
             var message = turnContext.Activity.Text?.Trim() ?? string.Empty;
-            logService.LogFileMessage($"OnMessageActivityAsync Telegram - message = {message} from {turnContext.Activity.From.Name}" +
-                                      $" Id = {turnContext.Activity.From.Id}");
+            logService.LogFileMessage($"OnMessageActivityAsync Telegram - src = {message}");
 
             if (message.StartsWith("/start"))
             {
@@ -40,7 +39,7 @@
                     await conversationService.RemoveBotOutGroupAsync(turnContext);
                 }
             }
-
+            logService.LogFileMessage($"OnMessageActivityAsync Telegram - final = {message}");
             switch (message)
             {
                 case InteractedCommand.Help:

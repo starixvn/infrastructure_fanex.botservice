@@ -16,7 +16,7 @@
                     break;
 
                 case "telegram":
-                    if (sourceMessage.StartsWith('/'))
+                    if (sourceMessage.StartsWith('@'))
                     {
                         var indexOfCommand = sourceMessage.IndexOf(' ');
 
