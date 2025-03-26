@@ -70,11 +70,11 @@ public class MessageValidationServiceTests
         _cacheService.GetAsync<string>("conversationId").Returns("key1");
 
         // Act
-        await _service.InsertMessageLogIntoCache("conversationId", "messageContent", "guiid");
+        await _service.InsertMessageLogIntoCache("conversationId", "messageContent", "guid");
 
         // Assert
-        await _cacheService.Received().SetAsync("conversationId", "key1,guiid", Arg.Any<CacheItemOptions>());
-        await _cacheService.Received().SetAsync("guiid", "messageContent", Arg.Any<CacheItemOptions>());
+        await _cacheService.Received().SetAsync("conversationId", "key1,guid", Arg.Any<CacheItemOptions>());
+        await _cacheService.Received().SetAsync("guid", "messageContent", Arg.Any<CacheItemOptions>());
     }
 
     [Fact]

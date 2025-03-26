@@ -64,8 +64,6 @@
                     var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
                     await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
                     break;
-
-                default: break;
             }
         }
 

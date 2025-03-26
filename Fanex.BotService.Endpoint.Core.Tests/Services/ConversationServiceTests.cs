@@ -27,7 +27,7 @@ public class ConversationServiceTests
     public async Task GetApplicationSettingAsync_ShouldReturnApplicationSettings()
     {
         // Arrange
-        var expectedSettings = new List<ApplicationSetting> { new ApplicationSetting() };
+        var expectedSettings = new List<ApplicationSetting> { new() };
         _baseService.GetDataAsync<ApplicationSetting>(Arg.Any<GetApplicationSettingCriteria>())
             .Returns(Task.FromResult((IEnumerable<ApplicationSetting>)expectedSettings));
 
@@ -42,7 +42,7 @@ public class ConversationServiceTests
     public async Task GetBotAsync_ShouldReturnBotsFromCache()
     {
         // Arrange
-        var expectedBots = new List<Bot> { new Bot() };
+        var expectedBots = new List<Bot> { new() };
         _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
         {
             x[1] = expectedBots;
@@ -60,7 +60,7 @@ public class ConversationServiceTests
     public async Task GetBotAsync_ShouldReturnBotsFromServiceAndCacheThem()
     {
         // Arrange
-        var expectedBots = new List<Bot> { new Bot { AppId = 1, BotName = "abc" } };
+        var expectedBots = new List<Bot> { new() { AppId = 1, BotName = "abc" } };
         _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(false);
         _baseService.GetDataAsync<Bot>(Arg.Any<GetAllBotCriteria>())
             .Returns(expectedBots);

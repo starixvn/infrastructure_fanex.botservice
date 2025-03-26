@@ -27,7 +27,7 @@ public class ApplicationSettingServiceTests
         // Arrange
         var cachedSettings = new List<ApplicationSetting>
         {
-            new ApplicationSetting { AppId = 1, MicrosoftAppPassword = "encryptedPassword" }
+            new() { AppId = 1, MicrosoftAppPassword = "encryptedPassword" }
         };
         _memoryCache.TryGetValue(Arg.Any<string>(), out Arg.Any<object>()!).Returns(x =>
         {

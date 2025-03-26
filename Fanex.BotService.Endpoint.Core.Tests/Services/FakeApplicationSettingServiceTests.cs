@@ -14,7 +14,7 @@ public class FakeApplicationSettingServiceTests
     {
         _botConfigs = new List<BotConfigs>
         {
-            new BotConfigs
+            new()
             {
                 AppId = 1,
                 MicrosoftAppType = "Type1",
@@ -22,7 +22,7 @@ public class FakeApplicationSettingServiceTests
                 MicrosoftAppPassword = "Password1",
                 MicrosoftAppTenantId = "TenantId1"
             },
-            new BotConfigs
+            new()
             {
                 AppId = 2,
                 MicrosoftAppType = "Type2",

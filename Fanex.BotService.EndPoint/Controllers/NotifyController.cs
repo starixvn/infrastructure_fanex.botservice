@@ -54,7 +54,7 @@
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("api/skype/send-multịpe")]
+        [Route("api/skype/send-multiple")]
         public async Task<ObjectResult> SendViaSkype([FromBody] IList<MessageEndpoint> messages)
         {
             var results = new List<SendMessageResult>();
@@ -69,7 +69,7 @@
         }
 
         [HttpGet]
-        [Route("api/telegram/send-multịpe")]
+        [Route("api/telegram/send-multiple")]
         public async Task<ObjectResult> SendViaTelegram([FromBody] IList<MessageEndpoint> messages)
         {
             var results = new List<SendMessageResult>();
@@ -137,8 +137,8 @@
                 }
                 else
                 {
-                    var guiid = Guid.NewGuid().ToString();
-                    await messageLogService.InsertMessageLogIntoCache(message.ConversationId, message.Content, guiid);
+                    var guid = Guid.NewGuid().ToString();
+                    await messageLogService.InsertMessageLogIntoCache(message.ConversationId, message.Content, guid);
 
                     var conversationMessage = new ConversationMessage
                     {
@@ -156,7 +156,7 @@
 
                     if (!sendMessageResult.IsSucessfull)
                     {
-                        await messageLogService.RemoveMessageLogOnCache(guiid);
+                        await messageLogService.RemoveMessageLogOnCache(guid);
                     }
 
                     var command = new AddMessageLogCommand

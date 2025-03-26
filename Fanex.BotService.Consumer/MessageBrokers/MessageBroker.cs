@@ -39,26 +39,33 @@
             if (setting is not null && setting.IsConsumed)
             {
                 Subscribe<Conversation>(QueueSubscriptionId.InsertFromQueueToDatabase,
-                async (message) =>
+                async void (message) =>
                 {
-                    logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.InsertFromQueueToDatabase}. Data: {JsonConvert.SerializeObject(message)}");
-
-                    var messageId = await messageService.InsertNewMessageAsync(message, setting.RetryTimeSpan ?? 1);
-                    if (messageId > 0)
+                    try
                     {
-                        MessageEndpoint msgSendToEndpoint = new()
-                        {
-                            MessageId = messageId,
-                            AppId = message.AppId,
-                            ChannelId = (byte)message.Channel,
-                            ConversationId = message.ConversationId,
-                            Content = message.Content,
-                            Images = message.Images,
-                        };
-                        await messageQueueService.PublishAsync(msgSendToEndpoint);
-                    }
+                        logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.InsertFromQueueToDatabase}. Data: {JsonConvert.SerializeObject(message)}");
 
-                    logService.LogFileMessage($"End consume {QueueSubscriptionId.InsertFromQueueToDatabase}");
+                        var messageId = await messageService.InsertNewMessageAsync(message, setting.RetryTimeSpan ?? 1);
+                        if (messageId > 0)
+                        {
+                            MessageEndpoint msgSendToEndpoint = new()
+                            {
+                                MessageId = messageId,
+                                AppId = message.AppId,
+                                ChannelId = (byte)message.Channel,
+                                ConversationId = message.ConversationId,
+                                Content = message.Content,
+                                Images = message.Images,
+                            };
+                            await messageQueueService.PublishAsync(msgSendToEndpoint);
+                        }
+
+                        logService.LogFileMessage($"End consume {QueueSubscriptionId.InsertFromQueueToDatabase}");
+                    }
+                    catch (Exception e)
+                    {
+                        await logService.SentryErrorAsync(e.Message, e);
+                    }
                 });
             }
         }
@@ -69,15 +76,22 @@
             if (setting is not null && setting.IsConsumed)
             {
                 Subscribe<MessageEndpoint>(QueueSubscriptionId.SendMessageToBotServiceEndpoint,
-                async (message) =>
+                async void (message) =>
                 {
-                    logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.SendMessageToBotServiceEndpoint}. Data: {JsonConvert.SerializeObject(message)}");
+                    try
+                    {
+                        logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.SendMessageToBotServiceEndpoint}. Data: {JsonConvert.SerializeObject(message)}");
 
-                    var sentResult = await botClientService.SendMessageAsync((BotChannel)message.ChannelId, message);
+                        var sentResult = await botClientService.SendMessageAsync((BotChannel)message.ChannelId, message);
 
-                    await messageQueueService.PublishAsync(sentResult);
+                        await messageQueueService.PublishAsync(sentResult);
 
-                    logService.LogFileMessage($"End consume {QueueSubscriptionId.SendMessageToBotServiceEndpoint}");
+                        logService.LogFileMessage($"End consume {QueueSubscriptionId.SendMessageToBotServiceEndpoint}");
+                    }
+                    catch (Exception e)
+                    {
+                        await logService.SentryErrorAsync(e.Message, e);
+                    }
                 });
             }
         }
@@ -88,13 +102,20 @@
             if (setting is not null && setting.IsConsumed)
             {
                 Subscribe<SendMessageResult>(QueueSubscriptionId.UpdateMessageStatus,
-                async (message) =>
+                async void (message) =>
                 {
-                    logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.UpdateMessageStatus}. Data: {JsonConvert.SerializeObject(message)}");
+                    try
+                    {
+                        logService.LogFileMessage($"Begin consume: {QueueSubscriptionId.UpdateMessageStatus}. Data: {JsonConvert.SerializeObject(message)}");
 
-                    await messageService.UpdateMessageStatusAsync(message, setting.RetryTimeSpan ?? 1);
+                        await messageService.UpdateMessageStatusAsync(message, setting.RetryTimeSpan ?? 1);
 
-                    logService.LogFileMessage($"End consume {QueueSubscriptionId.UpdateMessageStatus}");
+                        logService.LogFileMessage($"End consume {QueueSubscriptionId.UpdateMessageStatus}");
+                    }
+                    catch (Exception e)
+                    {
+                        await logService.SentryErrorAsync(e.Message, e);
+                    }
                 });
             }
         }

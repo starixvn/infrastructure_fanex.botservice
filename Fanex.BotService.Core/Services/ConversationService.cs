@@ -45,12 +45,13 @@
 
             var criteria = new GetAllBotCriteria();
             bots = await baseService.GetDataAsync<Bot>(criteria);
-            memoryCache.Set(BotSettingKeys, bots, new MemoryCacheEntryOptions
+            var botList = bots.ToList();
+            memoryCache.Set(BotSettingKeys, botList, new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(appSettings.BotListCacheLifeTime)
             });
 
-            return bots;
+            return botList;
         }
 
         public async Task<CommandResult> AddBotContactAsync(ITurnContext turnContext)

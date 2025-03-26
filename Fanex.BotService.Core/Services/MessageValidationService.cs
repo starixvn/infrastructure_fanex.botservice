@@ -63,7 +63,7 @@
             return isInvalid;
         }
 
-        public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guiid)
+        public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guid)
         {
             if (!settings.IsEnabled)
             {
@@ -73,7 +73,7 @@
             try
             {
                 var messageKeys = await cacheService.GetAsync<string>(conversationId);
-                messageKeys = messageKeys + "," + guiid;
+                messageKeys = messageKeys + "," + guid;
                 await cacheService.SetAsync(conversationId, messageKeys,
                     new CacheItemOptions
                     {
@@ -81,10 +81,10 @@
                     }
                 );
 
-                if (!await cacheService.ContainAsync(guiid))
+                if (!await cacheService.ContainAsync(guid))
                 {
                     await cacheService.SetAsync(
-                        guiid,
+                        guid,
                         messageContent,
                         new CacheItemOptions
                         {

@@ -8,6 +8,7 @@
     using Models;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class ApplicationSettingService(IBaseService baseService, IMemoryCache memoryCache) : IApplicationSettingService
@@ -32,18 +33,19 @@
 
             var criteria = new GetApplicationSettingCriteria();
             applicationSettings = await baseService.GetDataAsync<ApplicationSetting>(criteria);
-            foreach (var item in applicationSettings)
+            var applicationSettingList = applicationSettings.ToList();
+            foreach (var item in applicationSettingList)
             {
                 var pwd = Cryptography.DecryptPassword(item.MicrosoftAppPassword);
                 item.MicrosoftAppPassword = pwd;
             }
 
-            memoryCache.Set(ApplicationSettingKeys, applicationSettings, new MemoryCacheEntryOptions
+            memoryCache.Set(ApplicationSettingKeys, applicationSettingList, new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
             });
 
-            return applicationSettings;
+            return applicationSettingList;
         }
     }
 }
