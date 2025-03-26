@@ -30,6 +30,7 @@ else
     app.UseHsts();
 }
 
+app.UseRouting();
 app.MapGet("/", () => "Fanex Bot API ready!");
 app.MapGet("/sentry", async () =>
 {
@@ -38,5 +39,9 @@ app.MapGet("/sentry", async () =>
 
     return "Test sentry!";
 });
+
+app.MapControllerRoute(
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 await app.RunAsync();

@@ -9,9 +9,7 @@
         {
             var conversationId = "1064787034";
 
-            await botService.SendTelegramAsync(
-            conversationId,
-            "Msg: Hi Oliver, this is the message Test SIT");
+            await botService.SendTelegramAsync(conversationId, "Msg: Hi Oliver, this is the message Test");
 
             return Ok("OK");
         }
