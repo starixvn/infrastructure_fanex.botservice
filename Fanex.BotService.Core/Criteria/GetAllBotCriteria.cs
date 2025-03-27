@@ -1,11 +1,10 @@
-﻿namespace Fanex.BotService.Core.Criteria
+﻿namespace Fanex.BotService.Core.Criteria;
+
+using Data.Repository;
+
+public class GetAllBotCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public override string GetSettingKey() => "Bot_GetAll";
 
-    public class GetAllBotCriteria : CriteriaBase
-    {
-        public override string GetSettingKey() => "Bot_GetAll";
-
-        public override bool IsValid() => true;
-    }
+    public override bool IsValid() => true;
 }

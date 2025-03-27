@@ -1,28 +1,27 @@
-﻿namespace Fanex.BotService.Core.Criteria
+﻿namespace Fanex.BotService.Core.Criteria;
+
+using System;
+using Fanex.BotService.Shared.Models;
+
+public class AddMessageLogCommand : BaseCommand
 {
-    using System;
-    using Fanex.BotService.Shared.Models;
+    public long MessageId { get; set; }
 
-    public class AddMessageLogCommand : BaseCommand
-    {
-        public long MessageId { get; set; }
+    public string ConversationBotId { get; set; }
 
-        public string ConversationBotId { get; set; }
+    public string ConversationId { get; set; }
 
-        public string ConversationId { get; set; }
+    public string Content { get; set; }
 
-        public string Content { get; set; }
+    public DateTime StartSentTime { get; set; }
 
-        public DateTime StartSentTime { get; set; }
+    public DateTime EndSentTime { get; set; }
 
-        public DateTime EndSentTime { get; set; }
+    public bool IsSuccessfull { get; set; }
 
-        public bool IsSuccessfull { get; set; }
+    public string ErrorMessage { get; set; }
 
-        public string ErrorMessage { get; set; }
+    public override string GetSettingKey() => "MessageLog_Add";
 
-        public override string GetSettingKey() => "MessageLog_Add";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(ConversationId);
-    }
+    public override bool IsValid() => !string.IsNullOrWhiteSpace(ConversationId);
 }

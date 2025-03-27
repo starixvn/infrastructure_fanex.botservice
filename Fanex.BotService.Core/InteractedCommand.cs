@@ -1,11 +1,10 @@
-﻿namespace Fanex.BotService.Core
+﻿namespace Fanex.BotService.Core;
+
+public static class InteractedCommand
 {
-    public static class InteractedCommand
-    {
-        public const string Help = "help";
+    public const string Help = "help";
 
-        public const string GetId = "getid";
+    public const string GetId = "getid";
 
-        public const string GetBot = "getbot";
-    }
+    public const string GetBot = "getbot";
 }

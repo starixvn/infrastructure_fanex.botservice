@@ -3,93 +3,92 @@ using Fanex.BotService.Shared.Repositories;
 using Fanex.Data;
 using Fanex.Data.Repository;
 
-namespace Fanex.BotService.Shared.Tests.Repositories
+namespace Fanex.BotService.Shared.Tests.Repositories;
+
+using NSubstitute;
+using System.Collections;
+using System.Threading.Tasks;
+using Xunit;
+
+public class BaseRepositoryTests
 {
-    using NSubstitute;
-    using System.Collections;
-    using System.Threading.Tasks;
-    using Xunit;
+    private readonly IObjectDb _objectDb;
 
-    public class BaseRepositoryTests
+    public BaseRepositoryTests()
     {
-        private readonly IObjectDb _objectDb;
-
-        public BaseRepositoryTests()
-        {
-            DbSettingProviderManager
+        DbSettingProviderManager
             .StartTestingSession()
             .Run();
 
-            _objectDb = Substitute.For<IObjectDb>();
-            ObjectDbFactory.Mock((_, _, _) => _objectDb);
-        }
-
-        #region ExecuteNonQueryAsync
-
-        [Fact]
-        public async Task ExecuteNonQueryAsync_CriteriaNotNull_CallExecuteNonQueryAsync()
-        {
-            // Arrange
-            var criteria = FakeCriteria();
-            var repository = new BaseRepository();
-
-            // Action
-            await repository.ExecuteNonQueryAsync(criteria);
-
-            // Assert
-            await _objectDb.Received().ExecuteNonQueryAsync(criteria);
-        }
-
-        [Fact]
-        public async Task ExecuteNonQueryAsync_OutputParams_ReturnAsResult()
-        {
-            // Arrange
-            var repository = new BaseRepository();
-            var criteria = FakeCriteria();
-            var outputParams = FakeOutputParamsSuccess();
-            var expected = GetSuccessResult();
-            _objectDb.GetOutputParams().Returns(outputParams);
-
-            // Action
-            var result = await repository.ExecuteNonQueryAsync(criteria);
-
-            // Assert
-            Assert.Equal(expected.Code, result.Code);
-            Assert.Equal(expected.Message, result.Message);
-        }
-
-        #endregion ExecuteNonQueryAsync
-
-        #region Helpers
-
-        private static INonQueryCommand FakeCriteria()
-        {
-            var criteria = Substitute.For<INonQueryCommand>();
-
-            criteria.GetSettingKey().Returns("key");
-            criteria.IsValid().Returns(true);
-
-            return criteria;
-        }
-
-        private static Hashtable FakeOutputParamsSuccess()
-        {
-            return new Hashtable
-            {
-                { "errCode", 0 },
-                { "errMsg", string.Empty },
-            };
-        }
-
-        private CommandResult GetSuccessResult()
-        {
-            return new CommandResult
-            {
-                Code = 0,
-                Message = string.Empty
-            };
-        }
-
-        #endregion Helpers
+        _objectDb = Substitute.For<IObjectDb>();
+        ObjectDbFactory.Mock((_, _, _) => _objectDb);
     }
+
+    #region ExecuteNonQueryAsync
+
+    [Fact]
+    public async Task ExecuteNonQueryAsync_CriteriaNotNull_CallExecuteNonQueryAsync()
+    {
+        // Arrange
+        var criteria = FakeCriteria();
+        var repository = new BaseRepository();
+
+        // Action
+        await repository.ExecuteNonQueryAsync(criteria);
+
+        // Assert
+        await _objectDb.Received().ExecuteNonQueryAsync(criteria);
+    }
+
+    [Fact]
+    public async Task ExecuteNonQueryAsync_OutputParams_ReturnAsResult()
+    {
+        // Arrange
+        var repository = new BaseRepository();
+        var criteria = FakeCriteria();
+        var outputParams = FakeOutputParamsSuccess();
+        var expected = GetSuccessResult();
+        _objectDb.GetOutputParams().Returns(outputParams);
+
+        // Action
+        var result = await repository.ExecuteNonQueryAsync(criteria);
+
+        // Assert
+        Assert.Equal(expected.Code, result.Code);
+        Assert.Equal(expected.Message, result.Message);
+    }
+
+    #endregion ExecuteNonQueryAsync
+
+    #region Helpers
+
+    private static INonQueryCommand FakeCriteria()
+    {
+        var criteria = Substitute.For<INonQueryCommand>();
+
+        criteria.GetSettingKey().Returns("key");
+        criteria.IsValid().Returns(true);
+
+        return criteria;
+    }
+
+    private static Hashtable FakeOutputParamsSuccess()
+    {
+        return new Hashtable
+        {
+            { "errCode", 0 },
+            { "errMsg", string.Empty },
+        };
+    }
+
+    private CommandResult GetSuccessResult()
+    {
+        return new CommandResult
+        {
+            Code = 0,
+            Message = string.Empty
+        };
+    }
+
+    #endregion Helpers
 }

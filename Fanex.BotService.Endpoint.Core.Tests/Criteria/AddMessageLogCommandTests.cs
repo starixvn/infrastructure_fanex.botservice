@@ -1,52 +1,51 @@
 using Fanex.BotService.Core.Criteria;
 
-namespace Fanex.BotService.Endpoint.Core.Tests.Criteria
+namespace Fanex.BotService.Endpoint.Core.Tests.Criteria;
+
+public class AddMessageLogCommandTests
 {
-    public class AddMessageLogCommandTests
+    [Fact]
+    public void GetSettingKey_ShouldReturnCorrectKey()
     {
-        [Fact]
-        public void GetSettingKey_ShouldReturnCorrectKey()
+        // Arrange
+        var command = new AddMessageLogCommand();
+
+        // Act
+        var result = command.GetSettingKey();
+
+        // Assert
+        Assert.Equal("MessageLog_Add", result);
+    }
+
+    [Fact]
+    public void IsValid_ShouldReturnTrue_WhenConversationIdIsNotNullOrWhiteSpace()
+    {
+        // Arrange
+        var command = new AddMessageLogCommand
         {
-            // Arrange
-            var command = new AddMessageLogCommand();
+            ConversationId = "validConversationId"
+        };
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.Equal("MessageLog_Add", result);
-        }
+        // Assert
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnTrue_WhenConversationIdIsNotNullOrWhiteSpace()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenConversationIdIsNullOrWhiteSpace()
+    {
+        // Arrange
+        var command = new AddMessageLogCommand
         {
-            // Arrange
-            var command = new AddMessageLogCommand
-            {
-                ConversationId = "validConversationId"
-            };
+            ConversationId = " "
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenConversationIdIsNullOrWhiteSpace()
-        {
-            // Arrange
-            var command = new AddMessageLogCommand
-            {
-                ConversationId = " "
-            };
-
-            // Act
-            var result = command.IsValid();
-
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
     }
 }

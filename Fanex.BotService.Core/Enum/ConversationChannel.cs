@@ -1,9 +1,8 @@
-﻿namespace Fanex.BotService.Core.Enum
+﻿namespace Fanex.BotService.Core.Enum;
+
+public enum ConversationChannel
 {
-    public enum ConversationChannel
-    {
-        Skype = 1,
-        Telegram = 2,
-        Teams = 3
-    }
+    Skype = 1,
+    Telegram = 2,
+    Teams = 3
 }

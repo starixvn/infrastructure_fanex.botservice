@@ -1,56 +1,55 @@
 using Fanex.BotService.Core.Criteria;
 
-namespace Fanex.BotService.Endpoint.Core.Tests.Criteria
+namespace Fanex.BotService.Endpoint.Core.Tests.Criteria;
+
+public class AddBotContactCommandTests
 {
-    public class AddBotContactCommandTests
+    [Fact]
+    public void GetSettingKey_ShouldReturnCorrectKey()
     {
-        [Fact]
-        public void GetSettingKey_ShouldReturnCorrectKey()
+        // Arrange
+        var command = new AddBotContactCommand();
+
+        // Act
+        var result = command.GetSettingKey();
+
+        // Assert
+        Assert.Equal("Conversation_AddContact", result);
+    }
+
+    [Fact]
+    public void IsValid_ShouldReturnTrue_WhenAllRequiredFieldsAreProvided()
+    {
+        // Arrange
+        var command = new AddBotContactCommand
         {
-            // Arrange
-            var command = new AddBotContactCommand();
+            BotConversationId = "botConversationId",
+            ConversationId = "conversationId",
+            ChannelName = "channelName"
+        };
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.Equal("Conversation_AddContact", result);
-        }
+        // Assert
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnTrue_WhenAllRequiredFieldsAreProvided()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenAnyRequiredFieldIsMissing()
+    {
+        // Arrange
+        var command = new AddBotContactCommand
         {
-            // Arrange
-            var command = new AddBotContactCommand
-            {
-                BotConversationId = "botConversationId",
-                ConversationId = "conversationId",
-                ChannelName = "channelName"
-            };
+            BotConversationId = "botConversationId",
+            ConversationId = "conversationId",
+            ChannelName = null // Missing required field
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenAnyRequiredFieldIsMissing()
-        {
-            // Arrange
-            var command = new AddBotContactCommand
-            {
-                BotConversationId = "botConversationId",
-                ConversationId = "conversationId",
-                ChannelName = null // Missing required field
-            };
-
-            // Act
-            var result = command.IsValid();
-
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
     }
 }

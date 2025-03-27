@@ -1,71 +1,70 @@
 using Fanex.BotService.Core.Criteria;
 
-namespace Fanex.BotService.Endpoint.Core.Tests.Criteria
+namespace Fanex.BotService.Endpoint.Core.Tests.Criteria;
+
+public class MigratedToSupergroupCommandTests
 {
-    public class MigratedToSupergroupCommandTests
+    [Fact]
+    public void GetSettingKey_ShouldReturnCorrectKey()
     {
-        [Fact]
-        public void GetSettingKey_ShouldReturnCorrectKey()
+        // Arrange
+        var command = new MigratedToSupergroupCommand();
+
+        // Act
+        var result = command.GetSettingKey();
+
+        // Assert
+        Assert.Equal("NCB_Conversation_MigratedToSupergroup", result);
+    }
+
+    [Fact]
+    public void IsValid_ShouldReturnTrue_WhenFromAndToConversationIdAreNotEmpty()
+    {
+        // Arrange
+        var command = new MigratedToSupergroupCommand
         {
-            // Arrange
-            var command = new MigratedToSupergroupCommand();
+            FromConversationId = "123",
+            ToConversationId = "456"
+        };
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.Equal("NCB_Conversation_MigratedToSupergroup", result);
-        }
+        // Assert
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnTrue_WhenFromAndToConversationIdAreNotEmpty()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenFromConversationIdIsEmpty()
+    {
+        // Arrange
+        var command = new MigratedToSupergroupCommand
         {
-            // Arrange
-            var command = new MigratedToSupergroupCommand
-            {
-                FromConversationId = "123",
-                ToConversationId = "456"
-            };
+            FromConversationId = "",
+            ToConversationId = "456"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.True(result);
-        }
+        // Assert
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenFromConversationIdIsEmpty()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenToConversationIdIsEmpty()
+    {
+        // Arrange
+        var command = new MigratedToSupergroupCommand
         {
-            // Arrange
-            var command = new MigratedToSupergroupCommand
-            {
-                FromConversationId = "",
-                ToConversationId = "456"
-            };
+            FromConversationId = "123",
+            ToConversationId = ""
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenToConversationIdIsEmpty()
-        {
-            // Arrange
-            var command = new MigratedToSupergroupCommand
-            {
-                FromConversationId = "123",
-                ToConversationId = ""
-            };
-
-            // Act
-            var result = command.IsValid();
-
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
     }
 }

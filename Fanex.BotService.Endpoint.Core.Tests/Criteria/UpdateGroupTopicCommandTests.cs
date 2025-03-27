@@ -1,71 +1,70 @@
 using Fanex.BotService.Core.Criteria;
 
-namespace Fanex.BotService.Endpoint.Core.Tests.Criteria
+namespace Fanex.BotService.Endpoint.Core.Tests.Criteria;
+
+public class UpdateGroupTopicCommandTests
 {
-    public class UpdateGroupTopicCommandTests
+    [Fact]
+    public void GetSettingKey_ShouldReturnCorrectKey()
     {
-        [Fact]
-        public void GetSettingKey_ShouldReturnCorrectKey()
+        // Arrange
+        var command = new UpdateGroupTopicCommand();
+
+        // Act
+        var result = command.GetSettingKey();
+
+        // Assert
+        Assert.Equal("Conversation_UpdateGroupTopic", result);
+    }
+
+    [Fact]
+    public void IsValid_ShouldReturnTrue_WhenConversationIdAndGroupNameAreNotEmpty()
+    {
+        // Arrange
+        var command = new UpdateGroupTopicCommand
         {
-            // Arrange
-            var command = new UpdateGroupTopicCommand();
+            ConversationId = "123",
+            GroupName = "TestGroup"
+        };
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.Equal("Conversation_UpdateGroupTopic", result);
-        }
+        // Assert
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnTrue_WhenConversationIdAndGroupNameAreNotEmpty()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenConversationIdIsEmpty()
+    {
+        // Arrange
+        var command = new UpdateGroupTopicCommand
         {
-            // Arrange
-            var command = new UpdateGroupTopicCommand
-            {
-                ConversationId = "123",
-                GroupName = "TestGroup"
-            };
+            ConversationId = "",
+            GroupName = "TestGroup"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.True(result);
-        }
+        // Assert
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenConversationIdIsEmpty()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenGroupNameIsEmpty()
+    {
+        // Arrange
+        var command = new UpdateGroupTopicCommand
         {
-            // Arrange
-            var command = new UpdateGroupTopicCommand
-            {
-                ConversationId = "",
-                GroupName = "TestGroup"
-            };
+            ConversationId = "123",
+            GroupName = ""
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenGroupNameIsEmpty()
-        {
-            // Arrange
-            var command = new UpdateGroupTopicCommand
-            {
-                ConversationId = "123",
-                GroupName = ""
-            };
-
-            // Act
-            var result = command.IsValid();
-
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
     }
 }

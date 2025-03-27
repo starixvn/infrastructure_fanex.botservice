@@ -1,135 +1,134 @@
 ﻿using Fanex.BotService.Service.Core.Criteria.Message;
 
-namespace Fanex.BotService.Core.Tests.Criteria
+namespace Fanex.BotService.Core.Tests.Criteria;
+
+public class InsertNewMessageCommandTests
 {
-    public class InsertNewMessageCommandTests
+    [Fact]
+    public void GetSettingKey_ShouldReturnCorrectKey()
     {
-        [Fact]
-        public void GetSettingKey_ShouldReturnCorrectKey()
+        // Arrange
+        var command = new InsertNewMessageCommand();
+
+        // Act
+        var result = command.GetSettingKey();
+
+        // Assert
+        Assert.Equal("Message_Insert", result);
+    }
+
+    [Fact]
+    public void IsValid_ShouldReturnTrue_WhenAllPropertiesAreValid()
+    {
+        // Arrange
+        var command = new InsertNewMessageCommand
         {
-            // Arrange
-            var command = new InsertNewMessageCommand();
+            AppId = 1,
+            ConversationId = "conversation123",
+            Content = "Hello, World!",
+            ChannelId = 1,
+            MessageId = 123,
+            Status = "Sent",
+            CreatedDate = DateTime.Now,
+            Attachments = "attachment1"
+        };
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.Equal("Message_Insert", result);
-        }
+        // Assert
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnTrue_WhenAllPropertiesAreValid()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenAppIdIsInvalid()
+    {
+        // Arrange
+        var command = new InsertNewMessageCommand
         {
-            // Arrange
-            var command = new InsertNewMessageCommand
-            {
-                AppId = 1,
-                ConversationId = "conversation123",
-                Content = "Hello, World!",
-                ChannelId = 1,
-                MessageId = 123,
-                Status = "Sent",
-                CreatedDate = DateTime.Now,
-                Attachments = "attachment1"
-            };
+            AppId = 0,
+            ConversationId = "conversation123",
+            Content = "Hello, World!",
+            ChannelId = 1,
+            MessageId = 123,
+            Status = "Sent",
+            CreatedDate = DateTime.Now,
+            Attachments = "attachment1"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.True(result);
-        }
+        // Assert
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenAppIdIsInvalid()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenConversationIdIsInvalid()
+    {
+        // Arrange
+        var command = new InsertNewMessageCommand
         {
-            // Arrange
-            var command = new InsertNewMessageCommand
-            {
-                AppId = 0,
-                ConversationId = "conversation123",
-                Content = "Hello, World!",
-                ChannelId = 1,
-                MessageId = 123,
-                Status = "Sent",
-                CreatedDate = DateTime.Now,
-                Attachments = "attachment1"
-            };
+            AppId = 1,
+            ConversationId = "",
+            Content = "Hello, World!",
+            ChannelId = 1,
+            MessageId = 123,
+            Status = "Sent",
+            CreatedDate = DateTime.Now,
+            Attachments = "attachment1"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenConversationIdIsInvalid()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenContentIsInvalid()
+    {
+        // Arrange
+        var command = new InsertNewMessageCommand
         {
-            // Arrange
-            var command = new InsertNewMessageCommand
-            {
-                AppId = 1,
-                ConversationId = "",
-                Content = "Hello, World!",
-                ChannelId = 1,
-                MessageId = 123,
-                Status = "Sent",
-                CreatedDate = DateTime.Now,
-                Attachments = "attachment1"
-            };
+            AppId = 1,
+            ConversationId = "conversation123",
+            Content = "",
+            ChannelId = 1,
+            MessageId = 123,
+            Status = "Sent",
+            CreatedDate = DateTime.Now,
+            Attachments = "attachment1"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenContentIsInvalid()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenChannelIdIsInvalid()
+    {
+        // Arrange
+        var command = new InsertNewMessageCommand
         {
-            // Arrange
-            var command = new InsertNewMessageCommand
-            {
-                AppId = 1,
-                ConversationId = "conversation123",
-                Content = "",
-                ChannelId = 1,
-                MessageId = 123,
-                Status = "Sent",
-                CreatedDate = DateTime.Now,
-                Attachments = "attachment1"
-            };
+            AppId = 1,
+            ConversationId = "conversation123",
+            Content = "Hello, World!",
+            ChannelId = 0,
+            MessageId = 123,
+            Status = "Sent",
+            CreatedDate = DateTime.Now,
+            Attachments = "attachment1"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenChannelIdIsInvalid()
-        {
-            // Arrange
-            var command = new InsertNewMessageCommand
-            {
-                AppId = 1,
-                ConversationId = "conversation123",
-                Content = "Hello, World!",
-                ChannelId = 0,
-                MessageId = 123,
-                Status = "Sent",
-                CreatedDate = DateTime.Now,
-                Attachments = "attachment1"
-            };
-
-            // Act
-            var result = command.IsValid();
-
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
     }
 }

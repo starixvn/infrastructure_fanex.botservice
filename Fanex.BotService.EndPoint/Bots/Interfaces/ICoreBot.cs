@@ -1,6 +1,5 @@
-﻿namespace Fanex.BotService.EndPoint.Bots.Interfaces
+﻿namespace Fanex.BotService.EndPoint.Bots.Interfaces;
+
+public interface ICoreBot: IChannelBot
 {
-    public interface ICoreBot: IChannelBot
-    {
-    }
 }

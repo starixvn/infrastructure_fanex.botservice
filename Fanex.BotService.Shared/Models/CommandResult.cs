@@ -1,11 +1,10 @@
-﻿namespace Fanex.BotService.Shared.Models
+﻿namespace Fanex.BotService.Shared.Models;
+
+public class CommandResult
 {
-    public class CommandResult
-    {
-        public int Code { get; set; } = 1;
+    public int Code { get; set; } = 1;
 
-        public string Message { get; set; } = "Invalid Data";
+    public string Message { get; set; } = "Invalid Data";
 
-        public bool IsSuccessful => Code == 0;
-    }
+    public bool IsSuccessful => Code == 0;
 }

@@ -1,16 +1,15 @@
-﻿namespace Fanex.BotService.EndPoint.Bots
-{
-    using Interfaces;
-    using Microsoft.Bot.Builder;
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+﻿namespace Fanex.BotService.EndPoint.Bots;
 
-    public class BotFactory(Func<string, IChannelBot> botFactory) : IBot
+using Interfaces;
+using Microsoft.Bot.Builder;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+public class BotFactory(Func<string, IChannelBot> botFactory) : IBot
+{
+    public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
     {
-        public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
-        {
-            await botFactory(turnContext.Activity.ChannelId).OnTurnAsync(turnContext, cancellationToken);
-        }
+        await botFactory(turnContext.Activity.ChannelId).OnTurnAsync(turnContext, cancellationToken);
     }
 }

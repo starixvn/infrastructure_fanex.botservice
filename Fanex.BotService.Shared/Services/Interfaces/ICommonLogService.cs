@@ -1,16 +1,15 @@
-﻿namespace Fanex.BotService.Shared.Services.Interfaces
+﻿namespace Fanex.BotService.Shared.Services.Interfaces;
+
+using System;
+using System.Threading.Tasks;
+
+public interface ICommonLogService
 {
-    using System;
-    using System.Threading.Tasks;
+    Task SentryErrorAsync(string errMsg, Exception exception = null);
 
-    public interface ICommonLogService
-    {
-        Task SentryErrorAsync(string errMsg, Exception exception = null);
+    Task SentryInfoAsync(string info);
 
-        Task SentryInfoAsync(string info);
+    void LogFileMessage(string message);
 
-        void LogFileMessage(string message);
-
-        void LogFileError(Exception exception);
-    }
+    void LogFileError(Exception exception);
 }

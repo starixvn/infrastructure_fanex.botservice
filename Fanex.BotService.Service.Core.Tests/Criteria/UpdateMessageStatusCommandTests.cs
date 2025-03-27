@@ -1,71 +1,70 @@
 using Fanex.BotService.Service.Core.Criteria.Message;
 
-namespace Fanex.BotService.Core.Tests.Criteria
+namespace Fanex.BotService.Core.Tests.Criteria;
+
+public class UpdateMessageStatusCommandTests
 {
-    public class UpdateMessageStatusCommandTests
+    [Fact]
+    public void GetSettingKey_ShouldReturnCorrectKey()
     {
-        [Fact]
-        public void GetSettingKey_ShouldReturnCorrectKey()
+        // Arrange
+        var command = new UpdateMessageStatusCommand();
+
+        // Act
+        var result = command.GetSettingKey();
+
+        // Assert
+        Assert.Equal("MessageStatus_Update", result);
+    }
+
+    [Fact]
+    public void IsValid_ShouldReturnTrue_WhenMessageIdIsGreaterThanZeroAndStatusIsNotEmpty()
+    {
+        // Arrange
+        var command = new UpdateMessageStatusCommand
         {
-            // Arrange
-            var command = new UpdateMessageStatusCommand();
+            MessageId = 1,
+            Status = "Sent"
+        };
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.Equal("MessageStatus_Update", result);
-        }
+        // Assert
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnTrue_WhenMessageIdIsGreaterThanZeroAndStatusIsNotEmpty()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenMessageIdIsZero()
+    {
+        // Arrange
+        var command = new UpdateMessageStatusCommand
         {
-            // Arrange
-            var command = new UpdateMessageStatusCommand
-            {
-                MessageId = 1,
-                Status = "Sent"
-            };
+            MessageId = 0,
+            Status = "Sent"
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.True(result);
-        }
+        // Assert
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenMessageIdIsZero()
+    [Fact]
+    public void IsValid_ShouldReturnFalse_WhenStatusIsEmpty()
+    {
+        // Arrange
+        var command = new UpdateMessageStatusCommand
         {
-            // Arrange
-            var command = new UpdateMessageStatusCommand
-            {
-                MessageId = 0,
-                Status = "Sent"
-            };
+            MessageId = 1,
+            Status = ""
+        };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void IsValid_ShouldReturnFalse_WhenStatusIsEmpty()
-        {
-            // Arrange
-            var command = new UpdateMessageStatusCommand
-            {
-                MessageId = 1,
-                Status = ""
-            };
-
-            // Act
-            var result = command.IsValid();
-
-            // Assert
-            Assert.False(result);
-        }
+        // Assert
+        Assert.False(result);
     }
 }
