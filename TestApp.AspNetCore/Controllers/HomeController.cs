@@ -17,5 +17,5 @@ public class HomeController(IBotService botService) : Controller
     }
 
     public static string ReplaceSpecialCharacterOnTelegramMessageContent(string messageContent)
-        => messageContent.Replace("[", "(").Replace("]", ")").Replace("\\", string.Empty);
+        => messageContent.Replace("[", "\\[").Replace("]", "\\]").Replace("\\", string.Empty);
 }

@@ -48,5 +48,5 @@ public static class BotHelper
     }
 
     public static string ReplaceSpecialCharacterOnTelegramMessageContent(string messageContent)
-        => messageContent.Replace("[", "(").Replace("]", ")").Replace("\\", string.Empty);
+        => messageContent.Replace("[", "\\[").Replace("]", "\\]");
 }
