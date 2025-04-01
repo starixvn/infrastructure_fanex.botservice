@@ -44,7 +44,7 @@ public class MessageService(IBaseService baseService, ICommonLogService commonLo
             {
                 MessageId = result.MessageId,
                 ErrorMessage = result.ErrorMessage,
-                Status = result.IsSucessfull ? MessageStatuses.Success : MessageStatuses.Failed
+                Status = result.IsSuccessful ? MessageStatuses.Success : MessageStatuses.Failed
             };
             var commandResult = await baseService.ExecuteNonQueryAsync(command);
             if (!commandResult.IsSuccessful)

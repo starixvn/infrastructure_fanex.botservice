@@ -16,5 +16,5 @@ public class SendMessageResult
 
     public bool IsIgnoreRetry { get; set; }
 
-    public bool IsSucessfull => ErrorCode == 0;
+    public bool IsSuccessful => ErrorCode == 0;
 }

@@ -1,5 +1,9 @@
 ﻿namespace Fanex.BotService.EndPoint.Controllers;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Core;
 using Core.Criteria;
 using Core.Enum;
@@ -15,10 +19,6 @@ using Resources;
 using Shared.Models;
 using Shared.Models.Message;
 using Shared.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class NotifyController(
@@ -158,7 +158,7 @@ public class NotifyController(
                 };
                 sendMessageResult = await messageSenderService.SendMessageAsync(conversationMessage);
 
-                if (!sendMessageResult.IsSucessfull)
+                if (!sendMessageResult.IsSuccessful)
                 {
                     await messageLogService.RemoveMessageLogOnCache(guid);
                 }
@@ -172,7 +172,7 @@ public class NotifyController(
                     StartSentTime = startTime,
                     EndSentTime = DateTimeOffset.UtcNow.DateTime,
                     ErrorMessage = sendMessageResult.ErrorMessage,
-                    IsSuccessfull = sendMessageResult.IsSucessfull
+                    IsSuccessfull = sendMessageResult.IsSuccessful
                 };
                 await conversationService.AddMessageLog(command);
             }
