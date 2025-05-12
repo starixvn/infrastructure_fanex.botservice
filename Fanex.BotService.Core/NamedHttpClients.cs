@@ -1,7 +1,6 @@
-﻿namespace Fanex.BotService.Core
+﻿namespace Fanex.BotService.Core;
+
+public static class NamedHttpClients
 {
-    public static class NamedHttpClients
-    {
-        public const string ProxiedClient = "ProxiedClient";
-    }
+    public const string ProxiedClient = "ProxiedClient";
 }

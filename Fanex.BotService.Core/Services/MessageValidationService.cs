@@ -1,123 +1,112 @@
-﻿namespace Fanex.BotService.Core.Services
+﻿namespace Fanex.BotService.Core.Services;
+
+using Caching;
+using Interfaces;
+using Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using ILogger = Logging.ILogger;
+
+public class MessageValidationService(
+    CheckDuplicatedMessageLogSetting settings,
+    ICacheService cacheService,
+    ILogger logger)
+    : IMessageValidationService
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Caching;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using ILogger = Logging.ILogger;
-
-    public class MessageValidationService : IMessageValidationService
+    public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
     {
-        private readonly CheckDuplicatedMessageLogSetting settings;
-        private readonly ICacheService cacheService;
-        private readonly ILogger logger;
-
-        public MessageValidationService(CheckDuplicatedMessageLogSetting settings,
-            ICacheService cacheService,
-            ILogger logger)
+        if (!settings.IsEnabled)
         {
-            this.settings = settings;
-            this.cacheService = cacheService;
-            this.logger = logger;
+            return false;
         }
 
-        public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
+        if (settings.ExceptionConversatiionIDs != null && settings.ExceptionConversatiionIDs.Contains(conversationId))
         {
-            if (!settings.IsEnabled)
-            {
-                return false;
-            }
+            return false;
+        }
+        var isInvalid = false;
 
-            if (settings.ExceptionConversatiionIDs != null && settings.ExceptionConversatiionIDs.Contains(conversationId))
+        try
+        {
+            var messageKeys = await cacheService.GetAsync<string>(conversationId);
+            if (messageKeys != null)
             {
-                return false;
-            }
-            bool isInvalid = false;
+                var keys = messageKeys.Split(',');
 
-            try
-            {
-                var messageKeys = await cacheService.GetAsync<string>(conversationId);
-                if (messageKeys != null)
+                foreach (var key in keys)
                 {
-                    var keys = messageKeys.Split(',');
-
-                    foreach (var key in keys)
+                    if (!string.IsNullOrWhiteSpace(key))
                     {
-                        if (!string.IsNullOrWhiteSpace(key))
+                        var logContent = await cacheService.GetAsync<string>(key);
+                        if (logContent == null)
                         {
-                            var logContent = await cacheService.GetAsync<string>(key);
-                            if (logContent == null)
-                            {
-                                messageKeys = messageKeys.Replace("," + key, string.Empty);
-                            }
-                            else if (logContent.Equals(message))
-                            {
-                                isInvalid = true;
+                            messageKeys = messageKeys.Replace("," + key, string.Empty);
+                        }
+                        else if (logContent.Equals(message))
+                        {
+                            isInvalid = true;
 
-                                return isInvalid;
-                            }
+                            return isInvalid;
                         }
                     }
-
-                    await cacheService.SetAsync(conversationId, messageKeys);
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex.Message);
-            }
 
-            return isInvalid;
+                await cacheService.SetAsync(conversationId, messageKeys);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.ErrorAsync(ex.Message);
         }
 
-        public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guiid)
-        {
-            if (!settings.IsEnabled)
-            {
-                return;
-            }
+        return isInvalid;
+    }
 
-            try
+    public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guid)
+    {
+        if (!settings.IsEnabled)
+        {
+            return;
+        }
+
+        try
+        {
+            var messageKeys = await cacheService.GetAsync<string>(conversationId);
+            messageKeys = messageKeys + "," + guid;
+            await cacheService.SetAsync(conversationId, messageKeys,
+                new CacheItemOptions
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
+                }
+            );
+
+            if (!await cacheService.ContainAsync(guid))
             {
-                var messageKeys = await cacheService.GetAsync<string>(conversationId);
-                messageKeys = messageKeys + "," + guiid;
-                await cacheService.SetAsync(conversationId, messageKeys, 
+                await cacheService.SetAsync(
+                    guid,
+                    messageContent,
                     new CacheItemOptions
                     {
-                        SlidingExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
-                    }
-                );
-
-                if (!await cacheService.ContainAsync(guiid))
-                {
-                    await cacheService.SetAsync(
-                        guiid,
-                        messageContent,
-                        new CacheItemOptions
-                        {
-                            RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
-                        });
-                
-                }
-            }
-            catch (Exception ex)
-            {
-                await logger.ErrorAsync(ex.Message);
+                        RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
+                    });
             }
         }
-
-        public async Task RemoveMessageLogOnCache(string guid)
+        catch (Exception ex)
         {
-            try
-            {
-                await cacheService.RemoveAsync(guid);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex.Message);
-            }
+            await logger.ErrorAsync(ex.Message);
+        }
+    }
+
+    public async Task RemoveMessageLogOnCache(string guid)
+    {
+        try
+        {
+            await cacheService.RemoveAsync(guid);
+        }
+        catch (Exception ex)
+        {
+            await logger.ErrorAsync(ex.Message);
         }
     }
 }

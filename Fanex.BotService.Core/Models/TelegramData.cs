@@ -1,49 +1,45 @@
-﻿namespace Fanex.BotService.Core.Models
+﻿namespace Fanex.BotService.Core.Models;
+
+public class TelegramData
 {
-    public class TelegramData
-    {
-        public int update_id { get; set; }
-        public Message message { get; set; }
-    }
+    public long UpdateId { get; set; }
+    public Message Message { get; set; }
+}
 
-    public class Message
-    {
-        public int message_id { get; set; }
-        public From from { get; set; }
-        public Chat chat { get; set; }
+public class Message
+{
+    public long MessageId { get; set; }
+    public From From { get; set; }
+    public Chat Chat { get; set; }
+    public Member NewChatMember { get; set; }
+    public Member LeftChatMember { get; set; }
+    public long Date { get; set; }
+    public string Text { get; set; }
+}
 
-        public Member new_chat_member { get; set; }
+public class From
+{
+    public long Id { get; set; }
+    public bool IsBot { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Username { get; set; }
+    public string LanguageCode { get; set; }
+}
 
-        public Member left_chat_member { get; set; }
+public class Chat
+{
+    public long Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Username { get; set; }
+    public string Type { get; set; }
+}
 
-        public int date { get; set; }
-        public string text { get; set; }
-    }
-
-    public class From
-    {
-        public int id { get; set; }
-        public bool is_bot { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string username { get; set; }
-        public string language_code { get; set; }
-    }
-
-    public class Chat
-    {
-        public int id { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string username { get; set; }
-        public string type { get; set; }
-    }
-
-    public class Member
-    {
-        public long id { get; set; }
-        public bool is_bot { get; set; }
-        public string first_name { get; set; }
-        public string username { get; set; }
-    }
+public class Member
+{
+    public long Id { get; set; }
+    public bool IsBot { get; set; }
+    public string FirstName { get; set; }
+    public string Username { get; set; }
 }

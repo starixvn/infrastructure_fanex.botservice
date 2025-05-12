@@ -1,8 +1,7 @@
-﻿namespace Fanex.BotService.Service.Core.Models
+﻿namespace Fanex.BotService.Service.Core.Models;
+
+public class BotToken
 {
-    public class BotToken
-    {
-        public DateTime? Expires { get; set; }
-        public string AccessToken { get; set; }
-    }
+    public DateTime? Expires { get; set; }
+    public string AccessToken { get; set; }
 }

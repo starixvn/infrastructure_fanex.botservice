@@ -1,17 +1,10 @@
-﻿namespace Fanex.NCB.Shared.Models
+﻿namespace Fanex.BotService.Shared.Models;
+
+public class CommandResult
 {
-    public class CommandResult
-    {
-        public CommandResult()
-        {
-            Code = 1;
-            Message = "Invalid Data";
-        }
+    public int Code { get; set; } = 1;
 
-        public int Code { get; set; }
+    public string Message { get; set; } = "Invalid Data";
 
-        public string Message { get; set; }
-
-        public bool IsSuccessful => Code == 0;
-    }
+    public bool IsSuccessful => Code == 0;
 }

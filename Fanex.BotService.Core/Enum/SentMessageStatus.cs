@@ -1,8 +1,7 @@
-﻿namespace Fanex.BotService.Core.Enum
+﻿namespace Fanex.BotService.Core.Enum;
+
+public enum SentMessageStatus
 {
-    public enum SentMessageStatus
-    {
-        Success = 0,
-        Fail = 1
-    }
+    Success = 0,
+    Fail = 1
 }

@@ -1,21 +1,20 @@
-﻿namespace Fanex.BotService.Core.Models
+﻿namespace Fanex.BotService.Core.Models;
+
+public class Bot
 {
-    public class Bot
-    {
-        public int BotId { get; set; }
+    public int BotId { get; set; }
 
-        public string ConversationId { get; set; }
+    public string ConversationId { get; set; }
 
-        public string BotName { get; set; }
+    public string BotName { get; set; }
 
-        public int ChannelId { get; set; }
+    public int ChannelId { get; set; }
 
-        public string ChannelName { get; set; }
+    public string ChannelName { get; set; }
 
-        public string ServiceUrl { get; set; }
+    public string ServiceUrl { get; set; }
 
-        public int AppId { get; set; }
+    public int AppId { get; set; }
 
-        public string MicrosoftAppId { get; set; }
-    }
+    public string MicrosoftAppId { get; set; }
 }

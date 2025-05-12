@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.Shared.Repositories
-{
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models;
+﻿namespace Fanex.BotService.Shared.Repositories;
 
-    public interface IBaseRepository
-    {
-        Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command);
-    }
+using Data.Repository;
+using Models;
+using System.Threading.Tasks;
+
+public interface IBaseRepository
+{
+    Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command);
 }

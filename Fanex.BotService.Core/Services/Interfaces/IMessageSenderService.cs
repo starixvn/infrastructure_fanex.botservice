@@ -1,11 +1,10 @@
-﻿namespace Fanex.BotService.Core.Services.Interfaces
-{
-    using System.Threading.Tasks;
-    using Fanex.BotService.Core.Models;
-    using Fanex.NCB.Shared.Models;
+﻿namespace Fanex.BotService.Core.Services.Interfaces;
 
-    public interface IMessageSenderService
-    {
-        Task<SendMessageResult> SendMessageAsync(ConversationMessage conversationMessage);
-    }
+using Fanex.BotService.Shared.Models;
+using Models;
+using System.Threading.Tasks;
+
+public interface IMessageSenderService
+{
+    Task<SendMessageResult> SendMessageAsync(ConversationMessage conversationMessage);
 }

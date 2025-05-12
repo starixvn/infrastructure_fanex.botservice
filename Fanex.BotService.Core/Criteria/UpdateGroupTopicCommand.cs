@@ -1,18 +1,17 @@
-﻿namespace Fanex.BotService.Core.Criteria
+﻿namespace Fanex.BotService.Core.Criteria;
+
+using Fanex.BotService.Shared.Models;
+
+public class UpdateGroupTopicCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string ConversationId { get; set; }
 
-    public class UpdateGroupTopicCommand : BaseCommand
-    {
-        public string ConversationId { get; set; }
+    public string GroupName { get; set; }
 
-        public string GroupName { get; set; }
+    public string UpdatedBy { get; set; }
 
-        public string UpdatedBy { get; set; }
+    public override string GetSettingKey() => "Conversation_UpdateGroupTopic";
 
-        public override string GetSettingKey() => "Conversation_UpdateGroupTopic";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(ConversationId)
-            && !string.IsNullOrWhiteSpace(GroupName);
-    }
+    public override bool IsValid() => !string.IsNullOrWhiteSpace(ConversationId)
+                                      && !string.IsNullOrWhiteSpace(GroupName);
 }

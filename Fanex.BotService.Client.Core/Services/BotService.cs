@@ -1,84 +1,81 @@
 ﻿namespace Fanex.BotService.Client.Core.Services
 {
+    using Client;
+    using Configuration;
+    using Enum;
+    using Interfaces;
+    using Models;
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.BotService.Client.Core.Client;
-    using Fanex.BotService.Client.Core.Configuration;
-    using Fanex.BotService.Client.Core.Enum;
-    using Fanex.BotService.Client.Core.Models;
-    using Fanex.BotService.Client.Core.Services.Interfaces;
 
     public class BotService : IBotService
     {
-        private readonly IBotClient botClient;
-        private readonly IBotSettings botSettings;
-
-        public BotService()
-        {
-            botClient = new BotClient();
-            botSettings = BotClientManager.BotSettings;
-        }
+        private readonly IBotSettings _botSettings = BotClientManager.BotSettings;
 
         public async Task SendSkypeAsync(string conversationId, string content)
-        {
-            Conversation conversation = new Conversation
-            {
-                AppId = botSettings.AppId,
-                ConversationId = conversationId,
-                Content = content,
-                Channel = BotChannel.Skype
-            };
-
-            ValidateInputConversation(conversation);
-
-            await botClient.SendSkypeAsync(conversation);
-        }
+            => await SendAsync(BotChannel.Skype, conversationId, content);
 
         public async Task SendTelegramAsync(string conversationId, string content)
+            => await SendAsync(BotChannel.Telegram, conversationId, content);
+
+        public async Task SendMsTeamsAsync(string conversationId, string content)
+            => await SendAsync(BotChannel.Teams, conversationId, content);
+
+        public async Task SendAsync(BotChannel? channel, string conversationId, string content)
         {
-            Conversation conversation = new Conversation
-            {
-                AppId = botSettings.AppId,
-                ConversationId = conversationId,
-                Content = content,
-                Channel = BotChannel.Telegram
-            };
-
-            ValidateInputConversation(conversation);
-
-            await botClient.SendTelegramAsync(conversation);
-        }
-
-        public async Task SendAsync(BotChannel channel, string conversationId, string content)
-        {
-            Conversation conversation = new Conversation
+            ValidateInputConversation(channel, conversationId, content);
+            var conversation = new Conversation
             {
                 Channel = channel,
-                AppId = botSettings.AppId,
+                AppId = _botSettings.AppId,
                 ConversationId = conversationId,
                 Content = content
             };
 
-            ValidateInputConversation(conversation);
-
-            await botClient.SendAsync(conversation);
+            await BotClient.SendAsync(conversation);
         }
 
-        private static void ValidateInputConversation(Conversation conversation)
+        public async Task SendMessageWithImagesAsync(BotChannel channel, string conversationId, string content,
+            List<string> imageUrls = null)
         {
-            if (conversation.Channel is null)
+            ValidateImageConversation(imageUrls);
+            ValidateInputConversation(channel, conversationId, content);
+            var conversation = new Conversation
             {
-                throw new ArgumentNullException(nameof(conversation.Channel));
+                Channel = channel,
+                AppId = _botSettings.AppId,
+                ConversationId = conversationId,
+                Content = content,
+                Images = imageUrls
+            };
+
+            await BotClient.SendAsync(conversation);
+        }
+
+        private static void ValidateInputConversation(BotChannel? channel, string conversationId, string content)
+        {
+            if (channel is null)
+            {
+                throw new ArgumentException("BotChannel cannot be null", nameof(channel));
             }
 
-            if (string.IsNullOrWhiteSpace(conversation.ConversationId))
+            if (string.IsNullOrWhiteSpace(conversationId))
             {
-                throw new ArgumentNullException(nameof(conversation.ConversationId));
+                throw new ArgumentException("ConversationId cannot be null or empty", nameof(conversationId));
             }
 
-            if (string.IsNullOrWhiteSpace(conversation.Content))
+            if (string.IsNullOrWhiteSpace(content))
             {
-                throw new ArgumentNullException(nameof(conversation.Content));
+                throw new ArgumentException("Content cannot be null or empty", nameof(content));
+            }
+        }
+
+        private static void ValidateImageConversation(List<string> imageUrls)
+        {
+            if (imageUrls is null || imageUrls.Count == 0)
+            {
+                throw new ArgumentException("ImageUrls cannot be null", nameof(imageUrls));
             }
         }
     }

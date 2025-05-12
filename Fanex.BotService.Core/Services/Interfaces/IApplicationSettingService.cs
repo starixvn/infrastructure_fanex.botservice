@@ -1,11 +1,10 @@
-﻿namespace Fanex.BotService.Core.Services.Interfaces
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Fanex.BotService.Core.Models;
+﻿namespace Fanex.BotService.Core.Services.Interfaces;
 
-    public interface IApplicationSettingService
-    {
-        Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync();
-    }
+using Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public interface IApplicationSettingService
+{
+    Task<IEnumerable<ApplicationSetting>> GetApplicationSettingAsync();
 }

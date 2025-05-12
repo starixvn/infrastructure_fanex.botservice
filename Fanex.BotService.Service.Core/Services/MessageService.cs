@@ -1,72 +1,61 @@
-﻿namespace Fanex.BotService.Service.Core.Services
+﻿namespace Fanex.BotService.Service.Core.Services;
+
+using Constants;
+using Criteria.Message;
+using Fanex.BotService.Shared.Models;
+using Fanex.BotService.Shared.Services.Interfaces;
+using Interfaces;
+using Models;
+using Newtonsoft.Json;
+
+public class MessageService(IBaseService baseService, ICommonLogService commonLogService, IMessageQueueService queueMessageService) : IMessageService
 {
-    using Fanex.BotService.Service.Core.Constants;
-    using Fanex.BotService.Service.Core.Criteria.Message;
-    using Fanex.BotService.Service.Core.Models;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using Newtonsoft.Json;
+    private const int ReSchedulerTimer = 10;
 
-    public class MessageService : IMessageService
+    public async Task<int> InsertNewMessageAsync(Conversation conversation, int retryTimeSpan)
     {
-        private readonly IBaseService baseService;
-        private readonly ICommonLogService commonLogService;
-        private readonly IMessageQueueService queueMessageService;
-        private static readonly int reSchedulerTimer = 10;
-
-        public MessageService(IBaseService baseService, ICommonLogService commonLogService, IMessageQueueService queueMessageService)
+        var command = new InsertNewMessageCommand
         {
-            this.baseService = baseService;
-            this.commonLogService = commonLogService;
-            this.queueMessageService = queueMessageService;
+            AppId = conversation.AppId,
+            ConversationId = conversation.ConversationId,
+            Content = conversation.Content,
+            Attachments = conversation.Images is not null && conversation.Images.Count > 0 ? JsonConvert.SerializeObject(conversation.Images) : string.Empty,
+            ChannelId = (byte)conversation.Channel,
+            CreatedDate = DateTimeOffset.UtcNow.DateTime,
+            Status = MessageStatuses.New
+        };
+        try
+        {
+            await baseService.ExecuteNonQueryAsync(command);
         }
-
-        public async Task<int> InsertNewMessageAsync(Conversation conversation, int retryTimeSpan)
+        catch (Exception ex)
         {
-            var command = new InsertNewMessageCommand
+            await commonLogService.SentryErrorAsync($"Data: {JsonConvert.SerializeObject(conversation)} \r\n. ErrorMsg: {ex.Message}", ex);
+            await queueMessageService.SchedulerPublishAsync(conversation, ReSchedulerTimer);
+        }
+        return command.MessageId;
+    }
+
+    public async Task UpdateMessageStatusAsync(SendMessageResult result, int retryTimeSpan)
+    {
+        try
+        {
+            var command = new UpdateMessageStatusCommand
             {
-                AppId = conversation.AppId,
-                ConversationId = conversation.ConversationId,
-                Content = conversation.Content,
-                ChannelId = (byte)conversation.Channel,
-                CreatedDate = DateTimeOffset.UtcNow.DateTime,
-                Status = MessageStatuses.New
+                MessageId = result.MessageId,
+                ErrorMessage = result.ErrorMessage,
+                Status = result.IsSuccessful ? MessageStatuses.Success : MessageStatuses.Failed
             };
-            try
+            var commandResult = await baseService.ExecuteNonQueryAsync(command);
+            if (!commandResult.IsSuccessful)
             {
-                await baseService.ExecuteNonQueryAsync(command);
+                await commonLogService.SentryErrorAsync(commandResult.Message);
             }
-            catch (Exception ex)
-            {
-                await commonLogService.SentryErrorAsync($"Data: {JsonConvert.SerializeObject(conversation)} \r\n. ErrorMsg: {ex.Message}", ex);
-                await queueMessageService.SchedulerPublishAsync(conversation, reSchedulerTimer);
-            }
-            return command.MessageId;
         }
-
-        public async Task UpdateMessageStatusAsync(SendMessageResult result, int retryTimeSpan)
+        catch (Exception exception)
         {
-            try
-            {
-                var command = new UpdateMessageStatusCommand
-                {
-                    MessageId = result.MessageId,
-                    ErrorMessage = result.ErrorMessage,
-                    Status = result.IsSucessfull ? MessageStatuses.Success : MessageStatuses.Failed
-                };
-                var commandResult = await baseService.ExecuteNonQueryAsync(command);
-                if (!commandResult.IsSuccessful)
-                {
-                    await commonLogService.SentryErrorAsync(commandResult.Message);
-                }
-            }
-            catch (Exception exception)
-            {
-                await commonLogService.SentryErrorAsync($"Message ID: {result.MessageId}. ErrMsg: {exception.Message}", exception);
-                await queueMessageService.SchedulerPublishAsync(result, reSchedulerTimer);
-            }
+            await commonLogService.SentryErrorAsync($"Message ID: {result.MessageId}. ErrMsg: {exception.Message}", exception);
+            await queueMessageService.SchedulerPublishAsync(result, ReSchedulerTimer);
         }
     }
 }

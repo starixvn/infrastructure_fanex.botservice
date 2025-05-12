@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.Shared.Models
+﻿namespace Fanex.BotService.Shared.Models;
+
+using Data.Repository;
+
+public abstract class BaseCommand : NonQueryCommand
 {
-    using Fanex.Data.Repository;
+    public int ErrCode { get; set; }
 
-    public abstract class BaseCommand : NonQueryCommand
-    {
-        public int ErrCode { get; set; }
-
-        public string ErrMsg { get; set; }
-    }
+    public string ErrMsg { get; set; }
 }

@@ -60,9 +60,12 @@
       <Name>Fanex.BotService.Client.AspNetMvc</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fanex.BotService.Client.Core\Fanex.BotService.Client.Core.csproj">
-      <Project>{64A36BAC-3038-4209-AA5E-6A76338272D7}</Project>
+      <Project>{64a36bac-3038-4209-aa5e-6a76338272d7}</Project>
       <Name>Fanex.BotService.Client.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+        <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+    </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

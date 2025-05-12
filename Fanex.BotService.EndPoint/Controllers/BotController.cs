@@ -1,26 +1,18 @@
-﻿namespace Fanex.BotService.EndPoint.Controllers
+﻿namespace Fanex.BotService.EndPoint.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Shared.Services.Interfaces;
+using System.Threading.Tasks;
+
+[Route("api/messages")]
+public class BotController(IBotFrameworkHttpAdapter adapter, IBot bot, ICommonLogService logService) : Controller
 {
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
-
-    [Route("api/messages")]
-    public class BotController : Controller
+    [HttpPost]
+    public async Task PostAsync()
     {
-        private readonly IBotFrameworkHttpAdapter adapter;
-        private readonly IBot bot;
-
-        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
-        {
-            this.adapter = adapter;
-            this.bot = bot;
-        }
-
-        [HttpPost]
-        public async Task PostAsync()
-        {
-            await adapter.ProcessAsync(Request, Response, bot);
-        }
+        logService.LogFileMessage("Received messages");
+        await adapter.ProcessAsync(Request, Response, bot);
     }
 }

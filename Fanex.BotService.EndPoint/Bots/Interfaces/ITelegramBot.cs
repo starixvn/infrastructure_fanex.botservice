@@ -1,6 +1,5 @@
-﻿namespace Fanex.BotService.EndPoint.Bots.Interfaces
+﻿namespace Fanex.BotService.EndPoint.Bots.Interfaces;
+
+public interface ITelegramBot : IChannelBot
 {
-    public interface ITelegramBot : IChannelBot
-    {
-    }
 }

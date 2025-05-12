@@ -1,67 +1,59 @@
-﻿namespace Fanex.BotService.EndPoint.Bots
+﻿namespace Fanex.BotService.EndPoint.Bots;
+
+using Core;
+using Core.Models;
+using Fanex.BotService.Core.Services.Interfaces;
+using Interfaces;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Schema;
+using Shared.Services.Interfaces;
+using System.Threading;
+using System.Threading.Tasks;
+
+public class TelegramBot(IConversationService conversationService, ICommonLogService logService) : ActivityHandler, ITelegramBot
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Fanex.BotService.Core;
-    using Fanex.BotService.Core.Models;
-    using Fanex.BotService.Core.Services.Interfaces;
-    using Fanex.BotService.EndPoint.Bots.Interfaces;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Schema;
+    private const string GreetingMessage = "Hello, I am {0}";
 
-    public class TelegramBot : ActivityHandler, ITelegramBot
+    protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
     {
-        private const string greetingMessage = "Hello, I am {0}";
+        var botName = turnContext.Activity.Recipient.Name;
+        var message = turnContext.Activity.Text?.Trim() ?? string.Empty;
+        logService.LogFileMessage($"OnMessageActivityAsync Telegram - src = {message}");
 
-        private readonly IConversationService conversationService;
-
-        public TelegramBot(IConversationService conversationService)
+        if (message.StartsWith("/start"))
         {
-            this.conversationService = conversationService;
+            await conversationService.AddBotContactAsync(turnContext);
+            await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(GreetingMessage, botName)), cancellationToken);
         }
 
-        protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        if (turnContext.Activity.Conversation.IsGroup == true)
         {
-            var botName = turnContext.Activity.Recipient.Name;
-            var message = turnContext.Activity.Text?.Trim() ?? string.Empty;
-
-            if (message.StartsWith("/start"))
+            message = BotHelper.GetMessageInGroupByChannel(message, turnContext.Activity.ChannelId, botName);
+            var channelData = turnContext.Activity.GetChannelData<TelegramData>();
+            if (channelData.Message.NewChatMember?.IsBot is true)
             {
-                await conversationService.AddBotContactAsync(turnContext);
-                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
+                await conversationService.AddBotToGroupAsync(turnContext);
             }
-
-            if (turnContext.Activity.Conversation.IsGroup == true)
+            else if (channelData.Message.LeftChatMember?.IsBot is true)
             {
-                message = BotHelper.GetMessageInGroupByChannel(message, turnContext.Activity.ChannelId, botName);
-                var channelData = turnContext.Activity.GetChannelData<TelegramData>();
-                if (channelData.message.new_chat_member?.is_bot is true)
-                {
-                    await conversationService.AddBotToGroupAsync(turnContext);
-                }
-                else if (channelData.message.left_chat_member?.is_bot is true)
-                {
-                    await conversationService.RemoveBotOutGroupAsync(turnContext);
-                }
+                await conversationService.RemoveBotOutGroupAsync(turnContext);
             }
+        }
+        logService.LogFileMessage($"OnMessageActivityAsync Telegram - final = {message}");
+        switch (message)
+        {
+            case InteractedCommand.Help:
+                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(GreetingMessage, botName)), cancellationToken);
+                break;
 
-            switch (message)
-            {
-                case InteractedCommand.help:
-                    await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
-                    break;
+            case InteractedCommand.GetId:
+                await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
+                break;
 
-                case InteractedCommand.getid:
-                    await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
-                    break;
-
-                case InteractedCommand.getbot:
-                    var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
-                    await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
-                    break;
-
-                default: break;
-            }
+            case InteractedCommand.GetBot:
+                var botInfo = $"BotId: {turnContext.Activity.Recipient.Id}, BotName: {botName}";
+                await turnContext.SendActivityAsync(MessageFactory.Text(botInfo), cancellationToken);
+                break;
         }
     }
 }

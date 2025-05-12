@@ -1,27 +1,21 @@
-﻿namespace Fanex.BotService.Service.Core.Services
+﻿namespace Fanex.BotService.Service.Core.Services;
+
+using EasyNetQ;
+using Fanex.BotService.Shared.Services.Interfaces;
+using Interfaces;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+
+public class MessageQueueService(IBus bus, ICommonLogService logService) : IMessageQueueService
 {
-    using System.Threading.Tasks;
-    using EasyNetQ;
-    using Fanex.BotService.Service.Core.Services.Interfaces;
-    using Fanex.BotService.Shared.Services.Interfaces;
-    using Newtonsoft.Json;
+    private const int TimeDelayBeforeRetry = 10;
+    private const int MaxRetryTime = 5;
 
-    public class MessageQueueService : IMessageQueueService
+    public async Task PublishAsync<T>(T model, int retryCount = 0)
     {
-        private readonly IBus bus;
-        private readonly ICommonLogService logService;
-        private readonly int TimeDelayBeforeRetryInSeccond = 10;
-        private readonly int MaxRetryTime = 5;
-
-        public MessageQueueService(IBus bus, ICommonLogService logService)
+        while (true)
         {
-            this.bus = bus;
-            this.logService = logService;
-        }
-
-        public async Task PublishAsync<T>(T model, int retryCount = 0)
-        {
-            bool isFailed = false;
+            var isFailed = false;
             try
             {
                 await bus.PubSub.PublishAsync(model);
@@ -36,14 +30,19 @@
             if (isFailed && retryCount < MaxRetryTime)
             {
                 retryCount++;
-                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
-                await PublishAsync(model, retryCount);
+                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetry));
+                continue;
             }
-        }
 
-        public async Task PublishAsync<T>(T model, string topic, int retryCount = 0)
+            break;
+        }
+    }
+
+    public async Task PublishWithTopicAsync<T>(T model, string topic, int retryCount = 0)
+    {
+        while (true)
         {
-            bool isFailed = false;
+            var isFailed = false;
             try
             {
                 await bus.PubSub.PublishAsync(model, topic);
@@ -58,18 +57,23 @@
             if (isFailed && retryCount < MaxRetryTime)
             {
                 retryCount++;
-                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
-                await PublishAsync(model, topic, retryCount);
+                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetry));
+                continue;
             }
-        }
 
-        public async Task SchedulerPublishAsync<T>(T model, int interval, int retryCount = 0)
+            break;
+        }
+    }
+
+    public async Task SchedulerPublishAsync<T>(T model, int interval, int retryCount = 0)
+    {
+        while (true)
         {
-            bool isFailed = false;
+            var isFailed = false;
             try
             {
                 await bus.Scheduler.FuturePublishAsync(model, TimeSpan.FromMinutes(interval));
-                logService.LogFileMessage($"Future publish after {interval} mins. Data: {JsonConvert.SerializeObject(model)} successfully!");
+                logService.LogFileMessage($"Future publish after {interval} minutes. Data: {JsonConvert.SerializeObject(model)} successfully!");
             }
             catch (Exception ex)
             {
@@ -80,9 +84,11 @@
             if (isFailed && retryCount < MaxRetryTime)
             {
                 retryCount++;
-                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetryInSeccond));
-                await SchedulerPublishAsync(model, interval, retryCount);
+                await Task.Delay(TimeSpan.FromSeconds(TimeDelayBeforeRetry));
+                continue;
             }
+
+            break;
         }
     }
 }
