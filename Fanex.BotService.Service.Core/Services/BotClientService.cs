@@ -1,5 +1,7 @@
 ﻿namespace Fanex.BotService.Service.Core.Services;
 
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 using Configurations;
 using Enum;
 using Fanex.BotService.Shared.Constants;
@@ -10,9 +12,6 @@ using Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using Models;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
 
 public class BotClientService(
     IHttpClientFactory httpClientFactory,
@@ -37,12 +36,15 @@ public class BotClientService(
             var apiConfig = _botConfigs.ApiConfigs.FirstOrDefault(i => i.Channel == botChannel);
             CheckValidApiConfig(apiConfig);
 
-            var token = await GetTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            //var token = await GetTokenAsync();
+            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var url = new Uri($"{_botConfigs.ServiceUrl}{apiConfig?.SendMessageUrl}");
             using var response = await _httpClient.PostAsJsonAsync(url, message);
+            await commonLogService.SentryInfoAsync(JsonConvert.SerializeObject(response));
             response.EnsureSuccessStatusCode();
             var responseData = await response.Content.ReadAsStringAsync();
+            await commonLogService.SentryInfoAsync(responseData);
+
             result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
         }
         catch (Exception ex)
@@ -96,14 +98,9 @@ public class BotClientService(
     private async Task<BotToken> AuthenticateAsync()
     {
         var url = new Uri($"{_botConfigs.ServiceUrl}{_botConfigs.AuthenticatePath}");
-        var authData = new Dictionary<string, string>
-        {
-            { "username", _botConfigs.AppId },
-            { "password", _botConfigs.AppPassword }
-        };
+        var authData = new { Username = _botConfigs.AppId, Password = _botConfigs.AppPassword };
 
-        using var authDataContent = new FormUrlEncodedContent(authData);
-        using var response = await _httpClient.PostAsync(url, authDataContent);
+        using var response = await _httpClient.PostAsJsonAsync(url, authData);
         var responseData = await response.Content.ReadAsStringAsync();
         var token = JsonConvert.DeserializeObject<BotToken>(responseData);
         return token;

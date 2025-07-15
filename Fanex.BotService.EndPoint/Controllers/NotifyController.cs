@@ -11,7 +11,6 @@ using Core.Models;
 using Core.Services.Interfaces;
 using Logging.Extensions;
 using Logging.Extensions.Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -20,7 +19,6 @@ using Shared.Models;
 using Shared.Models.Message;
 using Shared.Services.Interfaces;
 
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class NotifyController(
     ICommonLogService commonLogService,
     IMessageValidationService messageLogService,
@@ -108,6 +106,9 @@ public class NotifyController(
     [Route("api/telegram/send")]
     public async Task<IActionResult> SendSingleViaTelegram([FromBody] MessageEndpoint message)
     {
+        await commonLogService.SentryInfoAsync("SendSingleViaTelegram" + JsonConvert.SerializeObject(message));
+        commonLogService.LogFileMessage(JsonConvert.SerializeObject(message));
+
         var msgContent = BotHelper.ReplaceSpecialCharacterOnTelegramMessageContent(message.Content);
         message.Content = msgContent;
         commonLogService.LogFileMessage($"Telegram message: {msgContent}");
