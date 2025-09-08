@@ -5,14 +5,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Core;
-using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-public class AuthController(AppSettings appSettings,
-    IConversationService conversationService,
-    IMessageSenderService messageSenderService) : ControllerBase
+public class AuthController(AppSettings appSettings) : ControllerBase
 {
     private const string InvalidUsernameOrPasswordText = "Username or password is incorrect";
 
