@@ -1,7 +1,10 @@
-﻿using Fanex.BotService.Core;
+﻿using System.Text;
+using System.Threading;
+using Fanex.BotService.Core;
 using Fanex.BotService.EndPoint;
 using Fanex.BotService.Shared.Extensions;
 using Fanex.BotService.Shared.Middlewares;
+using Fanex.BotService.Shared.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -12,8 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
-using System.Text;
-using System.Threading;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,8 +93,8 @@ app.UseAuthentication();
 app.MapGet("/", () => "Fanex Bot Endpoint ready!");
 app.MapGet("/sentry", async () =>
 {
-    var logService = app.Services.GetRequiredService<Fanex.Logging.ILogger>();
-    await logService.ErrorAsync("Test Sentry");
+    var logService = app.Services.GetRequiredService<ICommonLogService>();
+    await logService.SentryErrorAsync("Test Sentry");
 
     return "Test sentry!";
 });

@@ -2,7 +2,6 @@ using Fanex.BotService.Service.Core.Enum;
 using Fanex.BotService.Service.Core.Services;
 using Fanex.BotService.Shared.Models.Message;
 using Fanex.BotService.Shared.Services.Interfaces;
-using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 
 namespace Fanex.BotService.Core.Tests.Services;
@@ -16,9 +15,8 @@ public class BotClientServiceTests
     public BotClientServiceTests()
     {
         _httpClientFactory = Substitute.For<IHttpClientFactory>();
-        var memoryCache = Substitute.For<IMemoryCache>();
         _commonLogService = Substitute.For<ICommonLogService>();
-        _botClientService = new BotClientService(_httpClientFactory, memoryCache, _commonLogService);
+        _botClientService = new BotClientService(_httpClientFactory, _commonLogService);
     }
 
     [Fact]
