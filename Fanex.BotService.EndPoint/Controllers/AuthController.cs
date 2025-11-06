@@ -4,14 +4,24 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Services.Interfaces;
 
-public class AuthController(AppSettings appSettings) : ControllerBase
+public class AuthController(AppSettings appSettings, ICommonLogService logService) : ControllerBase
 {
     private const string InvalidUsernameOrPasswordText = "Username or password is incorrect";
+
+    [AllowAnonymous]
+    [Route("api/test-sentry")]
+    public async Task<ObjectResult> TestSentry()
+    {
+        await logService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
+        return Ok("Sentry test logged");
+    }
 
     [AllowAnonymous]
     [HttpPost]

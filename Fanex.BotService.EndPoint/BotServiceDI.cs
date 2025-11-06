@@ -1,5 +1,11 @@
 ﻿namespace Fanex.BotService.EndPoint;
 
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Authentication;
 using Bots;
 using Bots.Interfaces;
 using Caching;
@@ -22,12 +28,6 @@ using Shared.Repositories;
 using Shared.Services;
 using Shared.Services.Interfaces;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Security;
-using System.Security.Authentication;
 
 public static class ServiceInjectorExtensions
 {
@@ -37,6 +37,8 @@ public static class ServiceInjectorExtensions
         services.AddTransient<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
         services.AddTransient<ServiceClientCredentialsFactory, MultiServiceClientCredentialsFactory>();
         services.AddTransient<HttpClient, CustomHttpClient>();
+        services.AddSingleton<ILogger, Logger>();
+        services.AddSingleton<ICommonLogService, CommonLogService>();
 
         services.AddTransient<ITeamsBot, TeamsBot>();
         services.AddTransient<ISkypeBot, SkypeBot>();
