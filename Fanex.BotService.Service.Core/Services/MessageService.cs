@@ -49,7 +49,7 @@ public class MessageService(IBaseService baseService, ICommonLogService commonLo
             var commandResult = await baseService.ExecuteNonQueryAsync(command);
             if (!commandResult.IsSuccessful)
             {
-                await commonLogService.SentryErrorAsync(commandResult.Message);
+                await commonLogService.SentryErrorAsync(commandResult.Message, new Exception(commandResult.Message));
             }
         }
         catch (Exception exception)

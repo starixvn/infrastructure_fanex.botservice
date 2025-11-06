@@ -11,15 +11,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Services.Interfaces;
 
-public class AuthController(AppSettings appSettings, ICommonLogService logService) : ControllerBase
+public class AuthController(AppSettings appSettings, ICommonLogService commonLogService) : ControllerBase
 {
     private const string InvalidUsernameOrPasswordText = "Username or password is incorrect";
 
     [AllowAnonymous]
     [Route("api/test-sentry")]
-    public async Task<ObjectResult> TestSentry()
+    public async Task<ObjectResult> Test()
     {
-        await logService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
+        await commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
+        await commonLogService.SentryInfoAsync("Test Sentry Info");
+
         return Ok("Sentry test logged");
     }
 

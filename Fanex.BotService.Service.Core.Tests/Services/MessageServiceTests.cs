@@ -91,6 +91,29 @@ public class MessageServiceTests
     }
 
     [Fact]
+    public async Task UpdateMessageStatusAsync_ShouldLogError_WhenCommandResultIsNotSuccessful()
+    {
+        // Arrange
+        var result = new SendMessageResult
+        {
+            MessageId = 1,
+            ErrorCode = 0,
+        };
+        var commandResult = new CommandResult
+        {
+            Code = 1,
+            Message = "Failed to update status"
+        };
+        _baseService.ExecuteNonQueryAsync(Arg.Any<UpdateMessageStatusCommand>()).Returns(commandResult);
+
+        // Act
+        await _messageService.UpdateMessageStatusAsync(result, 0);
+
+        // Assert
+        await _commonLogService.Received(1).SentryErrorAsync(commandResult.Message, Arg.Is<Exception>(ex => ex.Message == commandResult.Message));
+    }
+
+    [Fact]
     public async Task UpdateMessageStatusAsync_ShouldLogErrorAndScheduleRetry_OnException()
     {
         // Arrange

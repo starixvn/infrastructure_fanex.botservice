@@ -7,21 +7,17 @@ using NSubstitute;
 
 namespace Fanex.BotService.Endpoint.Tests.Controllers;
 
-using Shared.Services.Interfaces;
-
 public class BotControllerTests
 {
     private readonly IBotFrameworkHttpAdapter _adapter;
     private readonly IBot _bot;
-    private readonly ICommonLogService _logService;
     private readonly BotController _controller;
 
     public BotControllerTests()
     {
         _adapter = Substitute.For<IBotFrameworkHttpAdapter>();
         _bot = Substitute.For<IBot>();
-        _logService = Substitute.For<ICommonLogService>();
-        _controller = new BotController(_adapter, _bot, _logService);
+        _controller = new BotController(_adapter, _bot);
     }
 
     [Fact]
@@ -38,7 +34,6 @@ public class BotControllerTests
         await _controller.PostAsync();
 
         // Assert
-        _logService.Received().LogFileMessage(Arg.Any<string>());
         await _adapter.Received(1).ProcessAsync(httpContext.Request, httpContext.Response, _bot);
     }
 }

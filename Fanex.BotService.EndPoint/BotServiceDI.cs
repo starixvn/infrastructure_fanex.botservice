@@ -37,8 +37,6 @@ public static class ServiceInjectorExtensions
         services.AddTransient<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
         services.AddTransient<ServiceClientCredentialsFactory, MultiServiceClientCredentialsFactory>();
         services.AddTransient<HttpClient, CustomHttpClient>();
-        services.AddSingleton<ILogger, Logger>();
-        services.AddSingleton<ICommonLogService, CommonLogService>();
 
         services.AddTransient<ITeamsBot, TeamsBot>();
         services.AddTransient<ISkypeBot, SkypeBot>();

@@ -1,5 +1,13 @@
 ﻿namespace Fanex.BotService.Core.Services;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Fanex.BotService.Shared.Models;
 using Interfaces;
 using Logging.Extensions;
@@ -11,14 +19,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 public class MessageSenderService : IMessageSenderService
 {
@@ -183,6 +183,6 @@ public class MessageSenderService : IMessageSenderService
             .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
             .AddSection("Params", param);
 
-        await _logger.ErrorAsync(logMessage.ToString());
+        await _logger.ErrorAsync(logMessage.ToString(), exception);
     }
 }

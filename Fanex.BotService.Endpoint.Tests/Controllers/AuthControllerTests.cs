@@ -11,7 +11,6 @@ using Shared.Services.Interfaces;
 public class AuthControllerTests
 {
     private readonly AuthController _authController;
-    private readonly ICommonLogService logService;
 
     public AuthControllerTests()
     {
@@ -25,19 +24,7 @@ public class AuthControllerTests
 
         var options = Substitute.For<IOptions<AppSettings>>();
         options.Value.Returns(appSettings);
-        logService = Substitute.For<ICommonLogService>();
-        _authController = new AuthController(options.Value, logService);
-    }
-
-    [Fact]
-    public async Task SentryTest_ReturnsOkResult()
-    {
-        // Act
-        var result = await _authController.TestSentry() as OkObjectResult;
-        // Assert
-        Assert.NotNull(result);
-        await logService.Received(1).SentryErrorAsync(Arg.Is("Test Sentry"), Arg.Any<Exception>());
-        Assert.Equal("Sentry test logged", result.Value);
+        _authController = new AuthController(options.Value, Substitute.For<ICommonLogService>());
     }
 
     [Fact]

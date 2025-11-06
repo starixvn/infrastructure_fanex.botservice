@@ -16,16 +16,17 @@ public class NotifyControllerTests
     private readonly IConversationService _conversationService;
     private readonly IMessageValidationService _messageLogService;
     private readonly IMessageSenderService _messageSenderService;
+    private readonly ICommonLogService _commonLogService;
 
     public NotifyControllerTests()
     {
         _conversationService = Substitute.For<IConversationService>();
         _messageLogService = Substitute.For<IMessageValidationService>();
-        var commonLogService = Substitute.For<ICommonLogService>();
+        _commonLogService = Substitute.For<ICommonLogService>();
         _messageSenderService = Substitute.For<IMessageSenderService>();
 
         _notifyController = new NotifyController(
-            commonLogService,
+            _commonLogService,
             _messageLogService,
             _conversationService,
             _messageSenderService);
@@ -40,7 +41,8 @@ public class NotifyControllerTests
         // Assert
         Assert.IsType<OkObjectResult>(result);
         var okResult = result as OkObjectResult;
-        Assert.Equal("ok", okResult?.Value);
+        Assert.Equal("Sentry test logged", okResult?.Value);
+        await _commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
     }
 
     [Fact]

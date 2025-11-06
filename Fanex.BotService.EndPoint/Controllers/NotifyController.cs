@@ -24,16 +24,17 @@ public class NotifyController(
     IMessageValidationService messageLogService,
     IConversationService conversationService,
     IMessageSenderService messageSenderService)
-    : Controller
+    : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet]
     [Route("api/Test")]
     public async Task<ObjectResult> Test()
     {
-        await commonLogService.SentryErrorAsync("test sentry");
+        await commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
+        await commonLogService.SentryInfoAsync("Test Sentry Info");
 
-        return Ok("ok");
+        return Ok("Sentry test logged");
     }
 
     [HttpGet]
@@ -106,13 +107,9 @@ public class NotifyController(
     [Route("api/telegram/send")]
     public async Task<IActionResult> SendSingleViaTelegram([FromBody] MessageEndpoint message)
     {
-        await commonLogService.SentryInfoAsync("SendSingleViaTelegram" + JsonConvert.SerializeObject(message));
-        commonLogService.LogFileMessage(JsonConvert.SerializeObject(message));
-
         var msgContent = BotHelper.ReplaceSpecialCharacterOnTelegramMessageContent(message.Content);
         message.Content = msgContent;
-        commonLogService.LogFileMessage($"Telegram message: {msgContent}");
-        commonLogService.LogFileMessage($"Telegram message obj: {message.Content}");
+        commonLogService.LogFileMessage($"Telegram message: {JsonConvert.SerializeObject(message)}");
 
         var bots = await conversationService.GetBotAsync();
         var result = await SendSingleMessage(bots, (byte)ConversationChannel.Telegram, message);
@@ -193,10 +190,7 @@ public class NotifyController(
         return sendMessageResult;
     }
 
-    private static bool IsValidBot(Bot bot, int channelId, int appId)
-    {
-        return bot.ChannelId == channelId && bot.AppId == appId;
-    }
+    private static bool IsValidBot(Bot bot, int channelId, int appId) => bot.ChannelId == channelId && bot.AppId == appId;
 
     private static SendMessageResult DuplicatedResult(long notificationId, string conversationId)
         => new()
