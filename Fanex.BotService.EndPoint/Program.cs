@@ -4,6 +4,7 @@ using Fanex.BotService.Core;
 using Fanex.BotService.EndPoint;
 using Fanex.BotService.Shared.Extensions;
 using Fanex.BotService.Shared.Middlewares;
+using Fanex.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,7 @@ builder.WebHost
     .UseNLog();
 
 IConfiguration configuration = builder.Configuration;
+CoreServiceCollectionExtensions.RegisterSentry(configuration);
 
 var services = builder.Services;
 
@@ -30,8 +32,6 @@ services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders =
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
-
-CoreServiceCollectionExtensions.RegisterSentry(configuration);
 
 var appSettingsSection = configuration.GetSection("AppSettings");
 var appSettings = appSettingsSection.Get<AppSettings>();
@@ -90,6 +90,11 @@ if (!string.IsNullOrWhiteSpace(domainPath))
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapGet("/", () => "Fanex Bot Endpoint ready!");
+app.MapGet("/test-sentry", async () =>
+{
+    var logger = app.Services.GetRequiredService<ILogger>();
+    await logger.ErrorAsync("Test Sentry Info from /test-sentry endpoint");
+});
 
 app.MapControllerRoute(
     "default",

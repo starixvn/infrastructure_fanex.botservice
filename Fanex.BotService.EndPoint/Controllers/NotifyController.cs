@@ -28,12 +28,11 @@ public class NotifyController(
 {
     [AllowAnonymous]
     [HttpGet]
-    [Route("api/Test")]
+    [Route("api/test")]
     public async Task<ObjectResult> Test()
     {
         await commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
         await commonLogService.SentryInfoAsync("Test Sentry Info");
-        await Fanex.Logging.Logger.Log.InfoAsync("Test Sentry Info");
 
         return Ok("Sentry test logged");
     }
