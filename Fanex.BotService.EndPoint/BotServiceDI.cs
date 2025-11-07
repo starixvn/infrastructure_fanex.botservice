@@ -90,7 +90,8 @@ public static class ServiceInjectorExtensions
 
         services.AddSingleton<IMessageValidationService, MessageValidationService>();
         services.AddTransient<IMessageSenderService, MessageSenderService>();
-        services.AddSingleton<ILogger, Logger>();
+        //services.AddSingleton<ILogger, Logger>();
+        services.AddSingleton<Logger>();
         services.AddSingleton<ICommonLogService, CommonLogService>();
 
         RegisterCheckDuplicateMessageLogSettings(services, configuration);

@@ -33,6 +33,7 @@ public class NotifyController(
     {
         await commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
         await commonLogService.SentryInfoAsync("Test Sentry Info");
+        await Fanex.Logging.Logger.Log.InfoAsync("Test Sentry Info");
 
         return Ok("Sentry test logged");
     }
