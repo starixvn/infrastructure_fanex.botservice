@@ -19,6 +19,7 @@ using Shared.Models;
 using Shared.Models.Message;
 using Shared.Services.Interfaces;
 
+[Route("api")]
 public class NotifyController(
     ICommonLogService commonLogService,
     IMessageValidationService messageLogService,
@@ -28,18 +29,17 @@ public class NotifyController(
 {
     [AllowAnonymous]
     [HttpGet]
-    [Route("api/test")]
+    [Route("log-sentry")]
     public async Task<ObjectResult> Test()
     {
-        commonLogService.LogFileMessage("Test log message");
-        await commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
-        await commonLogService.SentryInfoAsync("Test Sentry Info");
+        var randomString = Guid.NewGuid().ToString();
+        await commonLogService.SentryErrorAsync($"Test Sentry from controller {randomString}", new Exception("This is test sentry exception"));
 
-        return Ok("Sentry test logged");
+        return Ok("Sentry test logged from controller");
     }
 
     [HttpGet]
-    [Route("api/bot/send")]
+    [Route("bot/send")]
     public async Task<ObjectResult> SendMessage([FromBody] IList<MessageEndpoint> messages)
     {
         var results = new List<SendMessageResult>();
@@ -55,7 +55,7 @@ public class NotifyController(
 
     [AllowAnonymous]
     [HttpGet]
-    [Route("api/skype/send-multiple")]
+    [Route("skype/send-multiple")]
     public async Task<ObjectResult> SendViaSkype([FromBody] IList<MessageEndpoint> messages)
     {
         var results = new List<SendMessageResult>();
@@ -70,7 +70,7 @@ public class NotifyController(
     }
 
     [HttpGet]
-    [Route("api/telegram/send-multiple")]
+    [Route("telegram/send-multiple")]
     public async Task<ObjectResult> SendViaTelegram([FromBody] IList<MessageEndpoint> messages)
     {
         var results = new List<SendMessageResult>();
@@ -85,7 +85,7 @@ public class NotifyController(
     }
 
     [HttpPost]
-    [Route("api/msteams/send")]
+    [Route("msteams/send")]
     public async Task<IActionResult> SendSingleViaTeams([FromBody] MessageEndpoint message)
     {
         commonLogService.LogFileMessage($"Teams message: {JsonConvert.SerializeObject(message)}");
@@ -95,7 +95,7 @@ public class NotifyController(
     }
 
     [HttpPost]
-    [Route("api/skype/send")]
+    [Route("skype/send")]
     public async Task<IActionResult> SendSingleViaSkype([FromBody] MessageEndpoint message)
     {
         commonLogService.LogFileMessage($"Skype message: {JsonConvert.SerializeObject(message)}");
@@ -105,7 +105,7 @@ public class NotifyController(
     }
 
     [HttpPost]
-    [Route("api/telegram/send")]
+    [Route("telegram/send")]
     public async Task<IActionResult> SendSingleViaTelegram([FromBody] MessageEndpoint message)
     {
         var msgContent = BotHelper.ReplaceSpecialCharacterOnTelegramMessageContent(message.Content);
@@ -118,7 +118,7 @@ public class NotifyController(
     }
 
     [HttpPost]
-    [Route("api/bot/forward")]
+    [Route("bot/forward")]
     public async Task<ObjectResult> ForwardMessage([FromBody] ConversationMessage conversationMessage)
     {
         var result = await messageSenderService.SendMessageAsync(conversationMessage);

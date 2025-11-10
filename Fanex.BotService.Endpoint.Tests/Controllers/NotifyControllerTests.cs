@@ -40,9 +40,7 @@ public class NotifyControllerTests
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
-        var okResult = result as OkObjectResult;
-        Assert.Equal("Sentry test logged", okResult?.Value);
-        await _commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
+        await _commonLogService.Received().SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
     }
 
     [Fact]

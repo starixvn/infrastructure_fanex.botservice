@@ -96,7 +96,6 @@ app.MapGet("/test-sentry", async () =>
     commonLogService.LogFileMessage("Test log message");
 
     await commonLogService.SentryErrorAsync("Test Sentry Error from /test-sentry endpoint");
-    await commonLogService.SentryErrorAsync("Test Sentry Info from /test-sentry endpoint");
 });
 
 app.MapControllerRoute(
