@@ -84,6 +84,10 @@ public class MessageBroker(IBus bus,
 
                         var sentResult = await botClientService.SendMessageAsync((BotChannel)message.ChannelId, message);
 
+                        if (!sentResult.IsSuccessful)
+                        {
+                            await logService.SentryErrorAsync($"Send message to bot service endpoint failed. MessageId: {message.MessageId}, Error: {sentResult.ErrorMessage}");
+                        }
                         await messageQueueService.PublishAsync(sentResult);
 
                         logService.LogFileMessage($"End consume {QueueSubscriptionId.SendMessageToBotServiceEndpoint}");
