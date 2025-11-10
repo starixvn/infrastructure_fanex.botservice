@@ -4,7 +4,7 @@ using Fanex.BotService.Core;
 using Fanex.BotService.EndPoint;
 using Fanex.BotService.Shared.Extensions;
 using Fanex.BotService.Shared.Middlewares;
-using Fanex.Logging;
+using Fanex.BotService.Shared.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -92,8 +92,11 @@ app.UseAuthentication();
 app.MapGet("/", () => "Fanex Bot Endpoint ready!");
 app.MapGet("/test-sentry", async () =>
 {
-    var logger = app.Services.GetRequiredService<ILogger>();
-    await logger.ErrorAsync("Test Sentry Info from /test-sentry endpoint");
+    var commonLogService = app.Services.GetRequiredService<ICommonLogService>();
+    commonLogService.LogFileMessage("Test log message");
+
+    await commonLogService.SentryErrorAsync("Test Sentry Error from /test-sentry endpoint");
+    await commonLogService.SentryErrorAsync("Test Sentry Info from /test-sentry endpoint");
 });
 
 app.MapControllerRoute(

@@ -31,6 +31,7 @@ public class NotifyController(
     [Route("api/test")]
     public async Task<ObjectResult> Test()
     {
+        commonLogService.LogFileMessage("Test log message");
         await commonLogService.SentryErrorAsync("Test Sentry", new Exception("This is test sentry exception"));
         await commonLogService.SentryInfoAsync("Test Sentry Info");
 

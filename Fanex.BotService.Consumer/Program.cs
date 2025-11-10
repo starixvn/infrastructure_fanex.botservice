@@ -1,6 +1,7 @@
 using Fanex.BotService.Consumer;
 using Fanex.BotService.Shared.Extensions;
 using Fanex.BotService.Shared.Middlewares;
+using Fanex.BotService.Shared.Services.Interfaces;
 using Fanex.Data.SqlServer;
 using NLog.Web;
 
@@ -38,8 +39,8 @@ else
 app.MapGet("/", () => "Fanex Bot consumer running ...");
 app.MapGet("/sentry", async () =>
 {
-    var logService = app.Services.GetRequiredService<Fanex.Logging.ILogger>();
-    await logService.ErrorAsync("Test Sentry");
+    var logService = app.Services.GetRequiredService<ICommonLogService>();
+    await logService.SentryErrorAsync("Test Sentry from Consumer");
 
     return "Test sentry!";
 });
