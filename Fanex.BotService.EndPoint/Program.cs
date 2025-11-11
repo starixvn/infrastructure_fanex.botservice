@@ -18,6 +18,11 @@ using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.ConfigureAppConfiguration((_, config) =>
+{
+    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
+});
+
 builder.WebHost
     .UseNLog();
 
